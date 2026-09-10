@@ -1,0 +1,20 @@
+{
+  "name": "swiftroute-terminal",
+  "version": "1.0.0",
+  "description": "SwiftRoute Logistics Terminal - Vercel Frontend & Serverless API with Neon Postgres SQL",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node scripts/verify-all.js",
+    "seed": "node scripts/seed.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "dotenv": "^16.4.7"
+  },
+  "keywords": ["logistics", "tracking", "vercel", "neon", "postgres", "sql"],
+  "author": "",
+  "license": "MIT"
+}

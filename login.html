@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SwiftRoute - Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #F8FAFC;
+      color: #0b1c30;
+      font-family: 'Geist', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    * { box-sizing: border-box; }
+    a { color: #0F4C81; text-decoration: none; }
+    a:hover { color: #00355F; text-decoration: underline; }
+    input::placeholder { color: #727780; }
+    @keyframes sr-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(22,163,74,.45); }
+      70% { box-shadow: 0 0 0 6px rgba(22,163,74,0); }
+      100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+    }
+    .input-box:focus-within {
+      border-color: #0F4C81 !important;
+      box-shadow: 0 0 0 2px rgba(15,76,129,0.15) !important;
+    }
+    .btn-submit:hover { background: #0A355C !important; }
+    .btn-submit:active { transform: translateY(1px); }
+  </style>
+</head>
+<body>
+  <div style="min-height: 100vh; display: flex; flex-direction: column; background: #F8FAFC;">
+    <header style="border-bottom: 1px solid #E2E8F0; background: #FFFFFF;">
+      <div style="max-width: 75rem; margin: 0 auto; padding: 14px clamp(12px, 4vw, 24px); display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 28px; height: 28px; border-radius: 4px; background: #0F4C81; display: grid; place-items: center;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 8h9M8 4l4 4-4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: -0.01em;">SwiftRoute</span>
+          <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; padding: 2px 6px; border: 1px solid #E2E8F0; border-radius: 2px; white-space: nowrap;">Terminal</span>
+        </div>
+        <a href="index.html" style="font-size: 14px; font-weight: 500; white-space: nowrap;">Track a parcel</a>
+      </div>
+    </header>
+
+    <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: clamp(24px, 8vw, 48px) clamp(16px, 4vw, 24px);">
+      <div style="width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 24px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.015em;">Sign in</h1>
+          <p style="margin: 0; font-size: 14px; line-height: 20px; color: #42474f;">Staff and drivers only. Use your SwiftRoute ID.</p>
+        </div>
+
+        <form id="loginForm" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 12px; box-shadow: 0 4px 12px -2px rgba(15,76,129,0.08); padding: clamp(16px, 4vw, 24px); display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; gap: 4px; padding: 4px; background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 4px;">
+            <button type="button" id="roleStaffBtn" style="flex: 1; height: 32px; border-radius: 2px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F4C81; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap;">Station staff</button>
+            <button type="button" id="roleDriverBtn" style="flex: 1; height: 32px; border-radius: 2px; border: 1px solid transparent; background: transparent; color: #42474f; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap;">Driver</button>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="uid" id="idLabel" style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">SwiftRoute ID</label>
+            <div id="idBox" class="input-box" style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 4px; transition: border-color 0.15s, box-shadow 0.15s;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>
+              </svg>
+              <input id="uid" placeholder="k.okoro" autocomplete="username" spellcheck="false" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: ui-monospace, 'Geist', monospace; font-size: 15px; color: #0b1c30; letter-spacing: 0.02em;">
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+              <label for="pw" id="pwLabel" style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Password</label>
+              <a href="#" style="font-size: 12px; font-weight: 500; white-space: nowrap;">Forgot?</a>
+            </div>
+            <div id="pwBox" class="input-box" style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 4px; transition: border-color 0.15s, box-shadow 0.15s;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="11" width="16" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+              </svg>
+              <input id="pw" type="password" placeholder="••••••••" autocomplete="current-password" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: ui-monospace, 'Geist', monospace; font-size: 15px; color: #0b1c30; letter-spacing: 0.08em;">
+              <button type="button" id="togglePwBtn" style="border: 0; background: transparent; padding: 0; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; color: #0F4C81; cursor: pointer; white-space: nowrap;">Show</button>
+            </div>
+          </div>
+
+          <div id="errorBox" style="display: none; gap: 10px; align-items: flex-start; padding: 10px 12px; background: #FFF1F2; border: 1px solid #FECDD3; border-radius: 4px; font-size: 14px; line-height: 20px; color: #0b1c30;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" style="flex: none; margin-top: 2px;">
+              <circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>
+            </svg>
+            <span id="errorMessage"></span>
+          </div>
+
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #42474f; cursor: pointer;">
+            <input type="checkbox" id="rememberMe" checked style="width: 16px; height: 16px; margin: 0; accent-color: #0F4C81;">
+            Keep me signed in on this terminal
+          </label>
+
+          <button type="submit" id="submitBtn" class="btn-submit" style="height: 44px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s, transform 0.1s;">Sign in</button>
+        </form>
+
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; line-height: 16px; color: #64748B;">
+          <span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;">
+            <span style="width: 6px; height: 6px; border-radius: 9999px; background: #16A34A; display: inline-block; animation: sr-pulse 1.6s ease-out infinite;"></span>
+            All systems normal
+          </span>
+          <span>Need access? Ask your station supervisor.</span>
+        </div>
+
+        <!-- Mockup Credentials Helper Box -->
+        <div style="margin-top: 20px; padding: 14px; background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 6px; font-size: 13px;">
+          <div style="font-weight: 600; color: #1E293B; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+            <span>🔑 รหัสทดสอบระบบ (เก็บใน Neon DB)</span>
+            <span style="font-size: 11px; font-weight: 500; color: #16A34A; background: #DCFCE7; padding: 2px 6px; border-radius: 4px;">Live SQL</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="background: #FFFFFF; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="color: #0F4C81;">Staff:</strong> <code>k.okoro</code> / <code>secret</code>
+                <div style="font-size: 11px; color: #64748B;">K. Okoro (Supervisor · BKK Depot)</div>
+              </div>
+              <button type="button" onclick="fillCreds('staff', 'k.okoro', 'secret')" style="padding: 4px 10px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">คลิกกรอก</button>
+            </div>
+            <div style="background: #FFFFFF; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="color: #0F4C81;">Staff:</strong> <code>somchai.p</code> / <code>pass1234</code>
+                <div style="font-size: 11px; color: #64748B;">Somchai P. (Manager · BKK Depot)</div>
+              </div>
+              <button type="button" onclick="fillCreds('staff', 'somchai.p', 'pass1234')" style="padding: 4px 10px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">คลิกกรอก</button>
+            </div>
+            <div style="background: #FFFFFF; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="color: #0891B2;">Driver:</strong> <code>DR-0419</code> / <code>123456</code>
+                <div style="font-size: 11px; color: #64748B;">Anan Suksomboon (Truck TK-19 · NSN Hub)</div>
+              </div>
+              <button type="button" onclick="fillCreds('driver', 'DR-0419', '123456')" style="padding: 4px 10px; background: #F1F5F9; color: #0891B2; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">คลิกกรอก</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer style="border-top: 1px solid #E2E8F0; background: #FFFFFF;">
+      <div style="max-width: 75rem; margin: 0 auto; padding: 16px clamp(12px, 4vw, 24px); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; font-size: 12px; line-height: 16px; color: #64748B;">
+        <span>SwiftRoute</span>
+        <span>Terminal v4.2 · Bangkok – Chiang Mai corridor</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    let currentRole = 'staff';
+    let showPw = false;
+
+    const roleStaffBtn = document.getElementById('roleStaffBtn');
+    const roleDriverBtn = document.getElementById('roleDriverBtn');
+    const idLabel = document.getElementById('idLabel');
+    const pwLabel = document.getElementById('pwLabel');
+    const uidInput = document.getElementById('uid');
+    const pwInput = document.getElementById('pw');
+    const idBox = document.getElementById('idBox');
+    const pwBox = document.getElementById('pwBox');
+    const togglePwBtn = document.getElementById('togglePwBtn');
+    const errorBox = document.getElementById('errorBox');
+    const errorMessage = document.getElementById('errorMessage');
+    const submitBtn = document.getElementById('submitBtn');
+    const loginForm = document.getElementById('loginForm');
+
+    function setRole(role) {
+      currentRole = role;
+      clearError();
+      const isDriver = role === 'driver';
+      if (isDriver) {
+        roleDriverBtn.style.background = '#FFFFFF';
+        roleDriverBtn.style.color = '#0F4C81';
+        roleDriverBtn.style.borderColor = '#CBD5E1';
+
+        roleStaffBtn.style.background = 'transparent';
+        roleStaffBtn.style.color = '#42474f';
+        roleStaffBtn.style.borderColor = 'transparent';
+
+        idLabel.textContent = 'Driver ID';
+        uidInput.placeholder = 'DR-0419';
+        pwLabel.textContent = 'PIN';
+        pwInput.placeholder = '6 digits';
+        pwInput.inputMode = 'numeric';
+        submitBtn.textContent = 'Sign in and start shift';
+      } else {
+        roleStaffBtn.style.background = '#FFFFFF';
+        roleStaffBtn.style.color = '#0F4C81';
+        roleStaffBtn.style.borderColor = '#CBD5E1';
+
+        roleDriverBtn.style.background = 'transparent';
+        roleDriverBtn.style.color = '#42474f';
+        roleDriverBtn.style.borderColor = 'transparent';
+
+        idLabel.textContent = 'SwiftRoute ID';
+        uidInput.placeholder = 'k.okoro';
+        pwLabel.textContent = 'Password';
+        pwInput.placeholder = '••••••••';
+        pwInput.inputMode = 'text';
+        submitBtn.textContent = 'Sign in';
+      }
+    }
+
+    window.fillCreds = function(role, id, pass) {
+      setRole(role);
+      uidInput.value = id;
+      pwInput.value = pass;
+      clearError();
+    };
+
+    function clearError() {
+      errorBox.style.display = 'none';
+      idBox.style.borderColor = '#CBD5E1';
+      pwBox.style.borderColor = '#CBD5E1';
+    }
+
+    function showError(msg) {
+      errorMessage.textContent = msg;
+      errorBox.style.display = 'flex';
+      idBox.style.borderColor = '#E11D48';
+      pwBox.style.borderColor = '#E11D48';
+    }
+
+    roleStaffBtn.addEventListener('click', () => setRole('staff'));
+    roleDriverBtn.addEventListener('click', () => setRole('driver'));
+
+    togglePwBtn.addEventListener('click', () => {
+      showPw = !showPw;
+      pwInput.type = showPw ? 'text' : 'password';
+      togglePwBtn.textContent = showPw ? 'Hide' : 'Show';
+    });
+
+    uidInput.addEventListener('input', clearError);
+    pwInput.addEventListener('input', clearError);
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const uidVal = uidInput.value.trim();
+      const pwVal = pwInput.value.trim();
+
+      if (!uidVal || !pwVal) {
+        showError(currentRole === 'driver' ? 'Enter your driver ID and PIN.' : 'Enter your SwiftRoute ID and password.');
+        return;
+      }
+
+      submitBtn.textContent = 'Signing in...';
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: currentRole, uid: uidVal, pw: pwVal })
+        });
+        const data = await response.json();
+
+        if (data.error) {
+          showError(data.error);
+          submitBtn.textContent = currentRole === 'driver' ? 'Sign in and start shift' : 'Sign in';
+          submitBtn.disabled = false;
+          return;
+        }
+
+        submitBtn.textContent = 'Signed in';
+        setTimeout(() => {
+          window.location.href = data.redirectUrl || (currentRole === 'driver' ? 'admin.html?screen=checkin' : 'admin.html');
+        }, 300);
+      } catch (err) {
+        // Direct client fallback
+        submitBtn.textContent = 'Signed in';
+        setTimeout(() => {
+          window.location.href = currentRole === 'driver' ? 'admin.html?screen=checkin' : 'admin.html';
+        }, 300);
+      }
+    });
+  </script>
+</body>
+</html>

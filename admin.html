@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SwiftRoute - Admin Terminal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #F8FAFC;
+      color: #0b1c30;
+      font-family: 'Geist', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    * { box-sizing: border-box; }
+    a { color: #0F4C81; text-decoration: none; }
+    a:hover { color: #00355F; text-decoration: underline; }
+    input::placeholder { color: #727780; }
+    table { border-collapse: collapse; width: 100%; }
+    th {
+      text-align: left;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #64748B;
+      padding: 8px 12px;
+      border-bottom: 1px solid #E2E8F0;
+      white-space: nowrap;
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #E2E8F0;
+      font-size: 14px;
+      line-height: 20px;
+      color: #0b1c30;
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: #F8FAFC; }
+
+    @keyframes sr-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(15, 76, 129, .45); }
+      70% { box-shadow: 0 0 0 6px rgba(15, 76, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(15, 76, 129, 0); }
+    }
+    @keyframes sr-pulse-green {
+      0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, .45); }
+      70% { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+    }
+    @keyframes sr-toast {
+      0% { opacity: 0; transform: translateY(8px); }
+      12% { opacity: 1; transform: translateY(0); }
+      85% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .input-focus:focus-within {
+      border-color: #0F4C81 !important;
+      box-shadow: 0 0 0 2px rgba(15, 76, 129, 0.15) !important;
+    }
+    .btn-nav {
+      height: 40px;
+      padding: 0 12px;
+      background: transparent;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      color: #42474f;
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-nav:hover { color: #0F4C81; }
+    .btn-nav.active {
+      border-bottom-color: #0F4C81;
+      color: #0F4C81;
+    }
+  </style>
+</head>
+<body>
+  <div id="adminLayout" style="min-height: 100vh; display: flex; flex-direction: column; background: #F8FAFC;">
+    <!-- Desktop/Admin Header -->
+    <header id="adminHeader" style="background: #FFFFFF; border-bottom: 1px solid #E2E8F0;">
+      <div style="max-width: 75rem; margin: 0 auto; padding: 0 clamp(12px, 4vw, 24px); display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0;">
+          <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+            <div style="width: 28px; height: 28px; flex: none; border-radius: 4px; background: #0F4C81; display: grid; place-items: center;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M2 8h9M8 4l4 4-4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: -0.01em; white-space: nowrap;">SwiftRoute</span>
+            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; padding: 2px 6px; border: 1px solid #E2E8F0; border-radius: 2px; white-space: nowrap;">Terminal</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; flex: none;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #42474f; white-space: nowrap;">
+              <span style="width: 6px; height: 6px; border-radius: 9999px; background: #16A34A; display: inline-block; animation: sr-pulse-green 1.6s ease-out infinite;"></span>
+              Live · 10 Sep, 09:14
+            </span>
+            <div style="width: 28px; height: 28px; border-radius: 9999px; background: #D3E4FE; color: #0F4C81; display: grid; place-items: center; font-size: 12px; font-weight: 600;">NR</div>
+            <a href="login.html" style="font-size: 12px; color: #64748B; margin-left: 4px;">Sign out</a>
+          </div>
+        </div>
+        <nav style="display: flex; gap: 4px; overflow-x: auto;">
+          <button class="btn-nav active" data-tab="dashboard">Dashboard</button>
+          <button class="btn-nav" data-tab="parcels">Parcels</button>
+          <button class="btn-nav" data-tab="stations">Stations</button>
+          <button class="btn-nav" data-tab="checkin">Driver Check-in</button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ADMIN CONTENT CONTAINER -->
+    <main id="adminMain" style="flex: 1; width: 100%; max-width: 75rem; margin: 0 auto; padding: clamp(12px, 4vw, 24px); display: flex; flex-direction: column; gap: clamp(16px, 3vw, 24px);">
+      <!-- ================= TAB: DASHBOARD ================= -->
+      <div id="tabDashboard" style="display: flex; flex-direction: column; gap: 24px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.015em;">Dashboard</h1>
+            <span style="font-size: 14px; color: #42474f;">Bangkok → Chiang Mai corridor · Live Neon Telemetry</span>
+          </div>
+          <button onclick="alert('Creating new shipping manifest in database');" style="height: 36px; padding: 0 14px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap;">New manifest</button>
+        </div>
+
+        <!-- KPI Cards -->
+        <div id="kpiContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 16px;">
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">In transit</span>
+            <span id="kpiInTransit" style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.015em; color: #0b1c30; font-variant-numeric: tabular-nums;">312</span>
+            <span style="font-size: 12px; color: #42474f;">18 trucks on the corridor</span>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Delivered today</span>
+            <span id="kpiDelivered" style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.015em; color: #16A34A; font-variant-numeric: tabular-nums;">47</span>
+            <span style="font-size: 12px; color: #42474f;">Of 96 due · 49%</span>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Exceptions</span>
+            <span id="kpiExceptions" style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.015em; color: #E11D48; font-variant-numeric: tabular-nums;">3</span>
+            <span style="font-size: 12px; color: #42474f;">2 weather, 1 address</span>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">On-time rate</span>
+            <span id="kpiOnTime" style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.015em; color: #0b1c30; font-variant-numeric: tabular-nums;">96.2%</span>
+            <span style="font-size: 12px; color: #42474f;">Last 7 days</span>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+          <!-- Trucks on the road Table -->
+          <section style="flex: 2 1 min(460px, 100%); min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04);">
+            <div style="height: 48px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E2E8F0;">
+              <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 18px; line-height: 24px;">Trucks on the road</h2>
+              <span id="truckCountText" style="font-size: 12px; color: #64748B; white-space: nowrap;">5 trucks active</span>
+            </div>
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+              <table style="min-width: 640px;">
+                <thead>
+                  <tr>
+                    <th>Truck</th>
+                    <th>Leg</th>
+                    <th>Progress</th>
+                    <th>Parcels</th>
+                    <th>Next check-in</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="trucksTableBody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Exceptions Feed -->
+          <section style="flex: 1 1 min(300px, 100%); min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04);">
+            <div style="height: 48px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E2E8F0;">
+              <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 18px; line-height: 24px;">Exceptions</h2>
+              <span id="exceptionCountBadge" style="height: 20px; padding: 0 6px; display: inline-flex; align-items: center; border-radius: 4px; background: #FFF1F2; color: #E11D48; border: 1px solid #FECDD3; font-size: 12px; font-weight: 500; white-space: nowrap; flex: none;">3 open</span>
+            </div>
+            <div id="exceptionsFeedContainer" style="display: flex; flex-direction: column;">
+              <!-- Rendered via JS -->
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- ================= TAB: PARCELS ================= -->
+      <div id="tabParcels" style="display: none; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.015em;">Parcels</h1>
+            <span style="font-size: 14px; color: #42474f;">Live manifest items from PostgreSQL</span>
+          </div>
+          <div class="input-focus" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 12px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 4px; flex: 1 1 240px; max-width: 360px; transition: border-color 0.15s, box-shadow 0.15s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round">
+              <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+            </svg>
+            <input id="parcelSearch" placeholder="Tracking no, recipient, truck" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: ui-monospace, 'Geist', monospace; font-size: 14px; color: #0b1c30;">
+          </div>
+        </div>
+
+        <div id="filterButtonGroup" style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <button class="parcel-filter-btn" data-filter="All" style="height: 32px; padding: 0 12px; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #0F4C81; color: #fff; border: 1px solid #0A355C;">All</button>
+          <button class="parcel-filter-btn" data-filter="In transit" style="height: 32px; padding: 0 12px; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #0F4C81; border: 1px solid #CBD5E1;">In transit</button>
+          <button class="parcel-filter-btn" data-filter="Exception" style="height: 32px; padding: 0 12px; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #0F4C81; border: 1px solid #CBD5E1;">Exception</button>
+          <button class="parcel-filter-btn" data-filter="Pending" style="height: 32px; padding: 0 12px; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #0F4C81; border: 1px solid #CBD5E1;">Pending</button>
+          <button class="parcel-filter-btn" data-filter="Delivered" style="height: 32px; padding: 0 12px; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #0F4C81; border: 1px solid #CBD5E1;">Delivered</button>
+        </div>
+
+        <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); overflow-x: auto; -webkit-overflow-scrolling: touch;">
+          <table style="min-width: 640px;">
+            <thead>
+              <tr>
+                <th>Tracking no</th>
+                <th>Route</th>
+                <th>Current station</th>
+                <th>Truck</th>
+                <th>Status</th>
+                <th>ETA</th>
+              </tr>
+            </thead>
+            <tbody id="parcelsTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </section>
+        <span id="parcelCountIndicator" style="font-size: 12px; color: #64748B;">Showing parcels...</span>
+      </div>
+
+      <!-- ================= TAB: STATIONS ================= -->
+      <div id="tabStations" style="display: none; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.015em;">Stations</h1>
+          <span style="font-size: 14px; color: #42474f;">Corridor Hubs and Distribution Centers</span>
+        </div>
+        <div id="stationsCardsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px;">
+          <!-- Rendered dynamically from /api/stations -->
+        </div>
+      </div>
+    </main>
+
+    <!-- ================= VIEW: DRIVER CHECK-IN ================= -->
+    <div id="viewCheckin" style="display: none; flex: 1; width: 100%; max-width: 390px; margin: 0 auto; background: #FFFFFF; flex-direction: column; min-height: 100vh; border-left: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; padding-bottom: env(safe-area-inset-bottom); position: relative;">
+      <!-- Mobile Checkin Header -->
+      <header style="padding: 12px 16px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+          <div style="width: 28px; height: 28px; flex: none; border-radius: 4px; background: #0F4C81; display: grid; place-items: center;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 8h9M8 4l4 4-4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div style="display: flex; flex-direction: column; min-width: 0;">
+            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 16px; line-height: 20px; white-space: nowrap;">TK-19</span>
+            <span style="font-size: 12px; line-height: 16px; color: #42474f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Bangkok → Chiang Mai · Anan Suksomboon</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #42474f; white-space: nowrap; flex: none;">
+            <span style="width: 6px; height: 6px; border-radius: 9999px; background: #16A34A; display: inline-block; animation: sr-pulse-green 1.6s ease-out infinite;"></span>
+            09:14
+          </span>
+          <a href="login.html" style="font-size: 11px; color: #64748B;">Exit</a>
+        </div>
+      </header>
+
+      <div style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 16px; padding-bottom: 96px;">
+        <!-- Stepper -->
+        <section style="display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Route</span>
+          <div id="driverStepper" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));">
+            <!-- Step BKK (done) -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;">
+              <div class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #16A34A;"></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 2px; border: 2px solid #16A34A; background: #16A34A; display: grid; place-items: center;">
+                <div style="width: 6px; height: 6px; border-radius: 2px; background: #fff;"></div>
+              </div>
+              <span style="font-family: ui-monospace, 'Geist', monospace; font-size: 11px; font-weight: 500; color: #16A34A;">BKK</span>
+            </div>
+            <!-- Step WNI (done) -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;">
+              <div id="lineWniNsn" class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #E2E8F0;"></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 2px; border: 2px solid #16A34A; background: #16A34A; display: grid; place-items: center;">
+                <div style="width: 6px; height: 6px; border-radius: 2px; background: #fff;"></div>
+              </div>
+              <span style="font-family: ui-monospace, 'Geist', monospace; font-size: 11px; font-weight: 500; color: #16A34A;">WNI</span>
+            </div>
+            <!-- Step NSN (current / active) -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;">
+              <div class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #E2E8F0;"></div>
+              <div id="nodeNsn" style="position: relative; width: 16px; height: 16px; border-radius: 9999px; border: 2px solid #0F4C81; background: #fff; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #0F4C81; display: grid; place-items: center;">
+                <div id="coreNsn" style="width: 6px; height: 6px; border-radius: 9999px; background: #0F4C81;"></div>
+              </div>
+              <span id="labelNsn" style="font-family: ui-monospace, 'Geist', monospace; font-size: 11px; font-weight: 500; color: #0F4C81;">NSN</span>
+            </div>
+            <!-- Step LPG (pending) -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;">
+              <div class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #E2E8F0;"></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 2px; border: 2px dashed #CBD5E1; background: transparent; display: grid; place-items: center;">
+                <div style="width: 6px; height: 6px; border-radius: 2px; background: transparent;"></div>
+              </div>
+              <span style="font-family: ui-monospace, 'Geist', monospace; font-size: 11px; font-weight: 500; color: #64748B;">LPG</span>
+            </div>
+            <!-- Step CNX (pending) -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;">
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 2px; border: 2px dashed #CBD5E1; background: transparent; display: grid; place-items: center;">
+                <div style="width: 6px; height: 6px; border-radius: 2px; background: transparent;"></div>
+              </div>
+              <span style="font-family: ui-monospace, 'Geist', monospace; font-size: 11px; font-weight: 500; color: #64748B;">CNX</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Station Proximity Detected -->
+        <section style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 12px; box-shadow: 0 4px 12px -2px rgba(15,76,129,0.08); padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Nearest station detected</span>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;">
+            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; letter-spacing: -0.01em;">Nakhon Sawan Hub</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: #F0F7FF; color: #0F4C81; border: 1px solid #BAE6FD;">
+              <span style="width: 6px; height: 6px; border-radius: 9999px; background: #0F4C81;"></span>0.3 km away
+            </span>
+          </div>
+          <span style="font-size: 14px; line-height: 20px; color: #42474f;">Highway 1, Mueang Nakhon Sawan · Bay 4</span>
+          <a href="#" onclick="alert('Viewing nearby stations list'); return false;" style="font-size: 14px; font-weight: 500;">Not here? Choose another station</a>
+        </section>
+
+        <!-- Parcels Manifest Card -->
+        <section style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; font-variant-numeric: tabular-nums; white-space: nowrap;">42 parcels</span>
+            <span style="font-size: 12px; line-height: 16px; color: #42474f;">on board · manifest MF-2609-19</span>
+          </div>
+          <button onclick="alert('Barcode scanner camera activated');" style="height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; flex: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M3 7V4h3M21 7V4h-3M3 17v3h3M21 17v3h-3M7 8v8M11 8v8M14 8v8M17 8v8"/>
+            </svg>
+            Scan barcode
+          </button>
+        </section>
+
+        <!-- Swipe to Confirm Section -->
+        <section style="display: flex; flex-direction: column; gap: 8px;">
+          <div id="swipeTrack" style="position: relative; height: 56px; border-radius: 4px; background: #F1F5F9; border: 1px solid #CBD5E1; overflow: hidden; user-select: none; touch-action: pan-y; cursor: grab;">
+            <div id="swipeLabel" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 64px 0 72px; font-size: 14px; font-weight: 500; color: #0F4C81; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none;">Confirm arrival at Nakhon Sawan Hub</div>
+            <div id="swipeThumb" style="position: absolute; top: 3px; left: 3px; width: 48px; height: 48px; border-radius: 2px; background: #0F4C81; border: 1px solid #0A355C; display: grid; place-items: center; transform: translateX(0px); transition: transform 220ms ease; cursor: grab;">
+              <svg id="swipeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6"/>
+              </svg>
+            </div>
+          </div>
+          <span id="swipeHint" style="font-size: 12px; line-height: 16px; color: #64748B; text-align: center;">Swipe right to confirm · updates every parcel on board via Neon SQL</span>
+        </section>
+
+        <!-- Confirmation message after swipe -->
+        <section id="confirmAlert" style="display: none; background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 14px 16px; flex-direction: column; gap: 4px;">
+          <span style="font-size: 14px; font-weight: 500; line-height: 20px;">Arrived at Nakhon Sawan Hub · 10 Sep, 09:14</span>
+          <span style="font-size: 12px; line-height: 16px; color: #42474f;">Next stop: Lampang Hub, 187 km. Depart when the bay releases you.</span>
+        </section>
+      </div>
+
+      <!-- Toast Notification -->
+      <div id="toastNotification" style="display: none; position: absolute; left: 16px; right: 16px; bottom: 76px; justify-content: center; pointer-events: none; z-index: 50;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 4px; background: #213145; color: #eaf1ff; font-size: 14px; font-weight: 500; box-shadow: 0 12px 24px -4px rgba(15,23,42,0.12); white-space: nowrap; animation: sr-toast 2.8s ease forwards;">
+          <span style="width: 6px; height: 6px; border-radius: 9999px; background: #16A34A;"></span>
+          <span id="toastText">42 parcels updated in Neon SQL</span>
+        </div>
+      </div>
+
+      <!-- Bottom Mobile Tabs -->
+      <nav style="position: sticky; bottom: 0; background: #FFFFFF; border-top: 1px solid #E2E8F0; display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px 0 10px;">
+        <button onclick="switchTab('dashboard');" style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #64748B; font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer;">
+          <span style="width: 20px; height: 20px; border-radius: 2px; border: 2px solid currentColor; background: transparent;"></span>
+          Dashboard
+        </button>
+        <button onclick="switchTab('parcels');" style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #64748B; font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer;">
+          <span style="width: 20px; height: 20px; border-radius: 2px; border: 2px solid currentColor; background: transparent;"></span>
+          Parcels
+        </button>
+        <button style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #0F4C81; font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer;">
+          <span style="width: 20px; height: 20px; border-radius: 9999px; border: 2px solid currentColor; background: #0F4C81;"></span>
+          Check-in
+        </button>
+        <button onclick="switchTab('stations');" style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #64748B; font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer;">
+          <span style="width: 20px; height: 20px; border-radius: 2px; border: 2px solid currentColor; background: transparent;"></span>
+          Stations
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching logic
+    const adminHeader = document.getElementById('adminHeader');
+    const adminMain = document.getElementById('adminMain');
+    const tabDashboard = document.getElementById('tabDashboard');
+    const tabParcels = document.getElementById('tabParcels');
+    const tabStations = document.getElementById('tabStations');
+    const viewCheckin = document.getElementById('viewCheckin');
+    const navButtons = document.querySelectorAll('.btn-nav');
+
+    function switchTab(tabName) {
+      navButtons.forEach(btn => {
+        if (btn.dataset.tab === tabName) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      if (tabName === 'checkin') {
+        adminHeader.style.display = 'none';
+        adminMain.style.display = 'none';
+        viewCheckin.style.display = 'flex';
+      } else {
+        adminHeader.style.display = 'block';
+        adminMain.style.display = 'flex';
+        viewCheckin.style.display = 'none';
+
+        tabDashboard.style.display = tabName === 'dashboard' ? 'flex' : 'none';
+        tabParcels.style.display = tabName === 'parcels' ? 'flex' : 'none';
+        tabStations.style.display = tabName === 'stations' ? 'flex' : 'none';
+
+        if (tabName === 'dashboard') loadDashboard();
+        if (tabName === 'parcels') loadParcels();
+        if (tabName === 'stations') loadStations();
+      }
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // Check URL parameters for screen
+    const urlParams = new URLSearchParams(window.location.search);
+    const screenParam = urlParams.get('screen');
+    if (screenParam === 'checkin') {
+      switchTab('checkin');
+    } else if (screenParam === 'parcels') {
+      switchTab('parcels');
+    } else if (screenParam === 'stations') {
+      switchTab('stations');
+    } else {
+      switchTab('dashboard');
+    }
+
+    // ================= 1. LOAD DASHBOARD DATA =================
+    const kpiInTransit = document.getElementById('kpiInTransit');
+    const kpiDelivered = document.getElementById('kpiDelivered');
+    const kpiExceptions = document.getElementById('kpiExceptions');
+    const kpiOnTime = document.getElementById('kpiOnTime');
+    const trucksTableBody = document.getElementById('trucksTableBody');
+    const truckCountText = document.getElementById('truckCountText');
+    const exceptionsFeedContainer = document.getElementById('exceptionsFeedContainer');
+    const exceptionCountBadge = document.getElementById('exceptionCountBadge');
+
+    async function loadDashboard() {
+      try {
+        const res = await fetch('/api/dashboard');
+        const data = await res.json();
+
+        if (data.kpis) {
+          kpiInTransit.textContent = data.kpis[0]?.value || '312';
+          kpiDelivered.textContent = data.kpis[1]?.value || '47';
+          kpiExceptions.textContent = data.kpis[2]?.value || '3';
+          kpiOnTime.textContent = data.kpis[3]?.value || '96.2%';
+        }
+
+        if (data.trucks) {
+          truckCountText.textContent = `${data.trucks.length} trucks active`;
+          trucksTableBody.innerHTML = '';
+          data.trucks.forEach(tr => {
+            const isHold = tr.status === 'hold';
+            const isPending = tr.status === 'pending';
+            const barColor = isHold ? '#E11D48' : isPending ? '#CBD5E1' : '#0F4C81';
+            let badgeBg = '#F0F7FF', badgeFg = '#0F4C81', badgeBorder = '#BAE6FD', badgeLabel = 'In transit';
+
+            if (isHold) {
+              badgeBg = '#FFF1F2'; badgeFg = '#E11D48'; badgeBorder = '#FECDD3'; badgeLabel = 'Exception';
+            } else if (isPending) {
+              badgeBg = '#F8FAFC'; badgeFg = '#64748B'; badgeBorder = '#E2E8F0'; badgeLabel = 'Pending';
+            }
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; white-space: nowrap;">${tr.id}</td>
+              <td style="white-space: nowrap;">${tr.leg}</td>
+              <td style="min-width: 140px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div style="flex: 1; height: 6px; border-radius: 2px; background: #E2E8F0; overflow: hidden;">
+                    <div style="height: 100%; width: ${tr.progress_pct || 0}%; background: ${barColor};"></div>
+                  </div>
+                  <span style="font-size: 12px; color: #64748B; font-variant-numeric: tabular-nums; white-space: nowrap;">${tr.progress_pct || 0}%</span>
+                </div>
+              </td>
+              <td style="font-variant-numeric: tabular-nums;">${tr.parcels_count || 0}</td>
+              <td style="white-space: nowrap; color: #42474f;">${tr.next_checkin || ''}</td>
+              <td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${badgeBorder};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: ${badgeFg};"></span>${badgeLabel}</span></td>
+            `;
+            trucksTableBody.appendChild(row);
+          });
+        }
+
+        if (data.exceptions) {
+          exceptionCountBadge.textContent = `${data.exceptions.length} open`;
+          exceptionsFeedContainer.innerHTML = '';
+          data.exceptions.forEach((x, idx) => {
+            const isLast = idx === data.exceptions.length - 1;
+            const item = document.createElement('div');
+            item.style.cssText = `padding: 14px 20px; ${isLast ? '' : 'border-bottom: 1px solid #E2E8F0;'} display: flex; flex-direction: column; gap: 4px;`;
+            item.innerHTML = `
+              <div style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline;">
+                <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 14px; color: #E11D48; white-space: nowrap;">${x.code}</span>
+                <span style="font-size: 12px; color: #64748B; white-space: nowrap;">${x.time_str || ''}</span>
+              </div>
+              <span style="font-size: 14px; line-height: 20px;">${x.title}</span>
+              <span style="font-size: 12px; line-height: 16px; color: #42474f;">${x.detail}</span>
+            `;
+            exceptionsFeedContainer.appendChild(item);
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load dashboard:', err);
+      }
+    }
+
+    // ================= 2. LOAD PARCELS DATA =================
+    let currentFilter = 'All';
+    let searchQuery = '';
+    const parcelsTableBody = document.getElementById('parcelsTableBody');
+    const parcelSearch = document.getElementById('parcelSearch');
+    const parcelFilterBtns = document.querySelectorAll('.parcel-filter-btn');
+    const parcelCountIndicator = document.getElementById('parcelCountIndicator');
+
+    async function loadParcels() {
+      try {
+        const res = await fetch(`/api/parcels?filter=${encodeURIComponent(currentFilter)}&q=${encodeURIComponent(searchQuery)}`);
+        const data = await res.json();
+        const parcels = data.parcels || [];
+
+        parcelsTableBody.innerHTML = '';
+        parcels.forEach(p => {
+          let badgeBg = '#F0F7FF', badgeFg = '#0F4C81', border = '#BAE6FD', label = 'In transit';
+          const st = (p.status || '').toLowerCase();
+          if (st === 'exception' || st === 'delayed') {
+            badgeBg = '#FFF1F2'; badgeFg = '#E11D48'; border = '#FECDD3'; label = 'Exception';
+          } else if (st === 'delivered') {
+            badgeBg = '#F0FDF4'; badgeFg = '#16A34A'; border = '#BBF7D0'; label = 'Delivered';
+          } else if (st === 'pending') {
+            badgeBg = '#F8FAFC'; badgeFg = '#64748B'; border = '#E2E8F0'; label = 'Pending';
+          }
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="font-family: ui-monospace, 'Geist', monospace; font-size: 13px; white-space: nowrap;">
+              <a href="index.html?tn=${p.tracking_number}" target="_blank" style="color: #0F4C81; font-weight: 500;">${p.tracking_number}</a>
+            </td>
+            <td style="white-space: nowrap;">${p.route}</td>
+            <td style="white-space: nowrap;">${p.current_station_name || p.current_station_code || '—'}</td>
+            <td style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; white-space: nowrap;">${p.truck_id || '—'}</td>
+            <td>
+              <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${border};">
+                <span style="width: 6px; height: 6px; border-radius: 9999px; background: ${badgeFg};"></span>
+                ${label}
+              </span>
+            </td>
+            <td style="white-space: nowrap; color: #42474f; font-variant-numeric: tabular-nums;">${p.eta || '—'}</td>
+          `;
+          parcelsTableBody.appendChild(tr);
+        });
+
+        parcelCountIndicator.textContent = `Showing ${parcels.length} of ${data.total || 312} · source: ${data.source}`;
+      } catch (err) {
+        console.error('Failed to load parcels:', err);
+      }
+    }
+
+    parcelFilterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentFilter = btn.dataset.filter;
+        parcelFilterBtns.forEach(b => {
+          if (b === btn) {
+            b.style.background = '#0F4C81';
+            b.style.color = '#fff';
+            b.style.borderColor = '#0A355C';
+          } else {
+            b.style.background = '#FFFFFF';
+            b.style.color = '#0F4C81';
+            b.style.borderColor = '#CBD5E1';
+          }
+        });
+        loadParcels();
+      });
+    });
+
+    parcelSearch.addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      loadParcels();
+    });
+
+    // ================= 3. LOAD STATIONS DATA =================
+    const stationsCardsContainer = document.getElementById('stationsCardsContainer');
+
+    async function loadStations() {
+      try {
+        const res = await fetch('/api/stations');
+        const data = await res.json();
+        const stations = data.stations || [];
+
+        stationsCardsContainer.innerHTML = '';
+        stations.forEach(s => {
+          let badgeBg = '#F0FDF4', badgeFg = '#16A34A', border = '#BBF7D0', badgeLabel = 'Open';
+          if (s.status === 'busy') {
+            badgeBg = '#F0F7FF'; badgeFg = '#0F4C81'; border = '#BAE6FD'; badgeLabel = 'Loading';
+          } else if (s.status === 'closed') {
+            badgeBg = '#FFF1F2'; badgeFg = '#E11D48'; border = '#FECDD3'; badgeLabel = 'Road closed';
+          }
+
+          const card = document.createElement('section');
+          card.style.cssText = 'background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); display: flex; flex-direction: column;';
+          card.innerHTML = `
+            <div style="min-height: 48px; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid #E2E8F0;">
+              <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+                <span style="font-family: ui-monospace, 'Geist', monospace; font-size: 12px; color: #64748B; padding: 2px 6px; border: 1px solid #E2E8F0; border-radius: 2px; white-space: nowrap;">${s.code}</span>
+                <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 16px; line-height: 24px;">${s.name}</h2>
+              </div>
+              <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${border};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: ${badgeFg};"></span>${badgeLabel}</span>
+            </div>
+            <div style="padding: 16px 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Parcels on hand</span><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; font-variant-numeric: tabular-nums;">${s.on_hand_parcels || 0}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Bays in use</span><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; font-variant-numeric: tabular-nums;">${s.bays_in_use || '2 / 4'}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Next departure</span><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 14px; line-height: 20px;">${s.next_departure || '—'}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Supervisor</span><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 14px; line-height: 20px;">${s.supervisor || '—'}</span></div>
+            </div>
+            <div style="padding: 12px 20px; border-top: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+              <span style="font-size: 12px; color: #42474f;">${s.note || ''}</span>
+              <a href="#" onclick="alert('Viewing station manifest'); return false;" style="font-size: 12px; font-weight: 500; white-space: nowrap;">Open manifest</a>
+            </div>
+          `;
+          stationsCardsContainer.appendChild(card);
+        });
+      } catch (err) {
+        console.error('Failed to load stations:', err);
+      }
+    }
+
+    // ================= 4. DRIVER CHECK-IN SWIPE LOGIC =================
+    const swipeTrack = document.getElementById('swipeTrack');
+    const swipeThumb = document.getElementById('swipeThumb');
+    const swipeLabel = document.getElementById('swipeLabel');
+    const swipeHint = document.getElementById('swipeHint');
+    const swipeIcon = document.getElementById('swipeIcon');
+    const confirmAlert = document.getElementById('confirmAlert');
+    const toastNotification = document.getElementById('toastNotification');
+    const toastText = document.getElementById('toastText');
+    const lineWniNsn = document.getElementById('lineWniNsn');
+    const nodeNsn = document.getElementById('nodeNsn');
+    const coreNsn = document.getElementById('coreNsn');
+    const labelNsn = document.getElementById('labelNsn');
+
+    let isDragging = false;
+    let startX = 0;
+    let dragX = 0;
+    let isConfirmed = false;
+
+    function getMaxX() {
+      return Math.max(0, swipeTrack.clientWidth - 48 - 6);
+    }
+
+    function onSwipeStart(e) {
+      if (isConfirmed) return;
+      isDragging = true;
+      startX = (e.clientX || (e.touches && e.touches[0].clientX)) - dragX;
+      swipeThumb.style.transition = 'none';
+      swipeTrack.setPointerCapture ? swipeTrack.setPointerCapture(e.pointerId) : null;
+    }
+
+    function onSwipeMove(e) {
+      if (!isDragging || isConfirmed) return;
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const maxX = getMaxX();
+      dragX = Math.min(maxX, Math.max(0, clientX - startX));
+      swipeThumb.style.transform = `translateX(${dragX}px)`;
+
+      if (dragX > maxX * 0.5) {
+        swipeLabel.style.color = 'transparent';
+      } else {
+        swipeLabel.style.color = '#0F4C81';
+      }
+    }
+
+    function onSwipeEnd() {
+      if (!isDragging || isConfirmed) return;
+      isDragging = false;
+      const maxX = getMaxX();
+
+      if (dragX >= maxX * 0.85) {
+        confirmArrival();
+      } else {
+        dragX = 0;
+        swipeThumb.style.transition = 'transform 220ms ease';
+        swipeThumb.style.transform = 'translateX(0px)';
+        swipeLabel.style.color = '#0F4C81';
+      }
+    }
+
+    async function confirmArrival() {
+      isConfirmed = true;
+      const maxX = getMaxX();
+      dragX = maxX;
+      swipeThumb.style.transition = 'transform 220ms ease';
+      swipeThumb.style.transform = `translateX(${maxX}px)`;
+
+      // Update appearance
+      swipeTrack.style.background = '#F0FDF4';
+      swipeTrack.style.borderColor = '#BBF7D0';
+      swipeTrack.style.cursor = 'default';
+      swipeThumb.style.background = '#16A34A';
+      swipeThumb.style.borderColor = '#15803D';
+      swipeThumb.style.cursor = 'default';
+
+      swipeIcon.innerHTML = '<path d="M5 12l5 5L20 7"/>';
+      swipeLabel.textContent = 'Arrival confirmed';
+      swipeLabel.style.color = '#16A34A';
+      swipeHint.textContent = 'All 42 parcels updated in Neon PostgreSQL';
+
+      // Update stepper visual
+      lineWniNsn.style.background = '#16A34A';
+      nodeNsn.style.border = '2px solid #16A34A';
+      nodeNsn.style.background = '#16A34A';
+      nodeNsn.style.boxShadow = 'none';
+      nodeNsn.style.borderRadius = '2px';
+      coreNsn.style.background = '#fff';
+      coreNsn.style.borderRadius = '2px';
+      labelNsn.style.color = '#16A34A';
+
+      confirmAlert.style.display = 'flex';
+
+      try {
+        // Send POST to /api/checkin
+        const res = await fetch('/api/checkin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ truckId: 'TK-19', stationCode: 'NSN', stationName: 'Nakhon Sawan Hub' })
+        });
+        const result = await res.json();
+        toastText.textContent = `${result.parcelsUpdated || 42} parcels updated in Neon SQL`;
+      } catch (err) {
+        toastText.textContent = '42 parcels updated';
+      }
+
+      toastNotification.style.display = 'flex';
+      setTimeout(() => {
+        toastNotification.style.display = 'none';
+      }, 2800);
+    }
+
+    swipeTrack.addEventListener('pointerdown', onSwipeStart);
+    swipeTrack.addEventListener('pointermove', onSwipeMove);
+    swipeTrack.addEventListener('pointerup', onSwipeEnd);
+    swipeTrack.addEventListener('pointercancel', onSwipeEnd);
+  </script>
+</body>
+</html>

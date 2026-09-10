@@ -124,7 +124,10 @@
             <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.015em;">Dashboard</h1>
             <span style="font-size: 14px; color: #42474f;">Bangkok → Chiang Mai corridor · Live Neon Telemetry</span>
           </div>
-          <button id="btnNewManifest" onclick="openNewManifestModal();" style="height: 36px; padding: 0 14px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">+ New manifest</button>
+          <div style="display: flex; gap: 8px;">
+            <button id="btnAddDriver" onclick="openNewDriverModal();" style="height: 36px; padding: 0 14px; background: #FFFFFF; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">+ Add Driver</button>
+            <button id="btnNewManifest" onclick="openNewManifestModal();" style="height: 36px; padding: 0 14px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">+ New manifest</button>
+          </div>
         </div>
 
         <!-- KPI Cards -->
@@ -264,9 +267,12 @@
 
       <!-- ================= TAB: STATIONS ================= -->
       <div id="tabStations" style="display: none; flex-direction: column; gap: 16px;">
-        <div style="display: flex; flex-direction: column; gap: 4px;">
-          <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.015em;">Stations</h1>
-          <span style="font-size: 14px; color: #42474f;">Corridor Hubs and Distribution Centers</span>
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.015em;">Stations</h1>
+            <span style="font-size: 14px; color: #42474f;">Corridor Hubs and Distribution Centers</span>
+          </div>
+          <button id="btnAddStation" onclick="openNewStationModal();" style="height: 36px; padding: 0 14px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">+ Add Station</button>
         </div>
         <div id="stationsCardsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px;">
           <!-- Rendered dynamically from /api/stations -->
@@ -514,6 +520,138 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: NEW STATION ================= -->
+  <div id="modalNewStation" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center; padding: 16px;">
+    <div style="background: #FFFFFF; width: 100%; max-width: 520px; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); border: 1px solid #E2E8F0; overflow: hidden;">
+      <div style="padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; background: #F8FAFC;">
+        <div>
+          <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: #0b1c30;">Add New Station</h3>
+          <span style="font-size: 12px; color: #64748B;">Register new corridor hub in Neon PostgreSQL</span>
+        </div>
+        <button type="button" onclick="closeNewStationModal();" style="width: 32px; height: 32px; border: 0; background: transparent; color: #64748B; font-size: 22px; cursor: pointer;">&times;</button>
+      </div>
+
+      <form id="formNewStation" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Station Code (3 letters)</label>
+            <input id="stCode" type="text" placeholder="e.g. LPN" maxlength="4" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 13px; text-transform: uppercase;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Station Name</label>
+            <input id="stName" type="text" placeholder="e.g. Lamphun Hub" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Supervisor</label>
+            <input id="stSupervisor" type="text" placeholder="e.g. Somchai P." value="Station Lead" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Status</label>
+            <select id="stStatus" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px; background: #fff;">
+              <option value="open">Open (Normal)</option>
+              <option value="busy">Busy (High volume)</option>
+              <option value="closed">Closed (Weather/Maintenance)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Bays in Use</label>
+            <input id="stBays" type="text" value="2 / 4" placeholder="e.g. 3 / 6" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Next Departure</label>
+            <input id="stDeparture" type="text" value="Standby" placeholder="e.g. TK-07 · 14:00" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Operational Note</label>
+          <input id="stNote" type="text" placeholder="e.g. Northern corridor junction station" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+        </div>
+
+        <div style="margin-top: 6px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" onclick="closeNewStationModal();" style="height: 38px; padding: 0 16px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #42474f; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+          <button type="submit" id="btnSubmitStation" style="height: 38px; padding: 0 18px; border: 1px solid #0A355C; background: #0F4C81; color: #FFFFFF; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">
+            <span>Save Station</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL: NEW DRIVER ================= -->
+  <div id="modalNewDriver" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center; padding: 16px;">
+    <div style="background: #FFFFFF; width: 100%; max-width: 520px; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); border: 1px solid #E2E8F0; overflow: hidden;">
+      <div style="padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; background: #F8FAFC;">
+        <div>
+          <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: #0b1c30;">Register New Driver</h3>
+          <span style="font-size: 12px; color: #64748B;">Creates login credentials in Neon PostgreSQL (users table)</span>
+        </div>
+        <button type="button" onclick="closeNewDriverModal();" style="width: 32px; height: 32px; border: 0; background: transparent; color: #64748B; font-size: 22px; cursor: pointer;">&times;</button>
+      </div>
+
+      <form id="formNewDriver" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Driver ID (Login)</label>
+            <input id="drvId" type="text" placeholder="e.g. DR-0925" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 13px; text-transform: uppercase;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">6-digit PIN (Password)</label>
+            <input id="drvPin" type="password" maxlength="8" value="123456" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Full Name</label>
+            <input id="drvName" type="text" placeholder="e.g. Somchai Jaidee" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Phone Number</label>
+            <input id="drvPhone" type="tel" placeholder="08x-xxx-xxxx" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Assign Truck</label>
+            <select id="drvTruck" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px; background: #fff;">
+              <option value="">No truck assigned</option>
+              <option value="TK-03">TK-03 (Bangkok Depot)</option>
+              <option value="TK-19">TK-19 (Nakhon Sawan)</option>
+              <option value="TK-07">TK-07 (Wang Noi)</option>
+              <option value="TK-22">TK-22 (Bangkok)</option>
+              <option value="TK-11">TK-11 (Chiang Mai)</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Home Station</label>
+            <select id="drvStation" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px; background: #fff;">
+              <option value="BKK">Bangkok (BKK)</option>
+              <option value="WNI">Wang Noi (WNI)</option>
+              <option value="NSN">Nakhon Sawan (NSN)</option>
+              <option value="LPG">Lampang (LPG)</option>
+              <option value="CNX">Chiang Mai (CNX)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top: 6px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" onclick="closeNewDriverModal();" style="height: 38px; padding: 0 16px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #42474f; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+          <button type="submit" id="btnSubmitDriver" style="height: 38px; padding: 0 18px; border: 1px solid #0A355C; background: #0F4C81; color: #FFFFFF; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">
+            <span>Save Driver</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     // Tab switching logic
     const adminHeader = document.getElementById('adminHeader');
@@ -708,6 +846,139 @@
         } finally {
           btnSubmitManifest.disabled = false;
           btnSubmitManifest.innerHTML = '<span>Create & Dispatch</span>';
+        }
+      });
+    }
+
+    // ================= NEW STATION LOGIC =================
+    const modalNewStation = document.getElementById('modalNewStation');
+    const formNewStation = document.getElementById('formNewStation');
+    const stCode = document.getElementById('stCode');
+    const stName = document.getElementById('stName');
+    const stSupervisor = document.getElementById('stSupervisor');
+    const stStatus = document.getElementById('stStatus');
+    const stBays = document.getElementById('stBays');
+    const stDeparture = document.getElementById('stDeparture');
+    const stNote = document.getElementById('stNote');
+    const btnSubmitStation = document.getElementById('btnSubmitStation');
+
+    function openNewStationModal() {
+      if (formNewStation) formNewStation.reset();
+      if (modalNewStation) modalNewStation.style.display = 'flex';
+    }
+
+    function closeNewStationModal() {
+      if (modalNewStation) modalNewStation.style.display = 'none';
+    }
+
+    if (formNewStation) {
+      formNewStation.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        btnSubmitStation.disabled = true;
+        btnSubmitStation.innerHTML = '<span>Saving...</span>';
+
+        try {
+          const payload = {
+            code: stCode.value.trim().toUpperCase(),
+            name: stName.value.trim(),
+            supervisor: stSupervisor.value.trim(),
+            status: stStatus.value,
+            baysInUse: stBays.value.trim(),
+            nextDeparture: stDeparture.value.trim(),
+            note: stNote.value.trim()
+          };
+
+          const res = await fetch('/api/stations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const result = await res.json();
+          if (result.error) throw new Error(result.error);
+
+          closeNewStationModal();
+
+          const toastNotification = document.getElementById('toastNotification');
+          const toastText = document.getElementById('toastText');
+          if (toastNotification && toastText) {
+            toastText.textContent = `Station ${payload.code} added to Neon PostgreSQL`;
+            toastNotification.style.display = 'flex';
+            setTimeout(() => { toastNotification.style.display = 'none'; }, 3000);
+          }
+
+          loadStations();
+        } catch (err) {
+          alert('Error adding station: ' + err.message);
+        } finally {
+          btnSubmitStation.disabled = false;
+          btnSubmitStation.innerHTML = '<span>Save Station</span>';
+        }
+      });
+    }
+
+    // ================= NEW DRIVER LOGIC =================
+    const modalNewDriver = document.getElementById('modalNewDriver');
+    const formNewDriver = document.getElementById('formNewDriver');
+    const drvId = document.getElementById('drvId');
+    const drvPin = document.getElementById('drvPin');
+    const drvName = document.getElementById('drvName');
+    const drvPhone = document.getElementById('drvPhone');
+    const drvTruck = document.getElementById('drvTruck');
+    const drvStation = document.getElementById('drvStation');
+    const btnSubmitDriver = document.getElementById('btnSubmitDriver');
+
+    function openNewDriverModal() {
+      if (formNewDriver) formNewDriver.reset();
+      const rnd = Math.floor(1000 + Math.random() * 9000);
+      if (drvId) drvId.value = `DR-${rnd}`;
+      if (drvPin) drvPin.value = '123456';
+      if (modalNewDriver) modalNewDriver.style.display = 'flex';
+    }
+
+    function closeNewDriverModal() {
+      if (modalNewDriver) modalNewDriver.style.display = 'none';
+    }
+
+    if (formNewDriver) {
+      formNewDriver.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        btnSubmitDriver.disabled = true;
+        btnSubmitDriver.innerHTML = '<span>Saving...</span>';
+
+        try {
+          const payload = {
+            driverId: drvId.value.trim().toUpperCase(),
+            pin: drvPin.value.trim(),
+            name: drvName.value.trim(),
+            phone: drvPhone.value.trim(),
+            truckId: drvTruck.value || null,
+            stationCode: drvStation.value
+          };
+
+          const res = await fetch('/api/drivers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const result = await res.json();
+          if (result.error) throw new Error(result.error);
+
+          closeNewDriverModal();
+
+          const toastNotification = document.getElementById('toastNotification');
+          const toastText = document.getElementById('toastText');
+          if (toastNotification && toastText) {
+            toastText.textContent = `Driver ${payload.driverId} created in Neon DB! PIN: ${payload.pin}`;
+            toastNotification.style.display = 'flex';
+            setTimeout(() => { toastNotification.style.display = 'none'; }, 4000);
+          }
+
+          loadDashboard();
+        } catch (err) {
+          alert('Error adding driver: ' + err.message);
+        } finally {
+          btnSubmitDriver.disabled = false;
+          btnSubmitDriver.innerHTML = '<span>Save Driver</span>';
         }
       });
     }

@@ -46,7 +46,8 @@ const filesToCheck = [
   'api/stations.js',
   'api/checkin.js',
   'api/login.js',
-  'api/manifests.js'
+  'api/manifests.js',
+  'api/drivers.js'
 ];
 
 filesToCheck.forEach(f => {
@@ -190,7 +191,7 @@ async function testApiModules() {
         json: (d) => { stationsData = d; }
       })
     });
-    assert(stationsData && stationsData.stations && stationsData.stations.length === 5, 'api/stations returns 5 corridor stations');
+    assert(stationsData && stationsData.stations && stationsData.stations.length >= 5, 'api/stations returns corridor stations');
   } catch (err) {
     assert(false, `api/stations execution error: ${err.message}`);
   }
@@ -291,6 +292,64 @@ async function testApiModules() {
     assert(postResult && postResult.success && postResult.manifest, 'api/manifests creates new shipping manifest');
   } catch (err) {
     assert(false, `api/manifests execution error: ${err.message}`);
+  }
+
+  // Test 8: api/stations.js POST
+  try {
+    const stationsMod = await import('../api/stations.js');
+    let addStationRes = null;
+    await stationsMod.default({
+      method: 'POST',
+      body: {
+        code: 'TEST' + Math.floor(10 + Math.random() * 89),
+        name: 'Test Logistics Station',
+        supervisor: 'Test Supervisor',
+        status: 'open'
+      }
+    }, {
+      setHeader: () => {},
+      status: () => ({
+        json: (d) => { addStationRes = d; }
+      })
+    });
+    assert(addStationRes && addStationRes.success && addStationRes.station, 'api/stations creates new station');
+  } catch (err) {
+    assert(false, `api/stations POST execution error: ${err.message}`);
+  }
+
+  // Test 9: api/drivers.js
+  try {
+    const driversMod = await import('../api/drivers.js');
+    let getDriversRes = null;
+    await driversMod.default({
+      method: 'GET'
+    }, {
+      setHeader: () => {},
+      status: () => ({
+        json: (d) => { getDriversRes = d; }
+      })
+    });
+    assert(getDriversRes && Array.isArray(getDriversRes.drivers) && getDriversRes.drivers.length > 0, 'api/drivers returns driver list');
+
+    let addDriverRes = null;
+    await driversMod.default({
+      method: 'POST',
+      body: {
+        driverId: 'DR-TEST' + Math.floor(10 + Math.random() * 89),
+        pin: '123456',
+        name: 'Test Driver',
+        phone: '081-000-1111',
+        stationCode: 'BKK'
+      }
+    }, {
+      setHeader: () => {},
+      status: () => ({
+        json: (d) => { addDriverRes = d; }
+      })
+    });
+    assert(addDriverRes && addDriverRes.success && addDriverRes.driver, 'api/drivers registers new driver');
+  } catch (err) {
+    assert(false, `api/drivers execution error: ${err.message}`);
   }
 
   // -------------------------------------------------------------

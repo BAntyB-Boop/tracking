@@ -4,7 +4,7 @@ import 'dotenv/config';
 let sqlClient = null;
 
 export function getSql() {
-  const databaseUrl = process.env.DATABASE_URL;
+  const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
   if (!databaseUrl) {
     return null;
   }

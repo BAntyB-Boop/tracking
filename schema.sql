@@ -85,9 +85,29 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 7. MANIFESTS TABLE (Shipping manifests created by station staff)
+CREATE TABLE IF NOT EXISTS manifests (
+    id SERIAL PRIMARY KEY,
+    manifest_number VARCHAR(30) UNIQUE NOT NULL, -- e.g. 'MF-2609-19'
+    truck_id VARCHAR(20) REFERENCES trucks(id) ON DELETE SET NULL,
+    origin_station_code VARCHAR(10) REFERENCES stations(code) ON DELETE SET NULL,
+    destination_station_code VARCHAR(10) REFERENCES stations(code) ON DELETE SET NULL,
+    driver_name VARCHAR(100),
+    departure_time VARCHAR(100),
+    parcels_count INT DEFAULT 0,
+    total_weight_kg NUMERIC(8, 2) DEFAULT 0.00,
+    status VARCHAR(20) DEFAULT 'scheduled',       -- 'scheduled', 'loading', 'in-transit', 'completed'
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- INDEXES for lightning fast queries on Neon
 CREATE INDEX IF NOT EXISTS idx_parcels_status ON parcels(status);
 CREATE INDEX IF NOT EXISTS idx_parcels_truck ON parcels(truck_id);
 CREATE INDEX IF NOT EXISTS idx_parcel_events_tn ON parcel_events(tracking_number, seq_order);
 CREATE INDEX IF NOT EXISTS idx_users_username_role ON users(username, role);
+CREATE INDEX IF NOT EXISTS idx_manifests_number ON manifests(manifest_number);
+CREATE INDEX IF NOT EXISTS idx_manifests_truck ON manifests(truck_id);
+
 

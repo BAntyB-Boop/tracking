@@ -16,6 +16,7 @@ async function seed() {
   console.log('🚀 Connecting to Neon PostgreSQL and creating schema...');
 
   // 1. Drop existing tables if re-seeding
+  await sql`DROP TABLE IF EXISTS manifests CASCADE`;
   await sql`DROP TABLE IF EXISTS users CASCADE`;
   await sql`DROP TABLE IF EXISTS parcel_events CASCADE`;
   await sql`DROP TABLE IF EXISTS parcels CASCADE`;
@@ -113,6 +114,24 @@ async function seed() {
     )
   `;
 
+  await sql`
+    CREATE TABLE manifests (
+      id SERIAL PRIMARY KEY,
+      manifest_number VARCHAR(30) UNIQUE NOT NULL,
+      truck_id VARCHAR(20) REFERENCES trucks(id) ON DELETE SET NULL,
+      origin_station_code VARCHAR(10) REFERENCES stations(code) ON DELETE SET NULL,
+      destination_station_code VARCHAR(10) REFERENCES stations(code) ON DELETE SET NULL,
+      driver_name VARCHAR(100),
+      departure_time VARCHAR(100),
+      parcels_count INT DEFAULT 0,
+      total_weight_kg NUMERIC(8, 2) DEFAULT 0.00,
+      status VARCHAR(20) DEFAULT 'scheduled',
+      notes TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `;
+
   console.log('✅ Tables created.');
 
   // 3. Seed Stations
@@ -192,6 +211,17 @@ async function seed() {
     ('DR-0022', '123456', 'driver', 'Chaiwat S.', '084-444-5566', 'TK-22', 'BKK'),
     ('DR-0011', '123456', 'driver', 'Narong T.', '083-222-1100', 'TK-11', 'CNX'),
     ('DR-0003', '123456', 'driver', 'Wichai K.', '081-999-0011', 'TK-03', 'BKK')
+  `;
+
+  // 9. Seed Manifests
+  console.log('🌱 Seeding shipping manifests...');
+  await sql`
+    INSERT INTO manifests (manifest_number, truck_id, origin_station_code, destination_station_code, driver_name, departure_time, parcels_count, total_weight_kg, status, notes) VALUES
+    ('MF-2609-19', 'TK-19', 'NSN', 'LPG', 'Anan Suksomboon', '09:30', 42, 178.50, 'loading', 'Highway 1 flood detour standby'),
+    ('MF-2609-07', 'TK-07', 'WNI', 'NSN', 'Prasert M.', '11:10', 38, 145.20, 'in-transit', 'En route via Route 32'),
+    ('MF-2609-22', 'TK-22', 'BKK', 'WNI', 'Chaiwat S.', '10:20', 55, 230.00, 'in-transit', 'Morning corridor express dispatch'),
+    ('MF-2609-11', 'TK-11', 'CNX', 'LPG', 'Narong T.', '09:55', 27, 98.40, 'in-transit', 'Southern bound return leg'),
+    ('MF-2609-03', 'TK-03', 'BKK', 'CNX', 'Wichai K.', '10:00', 61, 280.00, 'scheduled', 'Full corridor long-haul direct')
   `;
 
   console.log('\n🎉 Database successfully seeded on Neon PostgreSQL!\n');

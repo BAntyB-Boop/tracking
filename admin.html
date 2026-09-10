@@ -124,7 +124,7 @@
             <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.015em;">Dashboard</h1>
             <span style="font-size: 14px; color: #42474f;">Bangkok → Chiang Mai corridor · Live Neon Telemetry</span>
           </div>
-          <button onclick="alert('Creating new shipping manifest in database');" style="height: 36px; padding: 0 14px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap;">New manifest</button>
+          <button id="btnNewManifest" onclick="openNewManifestModal();" style="height: 36px; padding: 0 14px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">+ New manifest</button>
         </div>
 
         <!-- KPI Cards -->
@@ -188,6 +188,35 @@
             </div>
           </section>
         </div>
+
+        <!-- Shipping Manifests Table -->
+        <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04);">
+          <div style="height: 48px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E2E8F0;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 18px; line-height: 24px;">Corridor Manifests</h2>
+              <span id="manifestsCountBadge" style="height: 20px; padding: 0 6px; display: inline-flex; align-items: center; border-radius: 4px; background: #EAF1FF; color: #0F4C81; border: 1px solid #BFDBFE; font-size: 12px; font-weight: 500;">...</span>
+            </div>
+            <span style="font-size: 12px; color: #64748B;">Live Neon PostgreSQL manifests</span>
+          </div>
+          <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table style="min-width: 720px; width: 100%;">
+              <thead>
+                <tr>
+                  <th>Manifest #</th>
+                  <th>Truck</th>
+                  <th>Corridor Leg</th>
+                  <th>Driver</th>
+                  <th>Departure</th>
+                  <th>Cargo</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="manifestsTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
       </div>
 
       <!-- ================= TAB: PARCELS ================= -->
@@ -393,6 +422,98 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: NEW MANIFEST ================= -->
+  <div id="modalNewManifest" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center; padding: 16px;">
+    <div style="background: #FFFFFF; width: 100%; max-width: 560px; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1); border: 1px solid #E2E8F0; overflow: hidden;">
+      <!-- Modal Header -->
+      <div style="padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; background: #F8FAFC;">
+        <div>
+          <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: #0b1c30;">Create Shipping Manifest</h3>
+          <span style="font-size: 12px; color: #64748B;">Assign corridor cargo & dispatch via Neon PostgreSQL</span>
+        </div>
+        <button type="button" onclick="closeNewManifestModal();" style="width: 32px; height: 32px; border-radius: 4px; border: 0; background: transparent; color: #64748B; font-size: 22px; line-height: 1; cursor: pointer; display: grid; place-items: center;">&times;</button>
+      </div>
+
+      <!-- Modal Form -->
+      <form id="formNewManifest" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Manifest Number</label>
+            <input id="mfNumber" type="text" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 13px; color: #0b1c30; background: #F8FAFC;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Assigned Truck</label>
+            <select id="mfTruck" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30; background: #fff;">
+              <option value="TK-03">TK-03 (Bangkok Depot)</option>
+              <option value="TK-19">TK-19 (Nakhon Sawan)</option>
+              <option value="TK-07">TK-07 (Wang Noi)</option>
+              <option value="TK-22">TK-22 (Bangkok)</option>
+              <option value="TK-11">TK-11 (Chiang Mai)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Origin Station</label>
+            <select id="mfOrigin" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30; background: #fff;">
+              <option value="BKK" selected>Bangkok Central Depot (BKK)</option>
+              <option value="WNI">Wang Noi Sorting Center (WNI)</option>
+              <option value="NSN">Nakhon Sawan Hub (NSN)</option>
+              <option value="LPG">Lampang Hub (LPG)</option>
+              <option value="CNX">Chiang Mai Station (CNX)</option>
+            </select>
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Destination Station</label>
+            <select id="mfDestination" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30; background: #fff;">
+              <option value="CNX" selected>Chiang Mai Station (CNX)</option>
+              <option value="LPG">Lampang Hub (LPG)</option>
+              <option value="NSN">Nakhon Sawan Hub (NSN)</option>
+              <option value="WNI">Wang Noi Sorting Center (WNI)</option>
+              <option value="BKK">Bangkok Central Depot (BKK)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Driver Name</label>
+            <input id="mfDriver" type="text" required value="Wichai K." style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Departure Time / Window</label>
+            <input id="mfDeparture" type="text" required value="Today, 16:00" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Parcels Count</label>
+            <input id="mfParcelsCount" type="number" min="1" max="500" value="48" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Total Weight (kg)</label>
+            <input id="mfWeight" type="number" step="0.1" min="1" max="10000" value="185.0" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30;">
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Dispatch Notes / Remarks</label>
+          <textarea id="mfNotes" rows="2" placeholder="e.g. Corridor express dispatch, road conditions normal" style="width: 100%; padding: 8px 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30; resize: vertical;"></textarea>
+        </div>
+
+        <!-- Modal Footer -->
+        <div style="margin-top: 6px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" onclick="closeNewManifestModal();" style="height: 38px; padding: 0 16px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #42474f; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+          <button type="submit" id="btnSubmitManifest" style="height: 38px; padding: 0 18px; border: 1px solid #0A355C; background: #0F4C81; color: #FFFFFF; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+            <span>Create & Dispatch</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     // Tab switching logic
     const adminHeader = document.getElementById('adminHeader');
@@ -448,6 +569,149 @@
       switchTab('dashboard');
     }
 
+    // ================= MANIFESTS LOGIC =================
+    const modalNewManifest = document.getElementById('modalNewManifest');
+    const formNewManifest = document.getElementById('formNewManifest');
+    const mfNumber = document.getElementById('mfNumber');
+    const mfTruck = document.getElementById('mfTruck');
+    const mfDriver = document.getElementById('mfDriver');
+    const mfOrigin = document.getElementById('mfOrigin');
+    const mfDestination = document.getElementById('mfDestination');
+    const mfDeparture = document.getElementById('mfDeparture');
+    const mfParcelsCount = document.getElementById('mfParcelsCount');
+    const mfWeight = document.getElementById('mfWeight');
+    const mfNotes = document.getElementById('mfNotes');
+    const btnSubmitManifest = document.getElementById('btnSubmitManifest');
+    const manifestsTableBody = document.getElementById('manifestsTableBody');
+    const manifestsCountBadge = document.getElementById('manifestsCountBadge');
+
+    const TRUCK_DEFAULT_INFO = {
+      'TK-03': { driver: 'Wichai K.', origin: 'BKK', dest: 'CNX' },
+      'TK-19': { driver: 'Anan Suksomboon', origin: 'NSN', dest: 'LPG' },
+      'TK-07': { driver: 'Prasert M.', origin: 'WNI', dest: 'NSN' },
+      'TK-22': { driver: 'Chaiwat S.', origin: 'BKK', dest: 'WNI' },
+      'TK-11': { driver: 'Narong T.', origin: 'CNX', dest: 'LPG' }
+    };
+
+    if (mfTruck) {
+      mfTruck.addEventListener('change', () => {
+        const info = TRUCK_DEFAULT_INFO[mfTruck.value];
+        if (info) {
+          if (mfDriver) mfDriver.value = info.driver;
+          if (mfOrigin) mfOrigin.value = info.origin;
+          if (mfDestination) mfDestination.value = info.dest;
+        }
+      });
+    }
+
+    function openNewManifestModal(presetStation) {
+      const now = new Date();
+      const yy = String(now.getFullYear()).slice(-2);
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const rnd = Math.floor(1000 + Math.random() * 9000);
+      if (mfNumber) mfNumber.value = `MF-${yy}${mm}-${rnd}`;
+      if (presetStation && mfOrigin) {
+        mfOrigin.value = presetStation;
+      }
+      if (modalNewManifest) modalNewManifest.style.display = 'flex';
+    }
+
+    function closeNewManifestModal() {
+      if (modalNewManifest) modalNewManifest.style.display = 'none';
+    }
+
+    async function loadManifests() {
+      if (!manifestsTableBody) return;
+      try {
+        const res = await fetch('/api/manifests');
+        const data = await res.json();
+        const manifests = data.manifests || [];
+
+        if (manifestsCountBadge) {
+          manifestsCountBadge.textContent = `${manifests.length} active`;
+        }
+
+        manifestsTableBody.innerHTML = '';
+        manifests.forEach(m => {
+          let badgeBg = '#F0F7FF', badgeFg = '#0F4C81', badgeBorder = '#BAE6FD';
+          if (m.status === 'scheduled') {
+            badgeBg = '#F8FAFC'; badgeFg = '#64748B'; badgeBorder = '#CBD5E1';
+          } else if (m.status === 'loading') {
+            badgeBg = '#FEFCE8'; badgeFg = '#CA8A04'; badgeBorder = '#FEF08A';
+          } else if (m.status === 'completed') {
+            badgeBg = '#F0FDF4'; badgeFg = '#16A34A'; badgeBorder = '#BBF7D0';
+          }
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="font-family: ui-monospace, monospace; font-weight: 500; color: #0F4C81; white-space: nowrap;">${m.manifest_number}</td>
+            <td style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; white-space: nowrap;">${m.truck_id || '-'}</td>
+            <td style="white-space: nowrap;">${m.origin_station_code} → ${m.destination_station_code}</td>
+            <td style="white-space: nowrap; color: #42474f;">${m.driver_name || '-'}</td>
+            <td style="white-space: nowrap; color: #42474f;">${m.departure_time || '-'}</td>
+            <td style="white-space: nowrap; font-variant-numeric: tabular-nums;">${m.parcels_count || 0} pcs · ${m.total_weight_kg || 0} kg</td>
+            <td>
+              <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${badgeBorder};">
+                <span style="width: 6px; height: 6px; border-radius: 9999px; background: ${badgeFg};"></span>
+                ${m.status}
+              </span>
+            </td>
+          `;
+          manifestsTableBody.appendChild(tr);
+        });
+      } catch (err) {
+        console.warn('Failed to load manifests:', err);
+      }
+    }
+
+    if (formNewManifest) {
+      formNewManifest.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        btnSubmitManifest.disabled = true;
+        btnSubmitManifest.innerHTML = '<span>Saving to Neon...</span>';
+
+        try {
+          const payload = {
+            manifestNumber: mfNumber.value.trim(),
+            truckId: mfTruck.value,
+            originStationCode: mfOrigin.value,
+            destinationStationCode: mfDestination.value,
+            driverName: mfDriver.value.trim(),
+            departureTime: mfDeparture.value.trim(),
+            parcelsCount: Number(mfParcelsCount.value) || 0,
+            totalWeightKg: Number(mfWeight.value) || 0,
+            notes: mfNotes.value.trim()
+          };
+
+          const res = await fetch('/api/manifests', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const result = await res.json();
+
+          closeNewManifestModal();
+          
+          // Toast Notification
+          const toastNotification = document.getElementById('toastNotification');
+          const toastText = document.getElementById('toastText');
+          if (toastNotification && toastText) {
+            toastText.textContent = `Manifest ${payload.manifestNumber} created in Neon SQL`;
+            toastNotification.style.display = 'flex';
+            setTimeout(() => { toastNotification.style.display = 'none'; }, 3000);
+          }
+
+          // Reload tables
+          loadDashboard();
+        } catch (err) {
+          alert('Error creating manifest: ' + err.message);
+        } finally {
+          btnSubmitManifest.disabled = false;
+          btnSubmitManifest.innerHTML = '<span>Create & Dispatch</span>';
+        }
+      });
+    }
+
     // ================= 1. LOAD DASHBOARD DATA =================
     const kpiInTransit = document.getElementById('kpiInTransit');
     const kpiDelivered = document.getElementById('kpiDelivered');
@@ -460,6 +724,7 @@
 
     async function loadDashboard() {
       try {
+        loadManifests();
         const res = await fetch('/api/dashboard');
         const data = await res.json();
 
@@ -638,7 +903,7 @@
             </div>
             <div style="padding: 12px 20px; border-top: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
               <span style="font-size: 12px; color: #42474f;">${s.note || ''}</span>
-              <a href="#" onclick="alert('Viewing station manifest'); return false;" style="font-size: 12px; font-weight: 500; white-space: nowrap;">Open manifest</a>
+              <a href="#" onclick="openNewManifestModal('${s.code}'); return false;" style="font-size: 12px; font-weight: 500; white-space: nowrap; color: #0F4C81;">Create manifest</a>
             </div>
           `;
           stationsCardsContainer.appendChild(card);

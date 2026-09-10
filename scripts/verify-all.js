@@ -45,7 +45,8 @@ const filesToCheck = [
   'api/dashboard.js',
   'api/stations.js',
   'api/checkin.js',
-  'api/login.js'
+  'api/login.js',
+  'api/manifests.js'
 ];
 
 filesToCheck.forEach(f => {
@@ -253,6 +254,43 @@ async function testApiModules() {
     assert(failLogin && failLogin.code === 400 && failLogin.error, 'api/login validates required credentials');
   } catch (err) {
     assert(false, `api/login execution error: ${err.message}`);
+  }
+
+  // Test 7: api/manifests.js
+  try {
+    const manifestMod = await import('../api/manifests.js');
+    let getResult = null;
+    await manifestMod.default({
+      method: 'GET'
+    }, {
+      setHeader: () => {},
+      status: () => ({
+        json: (d) => { getResult = d; }
+      })
+    });
+    assert(getResult && Array.isArray(getResult.manifests) && getResult.manifests.length > 0, 'api/manifests returns shipping manifests');
+
+    let postResult = null;
+    await manifestMod.default({
+      method: 'POST',
+      body: {
+        truckId: 'TK-03',
+        originStationCode: 'BKK',
+        destinationStationCode: 'CNX',
+        driverName: 'Wichai K.',
+        departureTime: '15:00',
+        parcelsCount: 50,
+        totalWeightKg: 210.0
+      }
+    }, {
+      setHeader: () => {},
+      status: (code) => ({
+        json: (d) => { postResult = { code, ...d }; }
+      })
+    });
+    assert(postResult && postResult.success && postResult.manifest, 'api/manifests creates new shipping manifest');
+  } catch (err) {
+    assert(false, `api/manifests execution error: ${err.message}`);
   }
 
   // -------------------------------------------------------------

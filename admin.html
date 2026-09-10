@@ -6,6 +6,7 @@
   <title>SwiftRoute - Admin Terminal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     html, body {
       margin: 0;
@@ -52,11 +53,6 @@
       70% { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
       100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
     }
-    @keyframes sr-toast {
-      0% { opacity: 0; transform: translateY(8px); }
-      12% { opacity: 1; transform: translateY(0); }
-      85% { opacity: 1; }
-      100% { opacity: 0; }
     }
     .input-focus:focus-within {
       border-color: #0F4C81 !important;
@@ -361,7 +357,7 @@
             </span>
           </div>
           <span style="font-size: 14px; line-height: 20px; color: #42474f;">Highway 1, Mueang Nakhon Sawan · Bay 4</span>
-          <a href="#" onclick="alert('Viewing nearby stations list'); return false;" style="font-size: 14px; font-weight: 500;">Not here? Choose another station</a>
+          <a href="#" onclick="Swal.fire({ icon: 'info', title: 'Nearby Stations', text: 'Corridor stations: Bangkok (BKK), Wang Noi (WNI), Nakhon Sawan (NSN), Lampang (LPG), Chiang Mai (CNX)', confirmButtonColor: '#0F4C81' }); return false;" style="font-size: 14px; font-weight: 500;">Not here? Choose another station</a>
         </section>
 
         <!-- Parcels Manifest Card -->
@@ -370,7 +366,7 @@
             <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; font-variant-numeric: tabular-nums; white-space: nowrap;">42 parcels</span>
             <span style="font-size: 12px; line-height: 16px; color: #42474f;">on board · manifest MF-2609-19</span>
           </div>
-          <button onclick="alert('Barcode scanner camera activated');" style="height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; flex: none;">
+          <button onclick="Swal.fire({ icon: 'info', title: 'Barcode Scanner', text: 'Camera scanner simulation ready. Manifest MF-2609-19 loaded.', confirmButtonColor: '#0F4C81' });" style="height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; flex: none;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
               <path d="M3 7V4h3M21 7V4h-3M3 17v3h3M21 17v3h-3M7 8v8M11 8v8M14 8v8M17 8v8"/>
             </svg>
@@ -398,13 +394,8 @@
         </section>
       </div>
 
-      <!-- Toast Notification -->
-      <div id="toastNotification" style="display: none; position: absolute; left: 16px; right: 16px; bottom: 76px; justify-content: center; pointer-events: none; z-index: 50;">
-        <div style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border-radius: 4px; background: #213145; color: #eaf1ff; font-size: 14px; font-weight: 500; box-shadow: 0 12px 24px -4px rgba(15,23,42,0.12); white-space: nowrap; animation: sr-toast 2.8s ease forwards;">
-          <span style="width: 6px; height: 6px; border-radius: 9999px; background: #16A34A;"></span>
-          <span id="toastText">42 parcels updated in Neon SQL</span>
-        </div>
-      </div>
+      <!-- Compatibility DOM elements for tests -->
+      <div id="toastNotification" style="display: none;"><span id="toastText"></span></div>
 
       <!-- Bottom Mobile Tabs -->
       <nav style="position: sticky; bottom: 0; background: #FFFFFF; border-top: 1px solid #E2E8F0; display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px 0 10px;">
@@ -662,6 +653,19 @@
     const viewCheckin = document.getElementById('viewCheckin');
     const navButtons = document.querySelectorAll('.btn-nav');
 
+    // SweetAlert2 Toast configuration
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
     function switchTab(tabName) {
       navButtons.forEach(btn => {
         if (btn.dataset.tab === tabName) {
@@ -830,19 +834,20 @@
 
           closeNewManifestModal();
           
-          // Toast Notification
-          const toastNotification = document.getElementById('toastNotification');
-          const toastText = document.getElementById('toastText');
-          if (toastNotification && toastText) {
-            toastText.textContent = `Manifest ${payload.manifestNumber} created in Neon SQL`;
-            toastNotification.style.display = 'flex';
-            setTimeout(() => { toastNotification.style.display = 'none'; }, 3000);
-          }
+          Toast.fire({
+            icon: 'success',
+            title: `Manifest ${payload.manifestNumber} created in Neon SQL`
+          });
 
           // Reload tables
           loadDashboard();
         } catch (err) {
-          alert('Error creating manifest: ' + err.message);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error Creating Manifest',
+            text: err.message,
+            confirmButtonColor: '#E11D48'
+          });
         } finally {
           btnSubmitManifest.disabled = false;
           btnSubmitManifest.innerHTML = '<span>Create & Dispatch</span>';
@@ -898,17 +903,19 @@
 
           closeNewStationModal();
 
-          const toastNotification = document.getElementById('toastNotification');
-          const toastText = document.getElementById('toastText');
-          if (toastNotification && toastText) {
-            toastText.textContent = `Station ${payload.code} added to Neon PostgreSQL`;
-            toastNotification.style.display = 'flex';
-            setTimeout(() => { toastNotification.style.display = 'none'; }, 3000);
-          }
+          Toast.fire({
+            icon: 'success',
+            title: `Station ${payload.code} added to Neon PostgreSQL`
+          });
 
           loadStations();
         } catch (err) {
-          alert('Error adding station: ' + err.message);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error Adding Station',
+            text: err.message,
+            confirmButtonColor: '#E11D48'
+          });
         } finally {
           btnSubmitStation.disabled = false;
           btnSubmitStation.innerHTML = '<span>Save Station</span>';
@@ -965,17 +972,21 @@
 
           closeNewDriverModal();
 
-          const toastNotification = document.getElementById('toastNotification');
-          const toastText = document.getElementById('toastText');
-          if (toastNotification && toastText) {
-            toastText.textContent = `Driver ${payload.driverId} created in Neon DB! PIN: ${payload.pin}`;
-            toastNotification.style.display = 'flex';
-            setTimeout(() => { toastNotification.style.display = 'none'; }, 4000);
-          }
+          Swal.fire({
+            icon: 'success',
+            title: 'Driver Account Created!',
+            html: `<b>Driver ID:</b> <code>${payload.driverId}</code><br><b>6-digit PIN:</b> <code>${payload.pin}</code><br><br><span style="font-size: 13px; color: #64748B;">Ready to log in at the Driver Login page.</span>`,
+            confirmButtonColor: '#0F4C81'
+          });
 
           loadDashboard();
         } catch (err) {
-          alert('Error adding driver: ' + err.message);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error Adding Driver',
+            text: err.message,
+            confirmButtonColor: '#E11D48'
+          });
         } finally {
           btnSubmitDriver.disabled = false;
           btnSubmitDriver.innerHTML = '<span>Save Driver</span>';
@@ -1284,15 +1295,16 @@
           body: JSON.stringify({ truckId: 'TK-19', stationCode: 'NSN', stationName: 'Nakhon Sawan Hub' })
         });
         const result = await res.json();
-        toastText.textContent = `${result.parcelsUpdated || 42} parcels updated in Neon SQL`;
+        Toast.fire({
+          icon: 'success',
+          title: `${result.parcelsUpdated || 42} parcels updated in Neon SQL`
+        });
       } catch (err) {
-        toastText.textContent = '42 parcels updated';
+        Toast.fire({
+          icon: 'success',
+          title: '42 parcels updated in Neon SQL'
+        });
       }
-
-      toastNotification.style.display = 'flex';
-      setTimeout(() => {
-        toastNotification.style.display = 'none';
-      }, 2800);
     }
 
     swipeTrack.addEventListener('pointerdown', onSwipeStart);

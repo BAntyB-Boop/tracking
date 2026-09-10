@@ -6,6 +6,7 @@
   <title>SwiftRoute - Sign In</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     html, body {
       margin: 0;
@@ -223,6 +224,12 @@
       errorBox.style.display = 'flex';
       idBox.style.borderColor = '#E11D48';
       pwBox.style.borderColor = '#E11D48';
+      Swal.fire({
+        icon: 'error',
+        title: 'Sign In Failed',
+        text: msg,
+        confirmButtonColor: '#0F4C81'
+      });
     }
 
     roleStaffBtn.addEventListener('click', () => setRole('staff'));

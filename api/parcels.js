@@ -65,6 +65,16 @@ export default async function handler(req, res) {
     return searchTerms.some(term => targets.some(target => target.includes(term)));
   }
 
+  const normalizeStatus = (s) => {
+    if (!s) return '';
+    const clean = String(s).toLowerCase().trim().replace(/[-_\s]/g, '');
+    if (clean === 'intransit' || clean === 'กำลังขนส่ง' || clean === 'กำลังส่ง' || clean === 'ขนส่ง') return 'intransit';
+    if (clean === 'delivered' || clean === 'จัดส่งสำเร็จ' || clean === 'สำเร็จ' || clean === 'ส่งแล้ว') return 'delivered';
+    if (clean === 'exception' || clean === 'delayed' || clean === 'hold' || clean === 'มีปัญหา' || clean === 'ตกค้าง' || clean === 'ล่าช้า') return 'exception';
+    if (clean === 'pending' || clean === 'รอดำเนินการ') return 'pending';
+    return clean;
+  };
+
   if (sql) {
     try {
       let parcels = await sql`
@@ -74,8 +84,9 @@ export default async function handler(req, res) {
         ORDER BY p.updated_at DESC
       `;
 
-      if (filter !== 'All') {
-        parcels = parcels.filter(p => p.status.toLowerCase() === filter.toLowerCase());
+      if (filter && filter.toLowerCase() !== 'all') {
+        const targetNorm = normalizeStatus(filter);
+        parcels = parcels.filter(p => normalizeStatus(p.status) === targetNorm);
       }
 
       if (query) {
@@ -106,8 +117,9 @@ export default async function handler(req, res) {
   ];
 
   let filtered = mockParcels;
-  if (filter !== 'All') {
-    filtered = filtered.filter(p => p.status.toLowerCase() === filter.toLowerCase());
+  if (filter && filter.toLowerCase() !== 'all') {
+    const targetNorm = normalizeStatus(filter);
+    filtered = filtered.filter(p => normalizeStatus(p.status) === targetNorm);
   }
   if (query) {
     filtered = filtered.filter(matchesSearch);

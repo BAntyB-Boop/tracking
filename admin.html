@@ -136,7 +136,10 @@
             </span>
             <div id="userAvatar" style="width: 30px; height: 30px; border-radius: 9999px; background: #FFEBEC; color: #ED1C24; border: 1px solid #FFDAD6; display: grid; place-items: center; font-size: 12px; font-weight: 700;">ST</div>
             <div style="display: flex; flex-direction: column; line-height: 1.2;">
-              <span id="userNameHeader" style="font-size: 12px; font-weight: 600; color: #1A1A1A; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Somchai P.</span>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span id="userNameHeader" style="font-size: 12px; font-weight: 600; color: #1A1A1A; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Somchai P.</span>
+                <span id="userStationHeaderBadge" style="font-size: 10px; font-weight: 700; color: #ED1C24; background: #FFEBEC; border: 1px solid #FFDAD6; border-radius: 9999px; padding: 1px 6px; white-space: nowrap;">📍 NSN Hub</span>
+              </div>
               <span id="userRoleBadge" style="font-size: 11px; color: #616161;">Staff</span>
             </div>
             <a href="login.html" id="linkSignOut" onclick="handleSignOut(event);" style="font-size: 12px; font-weight: 500; color: #0364AD; margin-left: 4px;">ออกจากระบบ</a>
@@ -165,6 +168,112 @@
             <button id="btnNewManifest" onclick="openNewManifestModal();" style="height: 38px; padding: 0 18px; background: #ED1C24; color: #FFFFFF; border: 0; border-radius: 9999px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(237,28,36,0.25); transition: background 0.15s;">+ New manifest</button>
           </div>
         </div>
+
+        <!-- HUB STATION OPERATIONS BANNER & SELECTOR -->
+        <section id="hubStationBanner" style="background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%); border: 1px solid #E2E8F0; border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); padding: 18px 22px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+          <div style="display: flex; align-items: center; gap: 14px; min-width: 0;">
+            <div style="width: 44px; height: 44px; border-radius: 12px; background: #FFEBEC; border: 1px solid #FFDAD6; display: flex; align-items: center; justify-content: center; flex: none;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ED1C24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span id="hubStationRoleLabel" style="font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #ED1C24; background: #FFF0F1; padding: 2px 8px; border-radius: 9999px;">จุดรับ-พักสินค้า (Station Hub)</span>
+                <span id="hubStationLockBadge" style="display: none; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: #7C2D12; background: #FEF3C7; border: 1px solid #FDE68A; padding: 2px 8px; border-radius: 9999px;">🔒 ประจำการเฉพาะศูนย์นี้</span>
+                <span style="font-size: 13px; color: #616161;">|</span>
+                <span id="hubStationStatusText" style="font-size: 13px; font-weight: 500; color: #2E7D32; display: inline-flex; align-items: center; gap: 6px;">
+                  <span style="width: 6px; height: 6px; border-radius: 9999px; background: #2E7D32; animation: sr-pulse-green 1.6s ease-out infinite;"></span>
+                  พร้อมรับพัสดุเข้าคลัง (Active Bay 4)
+                </span>
+              </div>
+              <h2 id="hubCurrentStationName" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 18px; color: #1A1A1A;">ศูนย์ฮับนครสวรรค์ (NSN Hub)</h2>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <label for="hubStationSelector" id="lblHubStationSelector" style="font-size: 12px; font-weight: 600; color: #616161; white-space: nowrap;">สลับสถานีประจำการ:</label>
+            <select id="hubStationSelector" onchange="onHubStationChange(this.value);" style="height: 38px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 9999px; background: #FFFFFF; font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 600; color: #1A1A1A; cursor: pointer; outline: none; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+              <option value="NSN" selected>📍 นครสวรรค์ (NSN Hub - จุดแวะพักสายเหนือ)</option>
+              <option value="WNI">📍 วังน้อย (WNI Sorting Center)</option>
+              <option value="BKK">📍 กรุงเทพฯ (BKK Central Depot)</option>
+              <option value="LPG">📍 ลำปาง (LPG Hub)</option>
+              <option value="CNX">📍 เชียงใหม่ (CNX Station)</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- INBOUND TRUCK & CONSIGNMENT SET (ชุดพัสดุขาเข้า) CARD -->
+        <section id="inboundSetSection" style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); overflow: hidden;">
+          <div style="padding: 16px 20px; border-bottom: 1px solid #E5E5E5; background: #FAFAFA; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 36px; height: 36px; border-radius: 9999px; background: #E6F0F8; color: #0364AD; display: grid; place-items: center; font-size: 18px;">🚚</div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <span id="setCardBadge" style="font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; color: #0364AD; background: #E6F0F8; padding: 2px 8px; border-radius: 9999px; border: 1px solid #CCE1F0;">SET-2609-19</span>
+                  <span style="font-size: 12px; color: #616161;">· รถบรรทุก <b>TK-19</b></span>
+                  <span id="setBayBadge" style="height: 20px; padding: 0 8px; display: inline-flex; align-items: center; border-radius: 9999px; background: #EAF5ED; color: #2E7D32; border: 1px solid #BCE3C6; font-size: 11px; font-weight: 600;">เทียบชานชาลา 4</span>
+                </div>
+                <h3 id="setCardTitle" style="margin: 2px 0 0; font-family: 'Kanit', sans-serif; font-size: 15px; font-weight: 600; color: #1A1A1A;">ชุดพัสดุสายเหนือ (กรุงเทพฯ → เชียงใหม่) · คนขับ: อนันต์ สุขสมบูรณ์</h3>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" id="btnOpenOffloadModal" onclick="openOffloadModal();" style="height: 38px; padding: 0 16px; background: #ED1C24; color: #FFFFFF; border: 0; border-radius: 9999px; font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(237,28,36,0.25); transition: background 0.15s;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+                <span id="btnOpenOffloadText">🔍 สแกนคัดแยกยกลงพัสดุ (Scan & Offload)</span>
+              </button>
+              <button type="button" id="btnQuickOffloadAll" onclick="autoOffloadAllForHub();" style="height: 38px; padding: 0 14px; background: #FFFFFF; color: #1A1A1A; border: 1px solid #CBD5E1; border-radius: 9999px; font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                <span id="btnQuickOffloadAllText">⚡ ยกลงทั้ง 10 ชิ้น</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Set Stats in Card -->
+          <div style="padding: 16px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); gap: 16px; background: #FFFFFF;">
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span id="lblSetTotalParcels" style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #616161;">พัสดุทั้งหมดบนรถ</span>
+              <div style="display: flex; align-items: baseline; gap: 6px;">
+                <span id="setTotalCount" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 24px; color: #1A1A1A;">42</span>
+                <span style="font-size: 12px; color: #616161;">ชิ้น</span>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span id="lblSetTargetHub" style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #ED1C24;">ปลายทางศูนย์นี้ (ต้องยกลง)</span>
+              <div style="display: flex; align-items: baseline; gap: 6px;">
+                <span id="hubTargetDropoffCount" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 24px; color: #ED1C24;">10</span>
+                <span style="font-size: 12px; color: #616161;">ชิ้น</span>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span id="lblSetOffloaded" style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #2E7D32;">ยกลงเข้าคลังแล้ว</span>
+              <div style="display: flex; align-items: baseline; gap: 6px;">
+                <span id="hubOffloadedCount" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 24px; color: #2E7D32;">0</span>
+                <span id="hubOffloadedTotalRatio" style="font-size: 12px; color: #616161;">/ 10 ชิ้น</span>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span id="lblSetThrough" style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: #0364AD;">คงไว้บนรถ (ไปต่อลำปาง/เชียงใหม่)</span>
+              <div style="display: flex; align-items: baseline; gap: 6px;">
+                <span id="hubThroughCargoCount" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 24px; color: #0364AD;">32</span>
+                <span style="font-size: 12px; color: #616161;">ชิ้น</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Staged Inventory Preview Bar -->
+          <div id="hubStagingBar" style="padding: 12px 20px; border-top: 1px solid #E5E5E5; background: #F8FAFC; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span id="lblHubStagedItems" style="font-size: 12px; font-weight: 600; color: #475569;">📦 พัสดุที่ยกลงพักในคลังศูนย์ฮับ:</span>
+              <div id="hubStagedChips" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span id="hubStagedEmptyText" style="font-size: 12px; color: #94A3B8; font-style: italic;">ยังไม่มีพัสดุยกลง (กดปุ่มสแกนด้านบนเพื่อเริ่มยกลง)</span>
+              </div>
+            </div>
+            <span id="hubStagedStatusNote" style="font-size: 12px; color: #64748B;">ตัดออกจากเที่ยวรถ TK-19 อัตโนมัติเมื่อยกลง</span>
+          </div>
+        </section>
 
         <!-- KPI Cards -->
         <div id="kpiContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 16px;">
@@ -291,6 +400,7 @@
                 <th id="thParcelsTruck">Truck</th>
                 <th id="thParcelsStatus">Status</th>
                 <th id="thParcelsEta">ETA</th>
+                <th id="thParcelsAction" style="text-align: right;">ประวัติ & เปลี่ยนสถานะ</th>
               </tr>
             </thead>
             <tbody id="parcelsTableBody">
@@ -737,6 +847,215 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: OFFLOAD SCANNING (คัดแยกยกลงพัสดุจากชุดสินค้า) ================= -->
+  <div id="modalOffloadScan" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 16px;">
+    <div style="background: #FFFFFF; width: 100%; max-width: 860px; max-height: 90vh; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); border: 1px solid #E5E5E5; display: flex; flex-direction: column; overflow: hidden;">
+      
+      <!-- Modal Header -->
+      <div style="padding: 16px 20px; border-bottom: 1px solid #E5E5E5; display: flex; align-items: center; justify-content: space-between; background: #FFFFFF;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 38px; height: 38px; border-radius: 10px; background: #FFEBEC; color: #ED1C24; display: grid; place-items: center; font-size: 18px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ED1C24" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+          </div>
+          <div>
+            <h3 id="modalOffloadTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-size: 18px; font-weight: 700; color: #1A1A1A;">สแกนคัดแยกพัสดุลงจากชุดสินค้า (De-consolidation Scan)</h3>
+            <span id="modalOffloadSubtitle" style="font-size: 12px; color: #616161;">ชุดสินค้า: SET-2609-19 · รถบรรทุก: TK-19 · สถานีปัจจุบัน: <b id="modalOffloadCurrentStation">ศูนย์ฮับนครสวรรค์ (NSN)</b></span>
+          </div>
+        </div>
+        <button type="button" onclick="closeOffloadModal();" style="width: 32px; height: 32px; border: 0; background: transparent; color: #616161; font-size: 24px; cursor: pointer; border-radius: 8px; display: grid; place-items: center;">&times;</button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div style="padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+        
+        <!-- Workflow Guide Banner -->
+        <div style="background: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 12px; padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px;">
+          <span style="font-size: 16px; line-height: 1;">💡</span>
+          <span id="modalOffloadGuideText" style="font-size: 12px; line-height: 18px; color: #0369A1;">
+            รถบรรทุก <b>TK-19</b> จอดเทียบชานชาลา 4 เพื่อสแกนนำพัสดุปลายทางศูนย์นี้ยกลงเข้าคลังพักรอจัดส่ง ส่วนพัสดุปลายทางสถานีถัดไปจะคงไว้บนรถเพื่อเดินทางต่อไป
+          </span>
+        </div>
+
+        <!-- Barcode Input Box -->
+        <div style="background: #FAFAFA; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <form id="formOffloadBarcode" onsubmit="handleOffloadBarcodeSubmit(event);" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 260px; position: relative;">
+              <input id="scanTrackingInput" type="text" placeholder="สแกนบาร์โค้ด หรือ พิมพ์เลขพัสดุ เช่น SR-2609-118245" autocomplete="off" style="width: 100%; height: 44px; padding: 0 14px; border: 2px solid #CBD5E1; border-radius: 9999px; font-family: 'Kanit', monospace; font-size: 14px; color: #1A1A1A; outline: none; transition: border-color 0.15s;" onfocus="this.style.borderColor='#ED1C24'" onblur="this.style.borderColor='#CBD5E1'">
+            </div>
+            <button type="submit" id="btnScanOffloadSubmit" style="height: 44px; padding: 0 20px; background: #ED1C24; color: #FFFFFF; border: 0; border-radius: 9999px; font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">
+              <span>สแกนยกลง (Scan)</span>
+            </button>
+            <button type="button" onclick="autoOffloadAllForHub();" style="height: 44px; padding: 0 16px; background: #2E7D32; color: #FFFFFF; border: 0; border-radius: 9999px; font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(46,125,50,0.25);">
+              <span>⚡ ยกลงทั้ง 10 ชิ้น</span>
+            </button>
+          </form>
+
+          <!-- Simulator Quick Chips -->
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span id="lblScanSimulator" style="font-size: 11px; font-weight: 600; color: #64748B; text-transform: uppercase;">คลิกชิปจำลองเพื่อทดสอบสแกน:</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+              <button type="button" onclick="scanSpecific('SR-2609-118245');" class="chip-scan-btn" style="height: 28px; padding: 0 10px; background: #FFF0F1; border: 1px solid #FFDAD6; border-radius: 9999px; font-family: monospace; font-size: 12px; color: #ED1C24; cursor: pointer; font-weight: 600;">
+                🎯 SR-2609-118245 (นครสวรรค์ - ชำรุด/ตรวจ)
+              </button>
+              <button type="button" onclick="scanSpecific('SR-2609-118252');" class="chip-scan-btn" style="height: 28px; padding: 0 10px; background: #FFF0F1; border: 1px solid #FFDAD6; border-radius: 9999px; font-family: monospace; font-size: 12px; color: #ED1C24; cursor: pointer; font-weight: 600;">
+                🎯 SR-2609-118252 (นครสวรรค์)
+              </button>
+              <button type="button" onclick="scanSpecific('SR-2609-118260');" class="chip-scan-btn" style="height: 28px; padding: 0 10px; background: #FFF0F1; border: 1px solid #FFDAD6; border-radius: 9999px; font-family: monospace; font-size: 12px; color: #ED1C24; cursor: pointer; font-weight: 600;">
+                🎯 SR-2609-118260 (นครสวรรค์ - ยา)
+              </button>
+              <button type="button" onclick="scanSpecific('SR-2609-118251');" class="chip-scan-btn" style="height: 28px; padding: 0 10px; background: #FEF4E6; border: 1px solid #FCDCB5; border-radius: 9999px; font-family: monospace; font-size: 12px; color: #E67E00; cursor: pointer; font-weight: 500;">
+                ⚠️ SR-2609-118251 (ปลายทาง ลำปาง - ทดสอบเตือน)
+              </button>
+              <button type="button" onclick="scanSpecific('SR-2609-118253');" class="chip-scan-btn" style="height: 28px; padding: 0 10px; background: #FEF4E6; border: 1px solid #FCDCB5; border-radius: 9999px; font-family: monospace; font-size: 12px; color: #E67E00; cursor: pointer; font-weight: 500;">
+                ⚠️ SR-2609-118253 (ปลายทาง เชียงใหม่ - ทดสอบเตือน)
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Scan Feedback Banner -->
+          <div id="scanFeedbackBox" style="display: none; padding: 12px 14px; border-radius: 8px; font-size: 13px; line-height: 1.4; align-items: center; gap: 8px;"></div>
+        </div>
+
+        <!-- Set Manifest Table Filter Bar -->
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button type="button" onclick="filterSetView('all');" id="btnFilterSetAll" class="set-filter-btn active" style="height: 30px; padding: 0 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; cursor: pointer; background: #ED1C24; color: #fff; border: 0;">ทั้งหมดบนรถ (42)</button>
+            <button type="button" onclick="filterSetView('target');" id="btnFilterSetTarget" class="set-filter-btn" style="height: 30px; padding: 0 12px; border-radius: 9999px; font-size: 12px; font-weight: 500; cursor: pointer; background: #FFFFFF; color: #1A1A1A; border: 1px solid #CBD5E1;">ปลายทางศูนย์นี้ (10)</button>
+            <button type="button" onclick="filterSetView('offloaded');" id="btnFilterSetOffloaded" class="set-filter-btn" style="height: 30px; padding: 0 12px; border-radius: 9999px; font-size: 12px; font-weight: 500; cursor: pointer; background: #FFFFFF; color: #1A1A1A; border: 1px solid #CBD5E1;">ยกลงแล้ว (<span id="countOffloadedFilter">0</span>)</button>
+            <button type="button" onclick="filterSetView('through');" id="btnFilterSetThrough" class="set-filter-btn" style="height: 30px; padding: 0 12px; border-radius: 9999px; font-size: 12px; font-weight: 500; cursor: pointer; background: #FFFFFF; color: #1A1A1A; border: 1px solid #CBD5E1;">ไปต่อสถานีอื่น (32)</button>
+          </div>
+          <span id="setItemsSummaryText" style="font-size: 12px; color: #64748B;">แสดง 42 รายการในชุดสินค้า</span>
+        </div>
+
+        <!-- Set Manifest Table -->
+        <div style="border: 1px solid #E2E8F0; border-radius: 12px; overflow-x: auto; background: #FFFFFF;">
+          <table style="width: 100%; border-collapse: collapse; min-width: 600px; font-size: 13px;">
+            <thead>
+              <tr style="background: #F8FAFC; border-bottom: 1px solid #E2E8F0; text-align: left;">
+                <th style="padding: 10px 14px; font-weight: 600; color: #475569;">เลขพัสดุ</th>
+                <th style="padding: 10px 14px; font-weight: 600; color: #475569;">ผู้รับ / สินค้า</th>
+                <th style="padding: 10px 14px; font-weight: 600; color: #475569;">ปลายทาง</th>
+                <th style="padding: 10px 14px; font-weight: 600; color: #475569;">สถานะในชุด</th>
+                <th style="padding: 10px 14px; font-weight: 600; color: #475569; text-align: right;">การจัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="setParcelsTableBody">
+              <!-- Rendered dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding: 14px 20px; border-top: 1px solid #E5E5E5; display: flex; justify-content: space-between; align-items: center; background: #FAFAFA;">
+        <span style="font-size: 12px; color: #64748B;">บันทึกการคัดแยกลงระบบ Neon PostgreSQL แบบเรียลไทม์</span>
+        <button type="button" onclick="closeOffloadModal();" style="height: 38px; padding: 0 20px; background: #FFFFFF; color: #1A1A1A; border: 1px solid #CBD5E1; border-radius: 9999px; font-size: 13px; font-weight: 500; cursor: pointer;">ปิดหน้าต่าง</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= MODAL: PARCEL STATUS & AUDIT LOGS ================= -->
+  <div id="modalParcelLogs" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 16px;">
+    <div style="background: #FFFFFF; border-radius: 20px; width: 100%; max-width: 720px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #E2E8F0;">
+      
+      <!-- Modal Header -->
+      <div style="padding: 16px 22px; border-bottom: 1px solid #E2E8F0; background: #FFFFFF; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+          <div style="width: 40px; height: 40px; border-radius: 12px; background: #FFEBEC; border: 1px solid #FFDAD6; display: flex; align-items: center; justify-content: center; flex: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ED1C24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span id="logModalTrackingNumber" style="font-family: ui-monospace, monospace; font-size: 16px; font-weight: 700; color: #0364AD;">SR-2609-118245</span>
+              <span id="logModalCurrentStatusBadge" style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; background: #E6F0F8; color: #0364AD; border: 1px solid #CCE1F0;">In transit</span>
+            </div>
+            <span id="logModalSubtitle" style="font-size: 12px; color: #64748B;">เส้นทาง: กรุงเทพฯ → เชียงใหม่ · ประวัติการอัปเดตสถานะแบบเรียลไทม์</span>
+          </div>
+        </div>
+        <button type="button" onclick="closeParcelLogsModal();" style="width: 32px; height: 32px; border-radius: 9999px; border: 0; background: #F1F5F9; color: #64748B; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; font-weight: 700;">✕</button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div style="padding: 20px 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; background: #F8FAFC;">
+        
+        <!-- Status Update Form Box -->
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 13px; font-weight: 700; color: #1E293B; display: flex; align-items: center; gap: 6px;">
+              <span style="width: 6px; height: 6px; border-radius: 9999px; background: #ED1C24;"></span>
+              บันทึกเปลี่ยนสถานะพัสดุ (Update Parcel Status)
+            </span>
+            <span style="font-size: 11px; color: #64748B;">โดยเจ้าหน้าที่ประจำศูนย์ฮับ</span>
+          </div>
+
+          <form id="formUpdateParcelStatus" onsubmit="handleUpdateStatusSubmit(event);" style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <label for="selectNewStatus" style="font-size: 11px; font-weight: 600; color: #475569;">สถานะใหม่ (New Status):</label>
+                <select id="selectNewStatus" required style="height: 38px; padding: 0 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 500; color: #1E293B; background: #FFFFFF; outline: none;">
+                  <option value="in-transit">🚛 กำลังขนส่ง (In transit)</option>
+                  <option value="delivered">✅ นำจ่ายสำเร็จ / ยกลงเข้าคลัง (Delivered / Staged)</option>
+                  <option value="exception">⚠️ พบปัญหา / พักสินค้า (Exception Hold)</option>
+                  <option value="pending">⏳ รอดำเนินการ (Pending)</option>
+                </select>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <label for="inputLogStation" style="font-size: 11px; font-weight: 600; color: #475569;">สถานี / ฮับ ที่บันทึก:</label>
+                <input id="inputLogStation" type="text" readonly style="height: 38px; padding: 0 12px; border: 1px solid #E2E8F0; border-radius: 8px; font-family: 'Kanit', sans-serif; font-size: 13px; color: #64748B; background: #F1F5F9; outline: none;">
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <label for="inputLogNote" style="font-size: 11px; font-weight: 600; color: #475569;">หมายเหตุ / บันทึกการปฏิบัติงาน (Note):</label>
+              <input id="inputLogNote" type="text" placeholder="เช่น สแกนเข้าคลังพักพัสดุ, ผู้รับเซ็นรับเรียบร้อย, พบสภาพกล่องชำรุด" required style="height: 38px; padding: 0 12px; border: 1px solid #CBD5E1; border-radius: 8px; font-family: 'Kanit', sans-serif; font-size: 13px; color: #1E293B; background: #FFFFFF; outline: none;" onfocus="this.style.borderColor='#ED1C24'" onblur="this.style.borderColor='#CBD5E1'">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+              <button type="submit" id="btnSubmitStatusLog" style="height: 38px; padding: 0 20px; background: #ED1C24; color: #FFFFFF; border: 0; border-radius: 9999px; font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">
+                <span>💾 บันทึกและลง Log สถานะ</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- History Timeline Box -->
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 13px; font-weight: 700; color: #1E293B;">ประวัติการเปลี่ยนสถานะ (Status Update Audit Log)</span>
+              <span id="logModalTotalCount" style="font-size: 11px; font-weight: 600; color: #0364AD; background: #E6F0F8; padding: 2px 8px; border-radius: 9999px;">...</span>
+            </div>
+            <span style="font-size: 11px; color: #2E7D32; display: inline-flex; align-items: center; gap: 4px;">
+              <span style="width: 5px; height: 5px; border-radius: 9999px; background: #2E7D32;"></span>
+              Neon PostgreSQL Audit Trail
+            </span>
+          </div>
+
+          <!-- Logs Timeline Container -->
+          <div id="parcelLogsTimelineContainer" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding: 12px 20px; border-top: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; background: #FFFFFF;">
+        <span style="font-size: 12px; color: #64748B;">ข้อมูลบันทึกในตาราง <code>parcel_status_logs</code> และ <code>parcel_events</code></span>
+        <button type="button" onclick="closeParcelLogsModal();" style="height: 34px; padding: 0 16px; background: #FFFFFF; color: #1A1A1A; border: 1px solid #CBD5E1; border-radius: 9999px; font-size: 12px; font-weight: 500; cursor: pointer;">ปิดหน้าต่าง</button>
+      </div>
+
+    </div>
+  </div>
+
   <script>
     // Current language selection with persistence
     let currentLang = localStorage.getItem('swiftroute_lang') || 'th';
@@ -874,6 +1193,8 @@
         },
         statuses: {
           'in transit': 'กำลังขนส่ง',
+          'in-transit': 'กำลังขนส่ง',
+          'intransit': 'กำลังขนส่ง',
           'delivered': 'จัดส่งสำเร็จ',
           'exception': 'พบปัญหา',
           'delayed': 'ล่าช้า',
@@ -897,6 +1218,40 @@
           'Nakhon Sawan Hub': 'ศูนย์ฮับนครสวรรค์',
           'Lampang Hub': 'ศูนย์ฮับลำปาง',
           'Chiang Mai Station': 'สถานีปลายทางเชียงใหม่'
+        },
+        hub: {
+          roleLabel: 'จุดรับ-พักสินค้า (Station Hub)',
+          statusActive: 'พร้อมรับพัสดุเข้าคลัง (Active Bay 4)',
+          switchLabel: 'สลับสถานีประจำการ:',
+          setCardTitle: 'ชุดพัสดุสายเหนือ (กรุงเทพฯ → เชียงใหม่) · คนขับ: อนันต์ สุขสมบูรณ์',
+          btnScanOffload: '🔍 สแกนคัดแยกยกลงพัสดุ (Scan & Offload)',
+          btnQuickOffload: '⚡ ยกลงทั้ง 10 ชิ้น',
+          totalParcels: 'พัสดุทั้งหมดบนรถ',
+          targetHub: 'ปลายทางศูนย์นี้ (ต้องยกลง)',
+          offloaded: 'ยกลงเข้าคลังแล้ว',
+          throughCargo: 'คงไว้บนรถ (ไปต่อลำปาง/เชียงใหม่)',
+          stagedItems: '📦 พัสดุที่ยกลงพักในคลังศูนย์ฮับ:',
+          stagedEmpty: 'ยังไม่มีพัสดุยกลง (กดปุ่มสแกนด้านบนเพื่อเริ่มยกลง)',
+          stagedNote: 'ตัดออกจากเที่ยวรถ TK-19 อัตโนมัติเมื่อยกลง',
+          modalTitle: 'สแกนคัดแยกพัสดุลงจากชุดสินค้า (De-consolidation Scan)',
+          modalGuide: 'รถบรรทุก TK-19 จอดเทียบชานชาลา 4 เพื่อสแกนนำพัสดุปลายทางศูนย์นี้ยกลงเข้าคลังพักรอจัดส่ง ส่วนพัสดุปลายทางสถานีถัดไปจะคงไว้บนรถเพื่อเดินทางต่อไป',
+          scanBtn: 'สแกนยกลง (Scan)',
+          quickAll: '⚡ ยกลงทั้งหมด 10 ชิ้น',
+          simulatorLabel: 'คลิกชิปจำลองเพื่อทดสอบสแกน:',
+          filterAll: 'ทั้งหมดบนรถ (42)',
+          filterTarget: 'ปลายทางศูนย์นี้',
+          filterOffloaded: 'ยกลงแล้ว',
+          filterThrough: 'ไปต่อสถานีอื่น',
+          thTn: 'เลขพัสดุ',
+          thRecipient: 'ผู้รับ / สินค้า',
+          thDest: 'ปลายทาง',
+          thStatus: 'สถานะในชุด',
+          thAction: 'การจัดการ',
+          btnOffloadAction: 'ยกลง',
+          btnKeepAction: 'คงไว้บนรถ',
+          statusOnTruck: 'บนรถบรรทุก',
+          statusStaged: 'ยกลงเข้าคลังแล้ว',
+          statusThrough: 'คงไว้ส่งต่อ'
         }
       },
       en: {
@@ -1031,6 +1386,8 @@
         },
         statuses: {
           'in transit': 'In transit',
+          'in-transit': 'In transit',
+          'intransit': 'In transit',
           'delivered': 'Delivered',
           'exception': 'Exception',
           'delayed': 'Delayed',
@@ -1054,6 +1411,40 @@
           'Nakhon Sawan Hub': 'Nakhon Sawan Hub',
           'Lampang Hub': 'Lampang Hub',
           'Chiang Mai Station': 'Chiang Mai Station'
+        },
+        hub: {
+          roleLabel: 'Cargo Reception & Hub Staging',
+          statusActive: 'Ready to receive into warehouse (Bay 4)',
+          switchLabel: 'Switch active station:',
+          setCardTitle: 'Northern Corridor Consignment Set · Driver: Anan Suksomboon',
+          btnScanOffload: '🔍 Scan & Offload Cargo Set',
+          btnQuickOffload: '⚡ Auto-Offload All (10)',
+          totalParcels: 'Total parcels on truck',
+          targetHub: 'Destination this hub (Offload)',
+          offloaded: 'Offloaded & Staged in Hub',
+          throughCargo: 'Keep on truck (Through to LPG/CNX)',
+          stagedItems: '📦 Staged inventory in hub warehouse:',
+          stagedEmpty: 'No parcels offloaded yet (Click scan above to begin)',
+          stagedNote: 'Auto-detached from truck TK-19 upon offload',
+          modalTitle: 'Hub De-consolidation & Set Offload Scan',
+          modalGuide: 'Truck TK-19 is docked at Bay 4. Offload parcels designated for this station into warehouse staging. Keep downstream parcels on truck for subsequent hubs.',
+          scanBtn: 'Scan Offload',
+          quickAll: '⚡ Auto-Offload All (10)',
+          simulatorLabel: 'Click simulation chip to test scan:',
+          filterAll: 'All on board (42)',
+          filterTarget: 'Destination this hub',
+          filterOffloaded: 'Offloaded',
+          filterThrough: 'Downstream hubs',
+          thTn: 'Tracking No',
+          thRecipient: 'Recipient / Item',
+          thDest: 'Destination',
+          thStatus: 'Set Status',
+          thAction: 'Action',
+          btnOffloadAction: 'Offload',
+          btnKeepAction: 'Keep on Truck',
+          statusOnTruck: 'On Truck',
+          statusStaged: 'Staged in Hub',
+          statusThrough: 'In Transit Through'
         }
       }
     };
@@ -1164,6 +1555,42 @@
       if (btnAddDriver) btnAddDriver.textContent = t.dash.addDriver;
       const btnNewManifest = document.getElementById('btnNewManifest');
       if (btnNewManifest) btnNewManifest.textContent = t.dash.newManifest;
+
+      // Hub & Inbound Set Section
+      const h = t.hub || {};
+      const hubStationRoleLabel = document.getElementById('hubStationRoleLabel');
+      if (hubStationRoleLabel) hubStationRoleLabel.textContent = h.roleLabel;
+      const hubStationStatusText = document.getElementById('hubStationStatusText');
+      if (hubStationStatusText) hubStationStatusText.innerHTML = `<span style="width: 6px; height: 6px; border-radius: 9999px; background: #2E7D32; animation: sr-pulse-green 1.6s ease-out infinite;"></span>${h.statusActive}`;
+      const lblHubStationSelector = document.getElementById('lblHubStationSelector');
+      if (lblHubStationSelector) lblHubStationSelector.textContent = h.switchLabel;
+      const setCardTitle = document.getElementById('setCardTitle');
+      if (setCardTitle) setCardTitle.textContent = h.setCardTitle;
+      const btnOpenOffloadText = document.getElementById('btnOpenOffloadText');
+      if (btnOpenOffloadText) btnOpenOffloadText.textContent = h.btnScanOffload;
+      const btnQuickOffloadAllText = document.getElementById('btnQuickOffloadAllText');
+      if (btnQuickOffloadAllText) btnQuickOffloadAllText.textContent = h.btnQuickOffload;
+      const lblSetTotalParcels = document.getElementById('lblSetTotalParcels');
+      if (lblSetTotalParcels) lblSetTotalParcels.textContent = h.totalParcels;
+      const lblSetTargetHub = document.getElementById('lblSetTargetHub');
+      if (lblSetTargetHub) lblSetTargetHub.textContent = h.targetHub;
+      const lblSetOffloaded = document.getElementById('lblSetOffloaded');
+      if (lblSetOffloaded) lblSetOffloaded.textContent = h.offloaded;
+      const lblSetThrough = document.getElementById('lblSetThrough');
+      if (lblSetThrough) lblSetThrough.textContent = h.throughCargo;
+      const lblHubStagedItems = document.getElementById('lblHubStagedItems');
+      if (lblHubStagedItems) lblHubStagedItems.textContent = h.stagedItems;
+      const hubStagedEmptyText = document.getElementById('hubStagedEmptyText');
+      if (hubStagedEmptyText) hubStagedEmptyText.textContent = h.stagedEmpty;
+      const hubStagedStatusNote = document.getElementById('hubStagedStatusNote');
+      if (hubStagedStatusNote) hubStagedStatusNote.textContent = h.stagedNote;
+      
+      const modalOffloadTitle = document.getElementById('modalOffloadTitle');
+      if (modalOffloadTitle) modalOffloadTitle.textContent = h.modalTitle;
+      const modalOffloadGuideText = document.getElementById('modalOffloadGuideText');
+      if (modalOffloadGuideText) modalOffloadGuideText.innerHTML = h.modalGuide;
+      const lblScanSimulator = document.getElementById('lblScanSimulator');
+      if (lblScanSimulator) lblScanSimulator.textContent = h.simulatorLabel;
 
       const kpiInTransitLabel = document.getElementById('kpiInTransitLabel');
       if (kpiInTransitLabel) kpiInTransitLabel.textContent = t.dash.kpiInTransit;
@@ -1375,6 +1802,9 @@
       if (btnCancelDriver) btnCancelDriver.textContent = t.modals.cancel;
       const btnSubmitDriverText = document.getElementById('btnSubmitDriverText');
       if (btnSubmitDriverText) btnSubmitDriverText.textContent = t.modals.drvSubmit;
+
+      if (typeof applyRbacPermissions === 'function') applyRbacPermissions();
+      if (typeof initHubStationView === 'function') initHubStationView();
     }
 
     function showNearbyStationsAlert() {
@@ -1488,6 +1918,9 @@
       const userAvatar = document.getElementById('userAvatar');
       const userNameHeader = document.getElementById('userNameHeader');
       const userRoleBadge = document.getElementById('userRoleBadge');
+      const userStationHeaderBadge = document.getElementById('userStationHeaderBadge');
+
+      const isStaffAdmin = currentUser && (currentUser.isAdmin || currentUser.stationCode === 'ALL' || (currentUser.id && currentUser.id.toLowerCase() === 'admin'));
 
       if (currentRole === 'staff') {
         // Staff Role:
@@ -1499,7 +1932,23 @@
           userNameHeader.textContent = (currentUser && currentUser.name) ? currentUser.name : 'Somchai P.';
         }
         if (userRoleBadge) {
-          userRoleBadge.textContent = currentLang === 'th' ? 'เจ้าหน้าที่' : 'Staff';
+          userRoleBadge.textContent = isStaffAdmin
+            ? (currentLang === 'th' ? 'ผู้ดูแลระบบส่วนกลาง (Admin)' : 'System Admin')
+            : (currentLang === 'th' ? 'เจ้าหน้าที่ประจำฮับ' : 'Station Staff');
+        }
+        if (userStationHeaderBadge) {
+          const stCode = (currentUser && currentUser.stationCode) ? currentUser.stationCode : (currentStaffStation || 'NSN');
+          if (isStaffAdmin) {
+            userStationHeaderBadge.textContent = currentLang === 'th' ? '🌐 ทุกศูนย์ฮับ (All Hubs)' : '🌐 All Hubs';
+            userStationHeaderBadge.style.background = '#EFF6FF';
+            userStationHeaderBadge.style.borderColor = '#BFDBFE';
+            userStationHeaderBadge.style.color = '#1D4ED8';
+          } else {
+            userStationHeaderBadge.textContent = `📍 ${stCode} Hub`;
+            userStationHeaderBadge.style.background = '#FFEBEC';
+            userStationHeaderBadge.style.borderColor = '#FFDAD6';
+            userStationHeaderBadge.style.color = '#ED1C24';
+          }
         }
         if (userAvatar && currentUser && currentUser.name) {
           const initials = currentUser.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
@@ -1653,6 +2102,470 @@
         switchTab('dashboard');
       }
     }
+
+    // ================= HUB & CONSIGNMENT SET OPERATIONS =================
+    const isStaffAdmin = currentUser && (currentUser.isAdmin || currentUser.stationCode === 'ALL' || (currentUser.id && currentUser.id.toLowerCase() === 'admin'));
+    let currentStaffStation = (!isStaffAdmin && currentUser && currentUser.stationCode) 
+      ? currentUser.stationCode 
+      : (localStorage.getItem('swiftroute_station') || 'NSN');
+    let currentSetFilter = 'all';
+
+    const HUB_STATION_NAMES = {
+      'NSN': { th: 'ศูนย์ฮับนครสวรรค์ (NSN Hub)', en: 'Nakhon Sawan Hub (NSN)' },
+      'WNI': { th: 'ศูนย์คัดแยกวังน้อย (WNI Sorting Center)', en: 'Wang Noi Sorting Center (WNI)' },
+      'BKK': { th: 'ศูนย์กระจายสินค้ากลาง กรุงเทพฯ (BKK)', en: 'Bangkok Central Depot (BKK)' },
+      'LPG': { th: 'ศูนย์ฮับลำปาง (LPG Hub)', en: 'Lampang Hub (LPG)' },
+      'CNX': { th: 'สถานีปลายทางเชียงใหม่ (CNX)', en: 'Chiang Mai Station (CNX)' }
+    };
+
+    // Consignment Set data (42 parcels on board TK-19)
+    const SET_INBOUND_TRUCK = {
+      setNumber: 'SET-2609-19',
+      truckId: 'TK-19',
+      driverName: 'อนันต์ สุขสมบูรณ์',
+      driverPhone: '089-123-4567',
+      parcels: [
+        // 10 parcels destined for Nakhon Sawan (NSN):
+        { tn: 'SR-2609-118245', recipient: 'สมชาย พงษ์ไพศาล', dest: 'NSN', destName: 'นครสวรรค์', weight: '2.4 kg', item: 'อะไหล่เครื่องจักร (รอตรวจสภาพ)', offloaded: false, status: 'exception' },
+        { tn: 'SR-2609-118252', recipient: 'อนันต์ สุขสมบูรณ์', dest: 'NSN', destName: 'นครสวรรค์', weight: '1.2 kg', item: 'เอกสารสำคัญสำนักงาน', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118260', recipient: 'วิภาดา รัตนกุล', dest: 'NSN', destName: 'นครสวรรค์', weight: '4.8 kg', item: 'เวชภัณฑ์ยาควบคุม', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118261', recipient: 'บจก. นครสวรรค์ค้าไม้', dest: 'NSN', destName: 'นครสวรรค์', weight: '14.5 kg', item: 'วัสดุก่อสร้างชิ้นเล็ก', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118262', recipient: 'ธนาคารไทยพาณิชย์ สาขานครสวรรค์', dest: 'NSN', destName: 'นครสวรรค์', weight: '2.8 kg', item: 'เอกสารสัญญาการเงิน', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118263', recipient: 'รพ.สวรรค์ประชารักษ์', dest: 'NSN', destName: 'นครสวรรค์', weight: '6.2 kg', item: 'อุปกรณ์การแพทย์', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118264', recipient: 'กิตติศักดิ์ ชัยชนะ', dest: 'NSN', destName: 'นครสวรรค์', weight: '1.1 kg', item: 'อุปกรณ์อิเล็กทรอนิกส์', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118265', recipient: 'พัชรี สุนทร', dest: 'NSN', destName: 'นครสวรรค์', weight: '2.0 kg', item: 'เสื้อผ้าและสิ่งทอ', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118266', recipient: 'สุรชัย แซ่ตั้ง', dest: 'NSN', destName: 'นครสวรรค์', weight: '3.5 kg', item: 'สินค้าอุปโภคบริโภค', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118267', recipient: 'สหกรณ์การเกษตรนครสวรรค์', dest: 'NSN', destName: 'นครสวรรค์', weight: '8.0 kg', item: 'เมล็ดพันธุ์พืช', offloaded: false, status: 'in transit' },
+        
+        // 12 parcels destined for Lampang (LPG):
+        { tn: 'SR-2609-118251', recipient: 'กัญญารัตน์ สายทอง', dest: 'LPG', destName: 'ลำปาง', weight: '5.0 kg', item: 'เซรามิกตกแต่ง', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118270', recipient: 'ศูนย์หัตถกรรมลำปาง', dest: 'LPG', destName: 'ลำปาง', weight: '7.8 kg', item: 'ถ้วยชามตราไก่', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118271', recipient: 'ลำปางไอที เซอร์วิส', dest: 'LPG', destName: 'ลำปาง', weight: '4.2 kg', item: 'ชิ้นส่วนอิเล็กทรอนิกส์', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118272', recipient: 'ร้านเขลางค์พาณิชย์', dest: 'LPG', destName: 'ลำปาง', weight: '10.5 kg', item: 'อุปกรณ์ฮาร์ดแวร์', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118273', recipient: 'สหกรณ์ผู้ปลูกสับปะรด', dest: 'LPG', destName: 'ลำปาง', weight: '16.0 kg', item: 'ปุ๋ยชีวภาพ', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118274', recipient: 'ดนัย รัตนโชติ', dest: 'LPG', destName: 'ลำปาง', weight: '1.8 kg', item: 'รองเท้ากีฬา', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118275', recipient: 'ปวีณา ใจมั่น', dest: 'LPG', destName: 'ลำปาง', weight: '3.2 kg', item: 'เครื่องใช้ไฟฟ้าเล็ก', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118276', recipient: 'วิทยาลัยเทคนิคลำปาง', dest: 'LPG', destName: 'ลำปาง', weight: '9.0 kg', item: 'ชุดอุปกรณ์ฝึกช่าง', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118277', recipient: 'สุมาลี วงศ์วาน', dest: 'LPG', destName: 'ลำปาง', weight: '2.5 kg', item: 'เครื่องสำอางสมุนไพร', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118278', recipient: 'ธีรศักดิ์ วงศ์ใหญ่', dest: 'LPG', destName: 'ลำปาง', weight: '0.9 kg', item: 'นาฬิกาข้อมือ', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118279', recipient: 'รพ.ลำปาง', dest: 'LPG', destName: 'ลำปาง', weight: '5.5 kg', item: 'น้ำยาตรวจวิเคราะห์', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118280', recipient: 'ร้านหนังสือเมืองรถม้า', dest: 'LPG', destName: 'ลำปาง', weight: '4.0 kg', item: 'หนังสือและสื่อพิมพ์', offloaded: false, status: 'in transit' },
+
+        // 20 parcels destined for Chiang Mai (CNX):
+        { tn: 'SR-2609-118253', recipient: 'วิชัย เกียรติดำรง', dest: 'CNX', destName: 'เชียงใหม่', weight: '2.1 kg', item: 'คอมพิวเตอร์และอุปกรณ์', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118281', recipient: 'มหาวิทยาลัยเชียงใหม่', dest: 'CNX', destName: 'เชียงใหม่', weight: '15.0 kg', item: 'เอกสารงานวิจัยวิชาการ', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118282', recipient: 'ศิริพร บุญยืน', dest: 'CNX', destName: 'เชียงใหม่', weight: '1.9 kg', item: 'ผลิตภัณฑ์ชาใบเมี่ยง', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118283', recipient: 'ณัฐพงษ์ แก้วมณี', dest: 'CNX', destName: 'เชียงใหม่', weight: '3.6 kg', item: 'หนังสือและแบบเรียน', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118284', recipient: 'โรงแรมดอยคำวิว', dest: 'CNX', destName: 'เชียงใหม่', weight: '11.4 kg', item: 'ชุดเครื่องนอนโรงแรม', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118285', recipient: 'คาเฟ่นิมมานฯ', dest: 'CNX', destName: 'เชียงใหม่', weight: '8.2 kg', item: 'เมล็ดกาแฟคั่วพิเศษ', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118286', recipient: 'ศิรินภา อินทนนท์', dest: 'CNX', destName: 'เชียงใหม่', weight: '2.7 kg', item: 'เสื้อกันหนาวขนแกะ', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118287', recipient: 'ร้านเชียงใหม่เบเกอรี่', dest: 'CNX', destName: 'เชียงใหม่', weight: '18.0 kg', item: 'แป้งสาลีนำเข้า', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118288', recipient: 'ธนวัฒน์ ศรีภูมิ', dest: 'CNX', destName: 'เชียงใหม่', weight: '3.3 kg', item: 'อะไหล่โดรนถ่ายภาพ', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118289', recipient: 'บจก. ล้านนาซอฟต์แวร์', dest: 'CNX', destName: 'เชียงใหม่', weight: '4.5 kg', item: 'อุปกรณ์เซิร์ฟเวอร์', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118290', recipient: 'ศูนย์อนุรักษ์ช้างไทย', dest: 'CNX', destName: 'เชียงใหม่', weight: '12.0 kg', item: 'เวชภัณฑ์สัตว์ใหญ่', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118291', recipient: 'พิพิธภัณฑ์ร่วมสมัย', dest: 'CNX', destName: 'เชียงใหม่', weight: '7.1 kg', item: 'งานประติมากรรมจำลอง', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118292', recipient: 'รพ.มหาราชนครเชียงใหม่', dest: 'CNX', destName: 'เชียงใหม่', weight: '5.8 kg', item: 'ชุดตรวจแล็บเฉพาะทาง', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118293', recipient: 'เอกชัย ชัยชนะ', dest: 'CNX', destName: 'เชียงใหม่', weight: '1.5 kg', item: 'กล้องแอคชั่นแคม', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118294', recipient: 'อุทยานวิทยาศาสตร์ภาคเหนือ', dest: 'CNX', destName: 'เชียงใหม่', weight: '9.2 kg', item: 'เครื่องมือวัดแม่นยำ', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118295', recipient: 'กมลพร ทิพย์โอสถ', dest: 'CNX', destName: 'เชียงใหม่', weight: '2.0 kg', item: 'วิตามินนำเข้า', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118296', recipient: 'สวนพฤกษศาสตร์สมเด็จพระนางเจ้าสิริกิติ์', dest: 'CNX', destName: 'เชียงใหม่', weight: '6.4 kg', item: 'เมล็ดพันธุ์กล้วยไม้', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118297', recipient: 'ดารินทร์ เมธา', dest: 'CNX', destName: 'เชียงใหม่', weight: '1.3 kg', item: 'เครื่องประดับเงินแท้', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118298', recipient: 'ชุมชนหัตถกรรมบ้านถวาย', dest: 'CNX', destName: 'เชียงใหม่', weight: '14.0 kg', item: 'ไม้แกะสลักพรีเมียม', offloaded: false, status: 'in transit' },
+        { tn: 'SR-2609-118299', recipient: 'สหกรณ์ผู้เลี้ยงโคนมเชียงใหม่', dest: 'CNX', destName: 'เชียงใหม่', weight: '8.5 kg', item: 'อุปกรณ์แปรรูปนม', offloaded: false, status: 'in transit' }
+      ]
+    };
+
+    function initHubStationView() {
+      const isStaffAdmin = currentUser && (currentUser.isAdmin || currentUser.stationCode === 'ALL' || (currentUser.id && currentUser.id.toLowerCase() === 'admin'));
+      if (!isStaffAdmin && currentUser && currentUser.stationCode) {
+        currentStaffStation = currentUser.stationCode;
+        localStorage.setItem('swiftroute_station', currentStaffStation);
+      }
+
+      const hubStationSelector = document.getElementById('hubStationSelector');
+      const hubStationLockBadge = document.getElementById('hubStationLockBadge');
+      const lblHubStationSelector = document.getElementById('lblHubStationSelector');
+
+      if (hubStationSelector) {
+        hubStationSelector.value = currentStaffStation;
+        if (!isStaffAdmin) {
+          hubStationSelector.disabled = true;
+          hubStationSelector.style.background = '#F1F5F9';
+          hubStationSelector.style.color = '#64748B';
+          hubStationSelector.style.cursor = 'not-allowed';
+          if (lblHubStationSelector) {
+            lblHubStationSelector.textContent = currentLang === 'th' ? 'สถานีประจำการของคุณ:' : 'Your Assigned Hub:';
+          }
+          if (hubStationLockBadge) {
+            hubStationLockBadge.style.display = 'inline-flex';
+            hubStationLockBadge.textContent = currentLang === 'th' ? `🔒 ประจำการเฉพาะศูนย์ ${currentStaffStation}` : `🔒 Stationed at ${currentStaffStation} only`;
+          }
+        } else {
+          hubStationSelector.disabled = false;
+          hubStationSelector.style.background = '#FFFFFF';
+          hubStationSelector.style.color = '#1A1A1A';
+          hubStationSelector.style.cursor = 'pointer';
+          if (lblHubStationSelector) {
+            lblHubStationSelector.textContent = currentLang === 'th' ? 'สลับสถานีประจำการ (Admin):' : 'Switch Station (Admin):';
+          }
+          if (hubStationLockBadge) {
+            hubStationLockBadge.style.display = 'none';
+          }
+        }
+      }
+      updateHubStationUI();
+    }
+
+    function onHubStationChange(stationCode) {
+      const isStaffAdmin = currentUser && (currentUser.isAdmin || currentUser.stationCode === 'ALL' || (currentUser.id && currentUser.id.toLowerCase() === 'admin'));
+      if (!isStaffAdmin && currentUser && currentUser.stationCode && currentUser.stationCode !== stationCode) {
+        Swal.fire({
+          icon: 'warning',
+          title: currentLang === 'th' ? 'สิทธิ์การเข้าถึงสถานี' : 'Station Access Restricted',
+          text: currentLang === 'th'
+            ? `บัญชีพนักงานของคุณประจำการอยู่ที่ศูนย์ ${currentUser.stationCode} เท่านั้น ไม่สามารถสลับไปศูนย์อื่นได้`
+            : `Your staff account is assigned to Hub ${currentUser.stationCode} only. You cannot switch to another station.`,
+          confirmButtonColor: '#ED1C24'
+        });
+        const hubStationSelector = document.getElementById('hubStationSelector');
+        if (hubStationSelector) hubStationSelector.value = currentStaffStation;
+        return;
+      }
+
+      currentStaffStation = stationCode;
+      localStorage.setItem('swiftroute_station', stationCode);
+      updateHubStationUI();
+      renderSetParcelsTable();
+
+      const stName = (HUB_STATION_NAMES[stationCode] && HUB_STATION_NAMES[stationCode][currentLang]) || stationCode;
+      Toast.fire({
+        icon: 'info',
+        title: currentLang === 'th' ? `สลับประจำการ: ${stName}` : `Station switched to: ${stName}`
+      });
+    }
+
+    function updateHubStationUI() {
+      const stObj = HUB_STATION_NAMES[currentStaffStation] || { th: currentStaffStation, en: currentStaffStation };
+      const stName = stObj[currentLang] || stObj.th;
+
+      const hubCurrentStationName = document.getElementById('hubCurrentStationName');
+      if (hubCurrentStationName) hubCurrentStationName.textContent = stName;
+
+      const modalOffloadCurrentStation = document.getElementById('modalOffloadCurrentStation');
+      if (modalOffloadCurrentStation) modalOffloadCurrentStation.textContent = stName;
+
+      // Calculate stats based on current staff station
+      const targetParcels = SET_INBOUND_TRUCK.parcels.filter(p => p.dest === currentStaffStation);
+      const offloadedParcels = targetParcels.filter(p => p.offloaded);
+      const throughParcels = SET_INBOUND_TRUCK.parcels.filter(p => p.dest !== currentStaffStation);
+
+      const hubTargetDropoffCount = document.getElementById('hubTargetDropoffCount');
+      if (hubTargetDropoffCount) hubTargetDropoffCount.textContent = targetParcels.length;
+
+      const hubOffloadedCount = document.getElementById('hubOffloadedCount');
+      if (hubOffloadedCount) hubOffloadedCount.textContent = offloadedParcels.length;
+
+      const hubOffloadedTotalRatio = document.getElementById('hubOffloadedTotalRatio');
+      if (hubOffloadedTotalRatio) {
+        hubOffloadedTotalRatio.textContent = `/ ${targetParcels.length} ${currentLang === 'th' ? 'ชิ้น' : 'pcs'}`;
+      }
+
+      const hubThroughCargoCount = document.getElementById('hubThroughCargoCount');
+      if (hubThroughCargoCount) hubThroughCargoCount.textContent = throughParcels.length;
+
+      const btnQuickOffloadAllText = document.getElementById('btnQuickOffloadAllText');
+      if (btnQuickOffloadAllText) {
+        btnQuickOffloadAllText.textContent = currentLang === 'th' ? `⚡ ยกลงทั้ง ${targetParcels.length} ชิ้น` : `⚡ Auto-Offload All (${targetParcels.length})`;
+      }
+
+      // Update Staged Chips
+      const hubStagedChips = document.getElementById('hubStagedChips');
+      if (hubStagedChips) {
+        if (offloadedParcels.length === 0) {
+          hubStagedChips.innerHTML = `<span id="hubStagedEmptyText" style="font-size: 12px; color: #94A3B8; font-style: italic;">${I18N_ADMIN[currentLang]?.hub?.stagedEmpty || 'ยังไม่มีพัสดุยกลง (กดปุ่มสแกนด้านบนเพื่อเริ่มยกลง)'}</span>`;
+        } else {
+          hubStagedChips.innerHTML = offloadedParcels.map(p => `
+            <span style="display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: #EAF5ED; border: 1px solid #BCE3C6; border-radius: 9999px; font-family: monospace; font-size: 11px; font-weight: 600; color: #2E7D32;">
+              <span style="width: 5px; height: 5px; border-radius: 9999px; background: #2E7D32;"></span>
+              ${p.tn}
+            </span>
+          `).join('');
+        }
+      }
+
+      // Update count badge in modal filter
+      const countOffloadedFilter = document.getElementById('countOffloadedFilter');
+      if (countOffloadedFilter) countOffloadedFilter.textContent = offloadedParcels.length;
+    }
+
+    function openOffloadModal() {
+      const modal = document.getElementById('modalOffloadScan');
+      if (!modal) return;
+      modal.style.display = 'flex';
+      renderSetParcelsTable();
+      setTimeout(() => {
+        const input = document.getElementById('scanTrackingInput');
+        if (input) {
+          input.focus();
+          input.select();
+        }
+      }, 100);
+    }
+
+    function closeOffloadModal() {
+      const modal = document.getElementById('modalOffloadScan');
+      if (modal) modal.style.display = 'none';
+      const feedbackBox = document.getElementById('scanFeedbackBox');
+      if (feedbackBox) feedbackBox.style.display = 'none';
+    }
+
+    function filterSetView(filterType) {
+      currentSetFilter = filterType;
+      const btns = document.querySelectorAll('.set-filter-btn');
+      btns.forEach(b => {
+        b.classList.remove('active');
+        b.style.background = '#FFFFFF';
+        b.style.color = '#1A1A1A';
+        b.style.border = '1px solid #CBD5E1';
+      });
+      const activeBtn = document.getElementById(`btnFilterSet${filterType.charAt(0).toUpperCase() + filterType.slice(1)}`);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.background = '#ED1C24';
+        activeBtn.style.color = '#fff';
+        activeBtn.style.border = '0';
+      }
+      renderSetParcelsTable();
+    }
+
+    function renderSetParcelsTable() {
+      const tbody = document.getElementById('setParcelsTableBody');
+      if (!tbody) return;
+
+      let list = SET_INBOUND_TRUCK.parcels;
+      if (currentSetFilter === 'target') {
+        list = list.filter(p => p.dest === currentStaffStation);
+      } else if (currentSetFilter === 'offloaded') {
+        list = list.filter(p => p.offloaded);
+      } else if (currentSetFilter === 'through') {
+        list = list.filter(p => p.dest !== currentStaffStation);
+      }
+
+      const summaryText = document.getElementById('setItemsSummaryText');
+      if (summaryText) {
+        summaryText.textContent = currentLang === 'th' ? `แสดง ${list.length} จาก 42 รายการในชุดสินค้า` : `Showing ${list.length} of 42 items in set`;
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 24px; color: #94A3B8;">${currentLang === 'th' ? 'ไม่พบรายการพัสดุในหมวดหมู่นี้' : 'No parcels found for this filter'}</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(p => {
+        const isThisHub = p.dest === currentStaffStation;
+        let badgeBg, badgeFg, badgeBorder, badgeText;
+        let actionBtnHtml = '';
+
+        if (p.offloaded) {
+          badgeBg = '#EAF5ED'; badgeFg = '#2E7D32'; badgeBorder = '#BCE3C6';
+          badgeText = currentLang === 'th' ? '✅ ยกลงเข้าคลังแล้ว' : '✅ Staged in Hub';
+          actionBtnHtml = `<span style="font-size: 11px; font-weight: 600; color: #2E7D32;">พักในคลัง</span>`;
+        } else if (isThisHub) {
+          badgeBg = '#FFF0F1'; badgeFg = '#ED1C24'; badgeBorder = '#FFDAD6';
+          badgeText = currentLang === 'th' ? '🎯 ปลายทางศูนย์นี้ (ต้องยกลง)' : '🎯 Target this Hub';
+          actionBtnHtml = `
+            <button type="button" onclick="scanSpecific('${p.tn}');" style="height: 28px; padding: 0 12px; background: #ED1C24; color: #fff; border: 0; border-radius: 9999px; font-size: 11px; font-weight: 600; cursor: pointer;">
+              ${currentLang === 'th' ? 'ยกลง' : 'Offload'}
+            </button>
+          `;
+        } else {
+          badgeBg = '#F8FAFC'; badgeFg = '#0364AD'; badgeBorder = '#CBD5E1';
+          badgeText = currentLang === 'th' ? `🚛 ส่งต่อ [${p.destName}]` : `🚛 Through [${p.dest}]`;
+          actionBtnHtml = `
+            <button type="button" onclick="scanSpecific('${p.tn}');" title="คลิกเพื่อทดสอบระบบแจ้งเตือนกรณีสแกนผิดชิ้น" style="height: 28px; padding: 0 10px; background: #FFF; color: #64748B; border: 1px solid #CBD5E1; border-radius: 9999px; font-size: 11px; cursor: pointer;">
+              ${currentLang === 'th' ? 'คงไว้บนรถ' : 'Keep on Truck'}
+            </button>
+          `;
+        }
+
+        return `
+          <tr style="border-bottom: 1px solid #F1F5F9;">
+            <td style="padding: 10px 14px; font-family: ui-monospace, monospace; font-weight: 600; color: #0364AD;">
+              ${p.tn}
+            </td>
+            <td style="padding: 10px 14px; color: #1E293B;">
+              <div style="font-weight: 500;">${p.recipient}</div>
+              <div style="font-size: 11px; color: #64748B;">${p.item} · ${p.weight}</div>
+            </td>
+            <td style="padding: 10px 14px; white-space: nowrap;">
+              <span style="font-weight: 600; color: ${isThisHub ? '#ED1C24' : '#1E293B'};">${p.destName} (${p.dest})</span>
+            </td>
+            <td style="padding: 10px 14px; white-space: nowrap;">
+              <span style="display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 9999px; font-size: 11px; font-weight: 500; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${badgeBorder};">
+                ${badgeText}
+              </span>
+            </td>
+            <td style="padding: 10px 14px; text-align: right; white-space: nowrap;">
+              ${actionBtnHtml}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function handleOffloadBarcodeSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('scanTrackingInput');
+      if (!input) return;
+      const tn = input.value.trim().toUpperCase();
+      if (!tn) return;
+      await processParcelScan(tn);
+      input.value = '';
+    }
+
+    async function scanSpecific(trackingNumber) {
+      const input = document.getElementById('scanTrackingInput');
+      if (input) input.value = trackingNumber;
+      await processParcelScan(trackingNumber);
+    }
+
+    async function processParcelScan(tn) {
+      const feedback = document.getElementById('scanFeedbackBox');
+      const parcel = SET_INBOUND_TRUCK.parcels.find(p => p.tn.toUpperCase() === tn.toUpperCase());
+
+      if (!parcel) {
+        if (feedback) {
+          feedback.style.display = 'flex';
+          feedback.style.background = '#FEF2F2';
+          feedback.style.color = '#991B1B';
+          feedback.style.border = '1px solid #F87171';
+          feedback.innerHTML = `❌ ${currentLang === 'th' ? `ไม่พบพัสดุ <b>${tn}</b> ในชุดสินค้า SET-2609-19 บนรถ TK-19` : `Parcel <b>${tn}</b> not found on truck TK-19 (SET-2609-19)`}`;
+        }
+        return;
+      }
+
+      // Check destination against current staff station
+      if (parcel.dest !== currentStaffStation) {
+        // Warning: This parcel is intended for downstream station!
+        if (feedback) {
+          feedback.style.display = 'flex';
+          feedback.style.background = '#FFFBEB';
+          feedback.style.color = '#B45309';
+          feedback.style.border = '1px solid #FCD34D';
+          feedback.innerHTML = `⚠️ ${currentLang === 'th' ? `<b>แจ้งเตือน:</b> พัสดุ <code>${parcel.tn}</code> มีปลายทาง [<b>${parcel.destName} (${parcel.dest})</b>] ห้ามยกลง! กรุณาคงไว้บนรถ TK-19 เพื่อส่งต่อไปยังสถานีถัดไป` : `<b>WARNING:</b> Parcel <code>${parcel.tn}</code> is destined for [<b>${parcel.destName} (${parcel.dest})</b>]. Do NOT offload! Keep on truck TK-19 for subsequent hubs.`}`;
+        }
+        Swal.fire({
+          icon: 'warning',
+          title: currentLang === 'th' ? 'ห้ามยกลง! พัสดุสำหรับสถานีถัดไป' : 'Do Not Offload!',
+          html: currentLang === 'th' 
+            ? `พัสดุ <b>${parcel.tn}</b><br>ปลายทาง: <b style="color:#ED1C24;">${parcel.destName} (${parcel.dest})</b><br><br>กรุณาคงไว้บนรถ TK-19 เพื่อส่งต่อไปยังศูนย์ปลายทาง` 
+            : `Parcel <b>${parcel.tn}</b> is routed to <b style="color:#ED1C24;">${parcel.destName} (${parcel.dest})</b>.<br>Please keep it on truck TK-19.`,
+          confirmButtonColor: '#ED1C24',
+          confirmButtonText: currentLang === 'th' ? 'รับทราบ' : 'OK'
+        });
+        return;
+      }
+
+      if (parcel.offloaded) {
+        if (feedback) {
+          feedback.style.display = 'flex';
+          feedback.style.background = '#F0FDF4';
+          feedback.style.color = '#166534';
+          feedback.style.border = '1px solid #86EFAC';
+          feedback.innerHTML = `ℹ️ ${currentLang === 'th' ? `พัสดุ <b>${parcel.tn}</b> ถูกสแกนยกลงเข้าคลังศูนย์ฮับแล้ว` : `Parcel <b>${parcel.tn}</b> has already been offloaded into hub inventory.`}`;
+        }
+        return;
+      }
+
+      // Valid offload for this hub!
+      parcel.offloaded = true;
+      updateHubStationUI();
+      renderSetParcelsTable();
+
+      // Show immediate success feedback
+      if (feedback) {
+        feedback.style.display = 'flex';
+        feedback.style.background = '#F0FDF4';
+        feedback.style.color = '#166534';
+        feedback.style.border = '1px solid #86EFAC';
+        feedback.innerHTML = `✅ ${currentLang === 'th' ? `<b>สแกนยกลงสำเร็จ:</b> พัสดุ <code>${parcel.tn}</code> (${parcel.recipient}) นำเข้าพักในคลังศูนย์ฮับเรียบร้อย (ตัดออกจากรถ TK-19)` : `<b>Offloaded Successfully:</b> <code>${parcel.tn}</code> (${parcel.recipient}) staged in hub inventory (detached from TK-19)`}`;
+      }
+
+      Toast.fire({
+        icon: 'success',
+        title: currentLang === 'th' ? `ยกลง ${parcel.tn} เข้าคลังสำเร็จ` : `${parcel.tn} offloaded to hub`
+      });
+
+      // Call /api/offload
+      try {
+        const stName = (HUB_STATION_NAMES[currentStaffStation] && HUB_STATION_NAMES[currentStaffStation].th) || currentStaffStation;
+        await fetch('/api/offload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            trackingNumbers: [parcel.tn],
+            stationCode: currentStaffStation,
+            stationName: stName,
+            truckId: SET_INBOUND_TRUCK.truckId
+          })
+        });
+      } catch (err) {
+        console.warn('Offload API sync fallback:', err.message);
+      }
+    }
+
+    async function autoOffloadAllForHub() {
+      const targetParcels = SET_INBOUND_TRUCK.parcels.filter(p => p.dest === currentStaffStation);
+      const pendingToOffload = targetParcels.filter(p => !p.offloaded);
+
+      if (pendingToOffload.length === 0) {
+        Swal.fire({
+          icon: 'info',
+          title: currentLang === 'th' ? 'ยกลงครบแล้ว' : 'All Offloaded',
+          text: currentLang === 'th' ? `พัสดุปลายทางศูนย์นี้ทั้ง ${targetParcels.length} ชิ้นถูกยกลงเข้าคลังพักรอเรียบร้อยแล้ว` : `All ${targetParcels.length} parcels for this hub have already been offloaded.`,
+          confirmButtonColor: '#ED1C24'
+        });
+        return;
+      }
+
+      pendingToOffload.forEach(p => p.offloaded = true);
+      updateHubStationUI();
+      renderSetParcelsTable();
+
+      const feedback = document.getElementById('scanFeedbackBox');
+      if (feedback) {
+        feedback.style.display = 'flex';
+        feedback.style.background = '#F0FDF4';
+        feedback.style.color = '#166534';
+        feedback.style.border = '1px solid #86EFAC';
+        feedback.innerHTML = `⚡ ${currentLang === 'th' ? `<b>ยกลงครบทั้งหมด:</b> ทำการสแกนยกลงพัสดุปลายทางศูนย์นี้ทั้ง ${targetParcels.length} ชิ้น เข้าสู่คลังพักเรียบร้อย` : `<b>Bulk Offload Complete:</b> All ${targetParcels.length} parcels for this hub offloaded into staging inventory.`}`;
+      }
+
+      Toast.fire({
+        icon: 'success',
+        title: currentLang === 'th' ? `ยกลงครบทั้ง ${pendingToOffload.length} ชิ้นเรียบร้อย` : `All ${pendingToOffload.length} parcels offloaded`
+      });
+
+      // Call API with all tracking numbers
+      try {
+        const stName = (HUB_STATION_NAMES[currentStaffStation] && HUB_STATION_NAMES[currentStaffStation].th) || currentStaffStation;
+        await fetch('/api/offload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            trackingNumbers: pendingToOffload.map(p => p.tn),
+            stationCode: currentStaffStation,
+            stationName: stName,
+            truckId: SET_INBOUND_TRUCK.truckId
+          })
+        });
+      } catch (err) {
+        console.warn('Bulk offload API error:', err.message);
+      }
+    }
+
+    // Initialize Hub Station View
+    initHubStationView();
 
     // ================= MANIFESTS LOGIC =================
     const modalNewManifest = document.getElementById('modalNewManifest');
@@ -2048,21 +2961,28 @@
         const parcels = data.parcels || [];
 
         parcelsTableBody.innerHTML = '';
+        if (parcels.length === 0) {
+          const emptyText = currentLang === 'th' ? 'ไม่พบรายการพัสดุในหมวดหมู่นี้' : 'No parcels found for this filter';
+          parcelsTableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 32px; color: #94A3B8; font-size: 14px;">${emptyText}</td></tr>`;
+        }
+
         parcels.forEach(p => {
           let badgeBg = '#E6F0F8', badgeFg = '#0364AD', border = '#CCE1F0', rawLabel = 'In transit';
-          const st = (p.status || '').toLowerCase();
-          if (st === 'exception' || st === 'delayed') {
+          const st = (p.status || '').toLowerCase().replace(/[-_\s]/g, '');
+          if (st === 'exception' || st === 'delayed' || st === 'hold') {
             badgeBg = '#FEF4E6'; badgeFg = '#E67E00'; border = '#FCDCB5'; rawLabel = 'Exception';
           } else if (st === 'delivered') {
             badgeBg = '#EAF5ED'; badgeFg = '#2E7D32'; border = '#BCE3C6'; rawLabel = 'Delivered';
           } else if (st === 'pending') {
             badgeBg = '#F8FAFC'; badgeFg = '#64748B'; border = '#E2E8F0'; rawLabel = 'Pending';
+          } else if (st === 'intransit') {
+            badgeBg = '#E6F0F8'; badgeFg = '#0364AD'; border = '#CCE1F0'; rawLabel = 'In transit';
           }
 
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td style="font-family: ui-monospace, monospace; font-size: 13px; white-space: nowrap;">
-              <a href="index.html?tn=${p.tracking_number}" target="_blank" style="color: #0364AD; font-weight: 500;">${p.tracking_number}</a>
+              <a href="index.html?tn=${p.tracking_number}" target="_blank" style="color: #0364AD; font-weight: 600;">${p.tracking_number}</a>
             </td>
             <td style="white-space: nowrap;">${p.route}</td>
             <td style="white-space: nowrap;">${localizeStation(p.current_station_name || p.current_station_code || '—')}</td>
@@ -2074,6 +2994,12 @@
               </span>
             </td>
             <td style="white-space: nowrap; color: #42474f; font-variant-numeric: tabular-nums;">${p.eta || '—'}</td>
+            <td style="white-space: nowrap; text-align: right;">
+              <button type="button" onclick="openParcelLogsModal('${p.tracking_number}');" style="height: 28px; padding: 0 12px; background: #FFF0F1; color: #ED1C24; border: 1px solid #FFDAD6; border-radius: 9999px; font-family: 'Kanit', sans-serif; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.15s;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                ${currentLang === 'th' ? 'ประวัติ & เปลี่ยนสถานะ' : 'Logs & Status'}
+              </button>
+            </td>
           `;
           parcelsTableBody.appendChild(tr);
         });
@@ -2107,6 +3033,208 @@
       searchQuery = e.target.value;
       loadParcels();
     });
+
+    // ================= PARCEL AUDIT LOGS & STATUS UPDATE MODAL =================
+    let activeLogTrackingNumber = null;
+
+    window.openParcelLogsModal = async function(tn) {
+      activeLogTrackingNumber = tn;
+      const modal = document.getElementById('modalParcelLogs');
+      const tnLabel = document.getElementById('logModalTrackingNumber');
+      const subLabel = document.getElementById('logModalSubtitle');
+      const inputStation = document.getElementById('inputLogStation');
+      const container = document.getElementById('parcelLogsTimelineContainer');
+      const totalBadge = document.getElementById('logModalTotalCount');
+
+      if (tnLabel) tnLabel.textContent = tn;
+      if (inputStation) {
+        const stName = (HUB_STATION_NAMES[currentStaffStation] && HUB_STATION_NAMES[currentStaffStation][currentLang]) || currentStaffStation;
+        inputStation.value = `${stName} (${currentStaffStation})`;
+      }
+
+      if (modal) modal.style.display = 'flex';
+      if (container) {
+        container.innerHTML = `<div style="text-align: center; padding: 24px; color: #94A3B8; font-size: 13px;">${currentLang === 'th' ? 'กำลังโหลดบันทึกประวัติสถานะ...' : 'Loading status logs...'}</div>`;
+      }
+
+      try {
+        const res = await fetch(`/api/parcel-logs?tn=${encodeURIComponent(tn)}`);
+        const data = await res.json();
+        const logs = data.logs || [];
+
+        if (data.parcel) {
+          const stBadge = document.getElementById('logModalCurrentStatusBadge');
+          if (stBadge) {
+            const raw = data.parcel.status || 'in-transit';
+            stBadge.textContent = localizeStatus(raw);
+            if (raw === 'delivered') {
+              stBadge.style.background = '#EAF5ED'; stBadge.style.color = '#2E7D32'; stBadge.style.borderColor = '#BCE3C6';
+            } else if (raw === 'exception') {
+              stBadge.style.background = '#FEF4E6'; stBadge.style.color = '#E67E00'; stBadge.style.borderColor = '#FCDCB5';
+            } else if (raw === 'pending') {
+              stBadge.style.background = '#F8FAFC'; stBadge.style.color = '#64748B'; stBadge.style.borderColor = '#E2E8F0';
+            } else {
+              stBadge.style.background = '#E6F0F8'; stBadge.style.color = '#0364AD'; stBadge.style.borderColor = '#CCE1F0';
+            }
+          }
+          if (subLabel) {
+            subLabel.textContent = currentLang === 'th' 
+              ? `เส้นทาง: ${data.parcel.route || 'BKK → CNX'} · ผู้รับ: ${data.parcel.recipient_name || 'ลูกค้าทั่วไป'}`
+              : `Route: ${data.parcel.route || 'BKK → CNX'} · Recipient: ${data.parcel.recipient_name || 'Standard Customer'}`;
+          }
+          const selectNewStatus = document.getElementById('selectNewStatus');
+          if (selectNewStatus) selectNewStatus.value = data.parcel.status || 'in-transit';
+        }
+
+        if (totalBadge) {
+          totalBadge.textContent = currentLang === 'th' ? `${logs.length} รายการ` : `${logs.length} entries`;
+        }
+
+        renderParcelLogsTimeline(logs);
+      } catch (err) {
+        if (container) {
+          container.innerHTML = `<div style="text-align: center; padding: 24px; color: #EF4444; font-size: 13px;">เกิดข้อผิดพลาดในการโหลดข้อมูล: ${err.message}</div>`;
+        }
+      }
+    };
+
+    window.closeParcelLogsModal = function() {
+      const modal = document.getElementById('modalParcelLogs');
+      if (modal) modal.style.display = 'none';
+      const inputNote = document.getElementById('inputLogNote');
+      if (inputNote) inputNote.value = '';
+    };
+
+    function renderParcelLogsTimeline(logs) {
+      const container = document.getElementById('parcelLogsTimelineContainer');
+      if (!container) return;
+
+      if (!logs || logs.length === 0) {
+        container.innerHTML = `<div style="text-align: center; padding: 20px; color: #94A3B8; font-size: 13px; font-style: italic;">${currentLang === 'th' ? 'ยังไม่มีประวัติการเปลี่ยนสถานะสำหรับพัสดุนี้' : 'No status change history found for this parcel.'}</div>`;
+        return;
+      }
+
+      container.innerHTML = logs.map((lg, idx) => {
+        const timeFormatted = new Date(lg.created_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US', {
+          day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        const newSt = (lg.new_status || '').toLowerCase();
+        let badgeBg = '#E6F0F8', badgeFg = '#0364AD', badgeBorder = '#CCE1F0';
+        if (newSt === 'delivered') {
+          badgeBg = '#EAF5ED'; badgeFg = '#2E7D32'; badgeBorder = '#BCE3C6';
+        } else if (newSt === 'exception') {
+          badgeBg = '#FEF4E6'; badgeFg = '#E67E00'; badgeBorder = '#FCDCB5';
+        } else if (newSt === 'pending') {
+          badgeBg = '#F8FAFC'; badgeFg = '#64748B'; badgeBorder = '#E2E8F0';
+        }
+
+        return `
+          <div style="display: flex; gap: 12px; padding: 12px 14px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; position: relative;">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex: none;">
+              <span style="width: 10px; height: 10px; border-radius: 9999px; background: ${badgeFg}; margin-top: 4px;"></span>
+              ${idx !== logs.length - 1 ? '<span style="width: 2px; flex: 1; background: #E2E8F0;"></span>' : ''}
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 9999px; font-size: 11px; font-weight: 600; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${badgeBorder};">
+                    ${lg.old_status ? `${localizeStatus(lg.old_status)} ➔ ` : ''}${localizeStatus(lg.new_status)}
+                  </span>
+                  <span style="font-size: 11px; font-weight: 600; color: #475569; background: #F1F5F9; padding: 1px 6px; border-radius: 4px;">
+                    ${lg.action || 'STATUS_UPDATE'}
+                  </span>
+                </div>
+                <span style="font-size: 11px; color: #64748B; font-variant-numeric: tabular-nums;">${timeFormatted}</span>
+              </div>
+              <div style="font-size: 13px; color: #1E293B; line-height: 1.4; font-weight: 500;">
+                ${lg.note || (currentLang === 'th' ? 'ไม่มีบันทึกเพิ่มเติม' : 'No remarks')}
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px; font-size: 11px; color: #64748B; flex-wrap: wrap;">
+                <span>📍 ${lg.station_name || lg.station_code || 'สถานีกลาง'}</span>
+                <span>👤 ผู้บันทึก: <b>${lg.updated_by || 'System'}</b></span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.handleUpdateStatusSubmit = async function(e) {
+      if (e) e.preventDefault();
+      if (!activeLogTrackingNumber) return;
+
+      const selectNewStatus = document.getElementById('selectNewStatus');
+      const inputLogNote = document.getElementById('inputLogNote');
+      const btn = document.getElementById('btnSubmitStatusLog');
+
+      const newStatus = selectNewStatus ? selectNewStatus.value : 'in-transit';
+      const note = inputLogNote ? inputLogNote.value.trim() : '';
+      if (!note) {
+        Swal.fire({
+          icon: 'warning',
+          title: currentLang === 'th' ? 'กรุณาระบุบันทึกการปฏิบัติงาน' : 'Note required',
+          text: currentLang === 'th' ? 'กรุณาใส่ข้อความบันทึกช่วยจำการเปลี่ยนสถานะพัสดุ' : 'Please provide remarks for this status update.',
+          confirmButtonColor: '#ED1C24'
+        });
+        return;
+      }
+
+      const stName = (HUB_STATION_NAMES[currentStaffStation] && HUB_STATION_NAMES[currentStaffStation].th) || currentStaffStation;
+      const staffName = (currentUser && currentUser.name) ? `${currentUser.name} (${currentStaffStation})` : `Staff (${currentStaffStation})`;
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = currentLang === 'th' ? 'กำลังบันทึก...' : 'Saving...';
+      }
+
+      try {
+        const res = await fetch('/api/parcel-logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            trackingNumber: activeLogTrackingNumber,
+            newStatus,
+            stationCode: currentStaffStation,
+            stationName: stName,
+            updatedBy: staffName,
+            action: 'STATUS_UPDATE',
+            note
+          })
+        });
+        const data = await res.json();
+
+        if (data.error) throw new Error(data.error);
+
+        Toast.fire({
+          icon: 'success',
+          title: currentLang === 'th' 
+            ? `อัปเดตสถานะ ${activeLogTrackingNumber} เป็น [${localizeStatus(newStatus)}] และลง Log เรียบร้อย`
+            : `Updated ${activeLogTrackingNumber} to [${localizeStatus(newStatus)}] with audit log`
+        });
+
+        if (inputLogNote) inputLogNote.value = '';
+
+        // Reload the modal data
+        await openParcelLogsModal(activeLogTrackingNumber);
+
+        // Reload parcels list and dashboard in background
+        loadParcels();
+        loadDashboard();
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: currentLang === 'th' ? 'บันทึกสถานะไม่สำเร็จ' : 'Failed to update status',
+          text: err.message,
+          confirmButtonColor: '#ED1C24'
+        });
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<span>💾 ${currentLang === 'th' ? 'บันทึกและลง Log สถานะ' : 'Save & Log Status'}</span>`;
+        }
+      }
+    };
 
     // ================= 3. LOAD STATIONS DATA =================
     const stationsCardsContainer = document.getElementById('stationsCardsContainer');

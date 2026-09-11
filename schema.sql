@@ -72,6 +72,20 @@ CREATE TABLE IF NOT EXISTS parcel_events (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 5.1 PARCEL STATUS AUDIT LOGS (ประวัติการอัปเดตและเปลี่ยนสถานะพัสดุแต่ละชิ้น)
+CREATE TABLE IF NOT EXISTS parcel_status_logs (
+    id SERIAL PRIMARY KEY,
+    tracking_number VARCHAR(30) REFERENCES parcels(tracking_number) ON DELETE CASCADE,
+    old_status VARCHAR(50),
+    new_status VARCHAR(50) NOT NULL,
+    station_code VARCHAR(10),
+    station_name VARCHAR(100),
+    updated_by VARCHAR(100) DEFAULT 'System',
+    action VARCHAR(50) DEFAULT 'STATUS_CHANGE',
+    note TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- 6. USERS TABLE (Authentication for Staff & Drivers)
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -109,5 +123,6 @@ CREATE INDEX IF NOT EXISTS idx_parcel_events_tn ON parcel_events(tracking_number
 CREATE INDEX IF NOT EXISTS idx_users_username_role ON users(username, role);
 CREATE INDEX IF NOT EXISTS idx_manifests_number ON manifests(manifest_number);
 CREATE INDEX IF NOT EXISTS idx_manifests_truck ON manifests(truck_id);
+CREATE INDEX IF NOT EXISTS idx_parcel_status_logs_tn ON parcel_status_logs(tracking_number, created_at DESC);
 
 

@@ -47,7 +47,9 @@ const filesToCheck = [
   'api/checkin.js',
   'api/login.js',
   'api/manifests.js',
-  'api/drivers.js'
+  'api/drivers.js',
+  'api/offload.js',
+  'api/parcel-logs.js'
 ];
 
 filesToCheck.forEach(f => {
@@ -64,17 +66,18 @@ const deprecatedFiles = [
   'uploads'
 ];
 
-deprecatedFiles.forEach(f => {
-  assert(!fs.existsSync(path.join(rootDir, f)), `Deprecated file properly removed: ${f}`);
+deprecatedFiles.forEach(df => {
+  assert(!fs.existsSync(path.join(rootDir, df)), `Deprecated file properly removed: ${df}`);
 });
 
 // -------------------------------------------------------------
-// 2. HTML CONTENT & LINK INTEGRITY TEST
+// 2. HTML CONTENT & ID INTEGRITY TESTS
 // -------------------------------------------------------------
 console.log('\n🌐 SECTION 2: HTML Content & DOM ID Integrity');
 
-function checkHtmlFile(filename, requiredIds, forbiddenWords = []) {
-  const content = fs.readFileSync(path.join(rootDir, filename), 'utf-8');
+function checkHtmlFile(filename, requiredIds, forbiddenWords) {
+  const filePath = path.join(rootDir, filename);
+  const content = fs.readFileSync(filePath, 'utf-8');
   assert(content.includes('<!DOCTYPE html>'), `${filename} has valid DOCTYPE`);
   
   forbiddenWords.forEach(word => {
@@ -105,7 +108,8 @@ checkHtmlFile('admin.html', [
   'adminHeader', 'adminMain', 'tabDashboard', 'tabParcels', 'tabStations', 'viewCheckin',
   'kpiInTransit', 'kpiDelivered', 'kpiExceptions', 'kpiOnTime',
   'trucksTableBody', 'exceptionsFeedContainer', 'parcelsTableBody', 'parcelSearch',
-  'stationsCardsContainer', 'swipeTrack', 'swipeThumb', 'swipeLabel', 'swipeHint', 'toastNotification'
+  'stationsCardsContainer', 'swipeTrack', 'swipeThumb', 'swipeLabel', 'swipeHint', 'toastNotification',
+  'hubStationBanner', 'hubStationSelector', 'modalOffloadScan', 'modalParcelLogs'
 ], ['<x-dc>', '<sc-for>', '<sc-if>', 'support.js', '.dc.html']);
 
 // -------------------------------------------------------------
@@ -298,10 +302,11 @@ async function testApiModules() {
   try {
     const stationsMod = await import('../api/stations.js');
     let addStationRes = null;
+    const testCode = 'T' + Date.now().toString().slice(-4) + Math.floor(10 + Math.random() * 89);
     await stationsMod.default({
       method: 'POST',
       body: {
-        code: 'T' + Date.now().toString().slice(-4) + Math.floor(10 + Math.random() * 89),
+        code: testCode,
         name: 'Test Logistics Station',
         supervisor: 'Test Supervisor',
         status: 'open'
@@ -313,6 +318,13 @@ async function testApiModules() {
       })
     });
     assert(addStationRes && addStationRes.success && addStationRes.station, 'api/stations creates new station');
+
+    // Clean up test station
+    const { getSql } = await import('../api/db.js');
+    const sql = getSql();
+    if (sql) {
+      await sql`DELETE FROM stations WHERE code = ${testCode}`;
+    }
   } catch (err) {
     assert(false, `api/stations POST execution error: ${err.message}`);
   }
@@ -332,10 +344,11 @@ async function testApiModules() {
     assert(getDriversRes && Array.isArray(getDriversRes.drivers) && getDriversRes.drivers.length > 0, 'api/drivers returns driver list');
 
     let addDriverRes = null;
+    const testDriverId = 'DR-' + Date.now().toString().slice(-6);
     await driversMod.default({
       method: 'POST',
       body: {
-        driverId: 'DR-' + Date.now().toString().slice(-6),
+        driverId: testDriverId,
         pin: '123456',
         name: 'Test Driver',
         phone: '081-000-1111',
@@ -348,8 +361,98 @@ async function testApiModules() {
       })
     });
     assert(addDriverRes && addDriverRes.success && addDriverRes.driver, 'api/drivers registers new driver');
+
+    // Clean up test driver
+    const { getSql } = await import('../api/db.js');
+    const sql = getSql();
+    if (sql) {
+      await sql`DELETE FROM users WHERE username = ${testDriverId}`;
+    }
   } catch (err) {
     assert(false, `api/drivers execution error: ${err.message}`);
+  }
+
+  // Test 10: api/offload.js
+  try {
+    const offloadMod = await import('../api/offload.js');
+    let offloadRes = null;
+    await offloadMod.default({
+      method: 'POST',
+      body: {
+        trackingNumbers: ['SR-2609-116301'],
+        stationCode: 'WNI',
+        stationName: 'ศูนย์คัดแยกวังน้อย (WNI)',
+        truckId: 'TK-22'
+      }
+    }, {
+      setHeader: () => {},
+      status: () => ({
+        json: (d) => { offloadRes = d; }
+      })
+    });
+    assert(offloadRes && offloadRes.success === true, 'api/offload processes parcel offload at hub');
+    assert(offloadRes && offloadRes.count === 1, 'api/offload offloads requested parcels count');
+    assert(offloadRes && offloadRes.stationCode === 'WNI', 'api/offload records target station');
+
+    // Clean up offload test events
+    const { getSql } = await import('../api/db.js');
+    const sql = getSql();
+    if (sql) {
+      await sql`DELETE FROM parcel_events WHERE tracking_number = 'SR-2609-116301' AND title = 'คัดแยกและนำลงพัก ณ ศูนย์ฮับ'`;
+      await sql`DELETE FROM parcel_status_logs WHERE tracking_number = 'SR-2609-116301' AND action = 'HUB_OFFLOAD'`;
+    }
+  } catch (err) {
+    assert(false, `api/offload execution error: ${err.message}`);
+  }
+
+  // Test 11: api/parcel-logs.js
+  try {
+    const parcelLogsMod = await import('../api/parcel-logs.js');
+    let getLogsRes = null;
+    await parcelLogsMod.default({
+      method: 'GET',
+      query: { tn: 'SR-2609-118245' }
+    }, {
+      setHeader: () => {},
+      status: () => ({
+        json: (d) => { getLogsRes = d; }
+      })
+    });
+    assert(getLogsRes && getLogsRes.success === true, 'api/parcel-logs returns status audit logs for parcel');
+    assert(getLogsRes && Array.isArray(getLogsRes.logs) && getLogsRes.logs.length > 0, 'api/parcel-logs includes audit logs array');
+
+    let postLogRes = null;
+    await parcelLogsMod.default({
+      method: 'POST',
+      body: {
+        trackingNumber: 'SR-2609-118404',
+        newStatus: 'pending',
+        stationCode: 'BKK',
+        stationName: 'ศูนย์กระจายสินค้ากลาง กรุงเทพฯ (BKK)',
+        updatedBy: 'Test Staff',
+        action: 'STATUS_UPDATE',
+        note: 'Audit log verification test'
+      }
+    }, {
+      setHeader: () => {},
+      status: () => ({
+        json: (d) => { postLogRes = d; }
+      })
+    });
+    assert(postLogRes && postLogRes.success === true, 'api/parcel-logs records new parcel status update');
+    assert(postLogRes && postLogRes.log && postLogRes.log.action === 'STATUS_UPDATE', 'api/parcel-logs saves audit log metadata');
+
+    // Clean up test audit log
+    try {
+      const { getSql } = await import('../api/db.js');
+      const sql = getSql();
+      if (sql) {
+        await sql`DELETE FROM parcel_status_logs WHERE note = 'Audit log verification test'`;
+        await sql`DELETE FROM parcel_events WHERE note = 'Audit log verification test'`;
+      }
+    } catch (_) {}
+  } catch (err) {
+    assert(false, `api/parcel-logs execution error: ${err.message}`);
   }
 
   // -------------------------------------------------------------

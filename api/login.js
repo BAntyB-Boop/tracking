@@ -49,7 +49,8 @@ export default async function handler(req, res) {
               name: user.name,
               phone: user.phone || null,
               truckId: user.truck_id || (isDriver ? 'TK-19' : null),
-              stationCode: user.station_code || null
+              stationCode: user.station_code || null,
+              isAdmin: (user.username && user.username.toLowerCase() === 'admin') || user.station_code === 'ALL' || user.role === 'admin'
             },
             redirectUrl: isDriver ? 'admin.html?screen=checkin' : 'admin.html',
             source: 'neon-postgresql'
@@ -68,15 +69,29 @@ export default async function handler(req, res) {
 
   // Fallback authentication if DB is unreachable
   const isDriver = role === 'driver';
-  if ((isDriver && cleanUid === 'DR-0419' && cleanPw === '123456') ||
-      (!isDriver && cleanUid.toLowerCase() === 'k.okoro' && cleanPw === 'secret')) {
+  const FALLBACK_USERS = {
+    'dr-0419': { name: 'Anan Suksomboon', role: 'driver', pw: '123456', truckId: 'TK-19', stationCode: 'NSN' },
+    'k.okoro': { name: 'K. Okoro', role: 'staff', pw: 'secret', stationCode: 'BKK' },
+    'somchai.p': { name: 'Somchai Prasert', role: 'staff', pw: 'pass1234', stationCode: 'BKK' },
+    'anan.s': { name: 'Anan Suksomboon', role: 'staff', pw: 'pass1234', stationCode: 'NSN' },
+    'staff.nsn': { name: 'Somchai Nakhon Sawan', role: 'staff', pw: 'pass1234', stationCode: 'NSN' },
+    'staff.wni': { name: 'Wichai Wang Noi', role: 'staff', pw: 'pass1234', stationCode: 'WNI' },
+    'staff.lpg': { name: 'Kamonwan Lampang', role: 'staff', pw: 'pass1234', stationCode: 'LPG' },
+    'staff.cnx': { name: 'Narong Chiang Mai', role: 'staff', pw: 'pass1234', stationCode: 'CNX' },
+    'admin': { name: 'System Administrator', role: 'staff', pw: 'admin1234', stationCode: 'ALL', isAdmin: true }
+  };
+
+  const matched = FALLBACK_USERS[cleanUid.toLowerCase()];
+  if (matched && matched.role === role && matched.pw === cleanPw) {
     return res.status(200).json({
       success: true,
       user: {
         id: cleanUid,
-        role: isDriver ? 'driver' : 'staff',
-        name: isDriver ? 'Anan Suksomboon' : 'Somchai P.',
-        truckId: isDriver ? 'TK-19' : null
+        role: matched.role,
+        name: matched.name,
+        truckId: matched.truckId || null,
+        stationCode: matched.stationCode || 'NSN',
+        isAdmin: !!matched.isAdmin
       },
       redirectUrl: isDriver ? 'admin.html?screen=checkin' : 'admin.html',
       source: 'fallback-demo'

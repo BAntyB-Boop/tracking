@@ -1,159 +1,277 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SwiftRoute - Sign In</title>
+  <title>devdo - เข้าสู่ระบบเจ้าหน้าที่ (devdo Logistics)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: #F8FAFC;
-      color: #0b1c30;
-      font-family: 'Geist', sans-serif;
+      background: #F7F7F7;
+      color: #1A1A1A;
+      font-family: 'Kanit', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
     * { box-sizing: border-box; }
-    a { color: #0F4C81; text-decoration: none; }
-    a:hover { color: #00355F; text-decoration: underline; }
-    input::placeholder { color: #727780; }
+    a { color: #0364AD; text-decoration: none; }
+    a:hover { color: #004880; text-decoration: underline; }
+    input::placeholder { color: #8C8C8C; }
     @keyframes sr-pulse {
-      0% { box-shadow: 0 0 0 0 rgba(22,163,74,.45); }
-      70% { box-shadow: 0 0 0 6px rgba(22,163,74,0); }
-      100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+      0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, .45); }
+      70% { box-shadow: 0 0 0 6px rgba(46, 125, 50, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
     }
     .input-box:focus-within {
-      border-color: #0F4C81 !important;
-      box-shadow: 0 0 0 2px rgba(15,76,129,0.15) !important;
+      border-color: #ED1C24 !important;
+      box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.20) !important;
     }
-    .btn-submit:hover { background: #0A355C !important; }
-    .btn-submit:active { transform: translateY(1px); }
+    .btn-submit {
+      background: #ED1C24 !important;
+      color: #FFFFFF !important;
+      border: 0 !important;
+      border-radius: 9999px !important;
+      font-weight: 600 !important;
+      transition: background 0.15s, transform 0.1s !important;
+      box-shadow: 0 4px 12px rgba(237, 28, 36, 0.25) !important;
+    }
+    .btn-submit:hover { background: #C0141A !important; }
+    .btn-submit:active { background: #A81016 !important; transform: translateY(1px); }
+    .lang-btn {
+      padding: 4px 12px;
+      border-radius: 9999px;
+      border: 0;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+    }
+    .lang-btn.active {
+      background: #ED1C24;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+    .lang-btn:not(.active) {
+      background: transparent;
+      color: #616161;
+    }
+    .lang-btn:not(.active):hover {
+      color: #1A1A1A;
+    }
   </style>
 </head>
 <body>
-  <div style="min-height: 100vh; display: flex; flex-direction: column; background: #F8FAFC;">
-    <header style="border-bottom: 1px solid #E2E8F0; background: #FFFFFF;">
-      <div style="max-width: 75rem; margin: 0 auto; padding: 14px clamp(12px, 4vw, 24px); display: flex; align-items: center; justify-content: space-between; gap: 16px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 28px; height: 28px; border-radius: 4px; background: #0F4C81; display: grid; place-items: center;">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M2 8h9M8 4l4 4-4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <div style="min-height: 100vh; display: flex; flex-direction: column; background: #F7F7F7;">
+    <!-- Signature Red Top Line -->
+    <div style="height: 4px; background: #ED1C24; width: 100%;"></div>
+    
+    <header style="border-bottom: 1px solid #E5E5E5; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+      <div style="max-width: 75rem; margin: 0 auto; padding: 12px clamp(12px, 4vw, 24px); display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <!-- devdo Red Badge / Brand Emblem -->
+          <div style="width: 36px; height: 36px; border-radius: 8px; background: #ED1C24; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
             </svg>
           </div>
-          <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: -0.01em;">SwiftRoute</span>
-          <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; padding: 2px 6px; border: 1px solid #E2E8F0; border-radius: 2px; white-space: nowrap;">Terminal</span>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.01em; color: #ED1C24; line-height: 1.1;">devdo</span>
+            <span style="font-family: 'Kanit', sans-serif; font-weight: 500; font-size: 11px; color: #616161; letter-spacing: 0.04em; text-transform: uppercase;">devdo Express · Operations Terminal</span>
+          </div>
         </div>
-        <a href="index.html" style="font-size: 14px; font-weight: 500; white-space: nowrap;">Track a parcel</a>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="display: flex; align-items: center; background: #F7F7F7; border: 1px solid #E5E5E5; border-radius: 9999px; padding: 2px;">
+            <button type="button" id="langThBtn" class="lang-btn active" onclick="setLanguage('th')">🇹🇭 ไทย</button>
+            <button type="button" id="langEnBtn" class="lang-btn" onclick="setLanguage('en')">🇬🇧 EN</button>
+          </div>
+          <a id="trackLink" href="index.html" style="font-size: 14px; font-weight: 600; color: #0364AD; white-space: nowrap;">← ค้นหาพัสดุ</a>
+        </div>
       </div>
     </header>
 
     <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: clamp(24px, 8vw, 48px) clamp(16px, 4vw, 24px);">
-      <div style="width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 24px;">
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.015em;">Sign in</h1>
-          <p style="margin: 0; font-size: 14px; line-height: 20px; color: #42474f;">Staff and drivers only. Use your SwiftRoute ID.</p>
+      <div style="width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 24px;">
+        <div style="display: flex; flex-direction: column; gap: 8px; text-align: center;">
+          <div style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: fit-content; margin: 0 auto; padding: 4px 14px; background: #FFEBEC; border: 1px solid #FFDAD6; border-radius: 9999px; font-size: 12px; font-weight: 600; color: #ED1C24;">
+            <span style="width: 6px; height: 6px; border-radius: 9999px; background: #ED1C24;"></span>
+            <span>devdo Express Logistics Systems</span>
+          </div>
+          <h1 id="signInHeading" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 28px; line-height: 36px; letter-spacing: -0.01em; color: #1A1A1A;">เข้าสู่ระบบเจ้าหน้าที่</h1>
+          <p id="signInSubtitle" style="margin: 0; font-size: 14px; line-height: 20px; color: #616161;">เฉพาะเจ้าหน้าที่สถานีคัดแยกและพนักงานขับรถขนส่ง</p>
         </div>
 
-        <form id="loginForm" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 12px; box-shadow: 0 4px 12px -2px rgba(15,76,129,0.08); padding: clamp(16px, 4vw, 24px); display: flex; flex-direction: column; gap: 20px;">
-          <div style="display: flex; gap: 4px; padding: 4px; background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 4px;">
-            <button type="button" id="roleStaffBtn" style="flex: 1; height: 32px; border-radius: 2px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F4C81; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap;">Station staff</button>
-            <button type="button" id="roleDriverBtn" style="flex: 1; height: 32px; border-radius: 2px; border: 1px solid transparent; background: transparent; color: #42474f; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap;">Driver</button>
+        <form id="loginForm" style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); padding: clamp(20px, 5vw, 32px); display: flex; flex-direction: column; gap: 20px;">
+          <!-- Pill-shaped Role Switcher -->
+          <div style="display: flex; gap: 4px; padding: 4px; background: #F7F7F7; border: 1px solid #E5E5E5; border-radius: 9999px;">
+            <button type="button" id="roleStaffBtn" style="flex: 1; height: 38px; border-radius: 9999px; border: 0; background: #ED1C24; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; box-shadow: 0 2px 8px rgba(237,28,36,0.25); transition: all 0.2s;">เจ้าหน้าที่สถานี</button>
+            <button type="button" id="roleDriverBtn" style="flex: 1; height: 38px; border-radius: 9999px; border: 0; background: transparent; color: #616161; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.2s;">พนักงานขับรถ</button>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <label for="uid" id="idLabel" style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">SwiftRoute ID</label>
-            <div id="idBox" class="input-box" style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 4px; transition: border-color 0.15s, box-shadow 0.15s;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <label for="uid" id="idLabel" style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">รหัสเจ้าหน้าที่ (Staff ID)</label>
+            <div id="idBox" class="input-box" style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 16px; background: #FFFFFF; border: 1px solid #C4C4C4; border-radius: 9999px; transition: border-color 0.15s, box-shadow 0.15s;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>
               </svg>
-              <input id="uid" placeholder="k.okoro" autocomplete="username" spellcheck="false" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: ui-monospace, 'Geist', monospace; font-size: 15px; color: #0b1c30; letter-spacing: 0.02em;">
+              <input id="uid" placeholder="k.okoro" autocomplete="username" spellcheck="false" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: 'Kanit', ui-monospace, monospace; font-size: 15px; font-weight: 500; color: #1A1A1A; letter-spacing: 0.02em;">
             </div>
           </div>
 
           <div style="display: flex; flex-direction: column; gap: 6px;">
             <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
-              <label for="pw" id="pwLabel" style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Password</label>
-              <a href="#" style="font-size: 12px; font-weight: 500; white-space: nowrap;">Forgot?</a>
+              <label for="pw" id="pwLabel" style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">รหัสผ่าน (Password)</label>
+              <a id="forgotLink" href="#" style="font-size: 12px; font-weight: 500; color: #0364AD; white-space: nowrap;">ลืมรหัสผ่าน?</a>
             </div>
-            <div id="pwBox" class="input-box" style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 12px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 4px; transition: border-color 0.15s, box-shadow 0.15s;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div id="pwBox" class="input-box" style="display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 16px; background: #FFFFFF; border: 1px solid #C4C4C4; border-radius: 9999px; transition: border-color 0.15s, box-shadow 0.15s;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#616161" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="4" y="11" width="16" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>
               </svg>
-              <input id="pw" type="password" placeholder="••••••••" autocomplete="current-password" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: ui-monospace, 'Geist', monospace; font-size: 15px; color: #0b1c30; letter-spacing: 0.08em;">
-              <button type="button" id="togglePwBtn" style="border: 0; background: transparent; padding: 0; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; color: #0F4C81; cursor: pointer; white-space: nowrap;">Show</button>
+              <input id="pw" type="password" placeholder="••••••••" autocomplete="current-password" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: 'Kanit', ui-monospace, monospace; font-size: 15px; font-weight: 500; color: #1A1A1A; letter-spacing: 0.08em;">
+              <button type="button" id="togglePwBtn" style="border: 0; background: transparent; padding: 0; font-family: inherit; font-size: 12px; font-weight: 600; color: #0364AD; cursor: pointer; white-space: nowrap;">แสดง</button>
             </div>
           </div>
 
-          <div id="errorBox" style="display: none; gap: 10px; align-items: flex-start; padding: 10px 12px; background: #FFF1F2; border: 1px solid #FECDD3; border-radius: 4px; font-size: 14px; line-height: 20px; color: #0b1c30;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" style="flex: none; margin-top: 2px;">
+          <div id="errorBox" style="display: none; gap: 10px; align-items: flex-start; padding: 10px 14px; background: #FFEBEC; border: 1px solid #FFDAD6; border-radius: 12px; font-size: 13px; line-height: 20px; color: #BA1A1A;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ED1C24" stroke-width="2" stroke-linecap="round" style="flex: none; margin-top: 2px;">
               <circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>
             </svg>
             <span id="errorMessage"></span>
           </div>
 
-          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #42474f; cursor: pointer;">
-            <input type="checkbox" id="rememberMe" checked style="width: 16px; height: 16px; margin: 0; accent-color: #0F4C81;">
-            Keep me signed in on this terminal
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #616161; cursor: pointer;">
+            <input type="checkbox" id="rememberMe" checked style="width: 16px; height: 16px; margin: 0; accent-color: #ED1C24;">
+            <span id="rememberMeText">จดจำการเข้าสู่ระบบบนเครื่องนี้</span>
           </label>
 
-          <button type="submit" id="submitBtn" class="btn-submit" style="height: 44px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s, transform 0.1s;">Sign in</button>
+          <button type="submit" id="submitBtn" class="btn-submit" style="height: 48px; background: #ED1C24; color: #FFFFFF; border: 0; border-radius: 9999px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.1s; box-shadow: 0 4px 12px rgba(237,28,36,0.25);">เข้าสู่ระบบ</button>
         </form>
 
-        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; line-height: 16px; color: #64748B;">
+        <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; line-height: 16px; color: #616161;">
           <span style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;">
-            <span style="width: 6px; height: 6px; border-radius: 9999px; background: #16A34A; display: inline-block; animation: sr-pulse 1.6s ease-out infinite;"></span>
-            All systems normal
+            <span style="width: 6px; height: 6px; border-radius: 9999px; background: #2E7D32; display: inline-block; animation: sr-pulse 1.6s ease-out infinite;"></span>
+            <span id="systemStatusText">ระบบฐานข้อมูล Neon ทำงานปกติ</span>
           </span>
-          <span>Need access? Ask your station supervisor.</span>
+          <span id="needAccessText">ต้องการสิทธิ์การใช้งาน? ติดต่อหัวหน้าสถานี</span>
         </div>
 
-        <!-- Mockup Credentials Helper Box -->
-        <div style="margin-top: 20px; padding: 14px; background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 6px; font-size: 13px;">
-          <div style="font-weight: 600; color: #1E293B; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
-            <span>🔑 รหัสทดสอบระบบ (เก็บใน Neon DB)</span>
-            <span style="font-size: 11px; font-weight: 500; color: #16A34A; background: #DCFCE7; padding: 2px 6px; border-radius: 4px;">Live SQL</span>
+        <!-- Credentials Helper Box -->
+        <div style="padding: 16px; background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+          <div style="font-weight: 600; color: #1A1A1A; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+            <span id="testAccountsHeading">🔑 รหัสทดสอบระบบ (เก็บใน Neon DB)</span>
+            <span style="font-size: 11px; font-weight: 600; color: #2E7D32; background: #EAF5ED; border: 1px solid #2E7D32; padding: 2px 8px; border-radius: 9999px;">Live SQL</span>
           </div>
           <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="background: #FFFFFF; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: #F7F7F7; padding: 10px 12px; border: 1px solid #E5E5E5; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <strong style="color: #0F4C81;">Staff:</strong> <code>k.okoro</code> / <code>secret</code>
-                <div style="font-size: 11px; color: #64748B;">K. Okoro (Supervisor · BKK Depot)</div>
+                <strong style="color: #ED1C24;">Staff:</strong> <code style="background: #FFFFFF; padding: 2px 6px; border-radius: 4px; border: 1px solid #E5E5E5;">k.okoro</code> / <code>secret</code>
+                <div style="font-size: 11px; color: #616161; margin-top: 2px;">K. Okoro (Supervisor · BKK Depot)</div>
               </div>
-              <button type="button" onclick="fillCreds('staff', 'k.okoro', 'secret')" style="padding: 4px 10px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">คลิกกรอก</button>
+              <button type="button" onclick="fillCreds('staff', 'k.okoro', 'secret')" style="padding: 6px 14px; background: #FFFFFF; color: #ED1C24; border: 1px solid #ED1C24; border-radius: 9999px; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s;">คลิกกรอก</button>
             </div>
-            <div style="background: #FFFFFF; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: #F7F7F7; padding: 10px 12px; border: 1px solid #E5E5E5; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <strong style="color: #0F4C81;">Staff:</strong> <code>somchai.p</code> / <code>pass1234</code>
-                <div style="font-size: 11px; color: #64748B;">Somchai P. (Manager · BKK Depot)</div>
+                <strong style="color: #ED1C24;">Staff:</strong> <code style="background: #FFFFFF; padding: 2px 6px; border-radius: 4px; border: 1px solid #E5E5E5;">somchai.p</code> / <code>pass1234</code>
+                <div style="font-size: 11px; color: #616161; margin-top: 2px;">Somchai P. (Manager · BKK Depot)</div>
               </div>
-              <button type="button" onclick="fillCreds('staff', 'somchai.p', 'pass1234')" style="padding: 4px 10px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">คลิกกรอก</button>
+              <button type="button" onclick="fillCreds('staff', 'somchai.p', 'pass1234')" style="padding: 6px 14px; background: #FFFFFF; color: #ED1C24; border: 1px solid #ED1C24; border-radius: 9999px; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s;">คลิกกรอก</button>
             </div>
-            <div style="background: #FFFFFF; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: #F7F7F7; padding: 10px 12px; border: 1px solid #E5E5E5; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <strong style="color: #0891B2;">Driver:</strong> <code>DR-0419</code> / <code>123456</code>
-                <div style="font-size: 11px; color: #64748B;">Anan Suksomboon (Truck TK-19 · NSN Hub)</div>
+                <strong style="color: #0364AD;">Driver:</strong> <code style="background: #FFFFFF; padding: 2px 6px; border-radius: 4px; border: 1px solid #E5E5E5;">DR-0419</code> / <code>123456</code>
+                <div style="font-size: 11px; color: #616161; margin-top: 2px;">Anan Suksomboon (Truck TK-19 · NSN Hub)</div>
               </div>
-              <button type="button" onclick="fillCreds('driver', 'DR-0419', '123456')" style="padding: 4px 10px; background: #F1F5F9; color: #0891B2; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">คลิกกรอก</button>
+              <button type="button" onclick="fillCreds('driver', 'DR-0419', '123456')" style="padding: 6px 14px; background: #FFFFFF; color: #0364AD; border: 1px solid #0364AD; border-radius: 9999px; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s;">คลิกกรอก</button>
             </div>
           </div>
         </div>
       </div>
     </main>
 
-    <footer style="border-top: 1px solid #E2E8F0; background: #FFFFFF;">
-      <div style="max-width: 75rem; margin: 0 auto; padding: 16px clamp(12px, 4vw, 24px); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; font-size: 12px; line-height: 16px; color: #64748B;">
-        <span>SwiftRoute</span>
-        <span>Terminal v4.2 · Bangkok – Chiang Mai corridor</span>
+    <footer style="border-top: 1px solid #E5E5E5; background: #FFFFFF;">
+      <div style="max-width: 75rem; margin: 0 auto; padding: 16px clamp(12px, 4vw, 24px); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; font-size: 12px; line-height: 16px; color: #616161;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 9999px; background: #ED1C24;"></span>
+          <span style="font-weight: 600; color: #1A1A1A;">devdo Express Co., Ltd.</span>
+        </div>
+        <span>Staff Terminal v4.2 · บริษัท เดฟดู เอ็กซ์เพรส จำกัด (เอกชน)</span>
       </div>
     </footer>
   </div>
 
   <script>
+    let currentLang = localStorage.getItem('swiftroute_lang') || 'th';
     let currentRole = 'staff';
     let showPw = false;
+
+    const I18N_LOGIN = {
+      th: {
+        pageTitle: "devdo - เข้าสู่ระบบ",
+        trackLink: "← ค้นหาพัสดุ",
+        signInHeading: "เข้าสู่ระบบ",
+        signInSubtitle: "เฉพาะเจ้าหน้าที่สถานีคัดแยกและพนักงานขับรถขนส่ง devdo",
+        roleStaff: "เจ้าหน้าที่สถานี",
+        roleDriver: "พนักงานขับรถ",
+        staffIdLabel: "รหัสเจ้าหน้าที่ (Staff ID)",
+        staffIdPlaceholder: "k.okoro",
+        staffPwLabel: "รหัสผ่าน (Password)",
+        staffPwPlaceholder: "••••••••",
+        driverIdLabel: "รหัสคนขับรถ (Driver ID)",
+        driverIdPlaceholder: "DR-0419",
+        driverPwLabel: "รหัส PIN (6 หลัก)",
+        driverPwPlaceholder: "รหัสตัวเลข 6 หลัก",
+        forgot: "ลืมรหัสผ่าน?",
+        showPw: "แสดง",
+        hidePw: "ซ่อน",
+        rememberMe: "จดจำการเข้าสู่ระบบบนเครื่องนี้",
+        signInBtnStaff: "เข้าสู่ระบบ",
+        signInBtnDriver: "เข้าสู่ระบบและเริ่มรอบวิ่ง",
+        signingIn: "กำลังเข้าสู่ระบบ...",
+        signedIn: "เข้าสู่ระบบสำเร็จ",
+        systemNormal: "ระบบทั้งหมดทำงานปกติ",
+        needAccess: "ต้องการสิทธิ์การใช้งาน? ติดต่อหัวหน้าสถานีของคุณ",
+        testAccountsHeading: "🔑 บัญชีทดสอบระบบ (เก็บใน Neon DB)",
+        testFillBtn: "คลิกกรอก",
+        errEmptyStaff: "กรุณากรอกรหัสเจ้าหน้าที่ devdo และรหัสผ่าน",
+        errEmptyDriver: "กรุณากรอกรหัสคนขับรถและรหัส PIN 6 หลัก",
+        errFailedTitle: "เข้าสู่ระบบไม่สำเร็จ"
+      },
+      en: {
+        pageTitle: "devdo - Sign In",
+        trackLink: "Track a parcel",
+        signInHeading: "Sign in",
+        signInSubtitle: "Staff and drivers only. Use your devdo ID.",
+        roleStaff: "Station staff",
+        roleDriver: "Driver",
+        staffIdLabel: "Staff ID",
+        staffIdPlaceholder: "k.okoro",
+        staffPwLabel: "Password",
+        staffPwPlaceholder: "••••••••",
+        driverIdLabel: "Driver ID",
+        driverIdPlaceholder: "DR-0419",
+        driverPwLabel: "PIN",
+        driverPwPlaceholder: "6 digits",
+        forgot: "Forgot?",
+        showPw: "Show",
+        hidePw: "Hide",
+        rememberMe: "Keep me signed in on this terminal",
+        signInBtnStaff: "Sign in",
+        signInBtnDriver: "Sign in and start shift",
+        signingIn: "Signing in...",
+        signedIn: "Signed in",
+        systemNormal: "All systems normal",
+        needAccess: "Need access? Ask your station supervisor.",
+        testAccountsHeading: "🔑 Test credentials (Neon DB)",
+        testFillBtn: "Fill",
+        errEmptyStaff: "Enter your devdo ID and password.",
+        errEmptyDriver: "Enter your driver ID and PIN.",
+        errFailedTitle: "Sign In Failed"
+      }
+    };
 
     const roleStaffBtn = document.getElementById('roleStaffBtn');
     const roleDriverBtn = document.getElementById('roleDriverBtn');
@@ -168,41 +286,93 @@
     const errorMessage = document.getElementById('errorMessage');
     const submitBtn = document.getElementById('submitBtn');
     const loginForm = document.getElementById('loginForm');
+    const trackLink = document.getElementById('trackLink');
+    const signInHeading = document.getElementById('signInHeading');
+    const signInSubtitle = document.getElementById('signInSubtitle');
+    const forgotLink = document.getElementById('forgotLink');
+    const rememberMeText = document.getElementById('rememberMeText');
+    const systemStatusText = document.getElementById('systemStatusText');
+    const needAccessText = document.getElementById('needAccessText');
+    const testAccountsHeading = document.getElementById('testAccountsHeading');
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('swiftroute_lang', lang);
+      document.documentElement.lang = lang;
+
+      const langThBtn = document.getElementById('langThBtn');
+      const langEnBtn = document.getElementById('langEnBtn');
+      if (langThBtn && langEnBtn) {
+        if (lang === 'th') {
+          langThBtn.classList.add('active');
+          langEnBtn.classList.remove('active');
+        } else {
+          langEnBtn.classList.add('active');
+          langThBtn.classList.remove('active');
+        }
+      }
+
+      applyLoginTranslations();
+      setRole(currentRole);
+    }
+
+    function applyLoginTranslations() {
+      const t = I18N_LOGIN[currentLang];
+      document.title = t.pageTitle;
+
+      if (trackLink) trackLink.textContent = t.trackLink;
+      if (signInHeading) signInHeading.textContent = t.signInHeading;
+      if (signInSubtitle) signInSubtitle.textContent = t.signInSubtitle;
+      if (roleStaffBtn) roleStaffBtn.textContent = t.roleStaff;
+      if (roleDriverBtn) roleDriverBtn.textContent = t.roleDriver;
+      if (forgotLink) forgotLink.textContent = t.forgot;
+      if (togglePwBtn) togglePwBtn.textContent = showPw ? t.hidePw : t.showPw;
+      if (rememberMeText) rememberMeText.textContent = t.rememberMe;
+      if (systemStatusText) systemStatusText.textContent = t.systemNormal;
+      if (needAccessText) needAccessText.textContent = t.needAccess;
+      if (testAccountsHeading) testAccountsHeading.textContent = t.testAccountsHeading;
+    }
 
     function setRole(role) {
       currentRole = role;
       clearError();
       const isDriver = role === 'driver';
+      const t = I18N_LOGIN[currentLang];
+
       if (isDriver) {
-        roleDriverBtn.style.background = '#FFFFFF';
-        roleDriverBtn.style.color = '#0F4C81';
-        roleDriverBtn.style.borderColor = '#CBD5E1';
+        roleDriverBtn.style.background = '#ED1C24';
+        roleDriverBtn.style.color = '#FFFFFF';
+        roleDriverBtn.style.boxShadow = '0 2px 8px rgba(237,28,36,0.25)';
+        roleDriverBtn.style.fontWeight = '600';
 
         roleStaffBtn.style.background = 'transparent';
-        roleStaffBtn.style.color = '#42474f';
-        roleStaffBtn.style.borderColor = 'transparent';
+        roleStaffBtn.style.color = '#616161';
+        roleStaffBtn.style.boxShadow = 'none';
+        roleStaffBtn.style.fontWeight = '500';
 
-        idLabel.textContent = 'Driver ID';
-        uidInput.placeholder = 'DR-0419';
-        pwLabel.textContent = 'PIN';
-        pwInput.placeholder = '6 digits';
+        idLabel.textContent = t.driverIdLabel;
+        uidInput.placeholder = t.driverIdPlaceholder;
+        pwLabel.textContent = t.driverPwLabel;
+        pwInput.placeholder = t.driverPwPlaceholder;
         pwInput.inputMode = 'numeric';
-        submitBtn.textContent = 'Sign in and start shift';
+        submitBtn.textContent = t.signInBtnDriver;
       } else {
-        roleStaffBtn.style.background = '#FFFFFF';
-        roleStaffBtn.style.color = '#0F4C81';
-        roleStaffBtn.style.borderColor = '#CBD5E1';
+        roleStaffBtn.style.background = '#ED1C24';
+        roleStaffBtn.style.color = '#FFFFFF';
+        roleStaffBtn.style.boxShadow = '0 2px 8px rgba(237,28,36,0.25)';
+        roleStaffBtn.style.fontWeight = '600';
 
         roleDriverBtn.style.background = 'transparent';
-        roleDriverBtn.style.color = '#42474f';
-        roleDriverBtn.style.borderColor = 'transparent';
+        roleDriverBtn.style.color = '#616161';
+        roleDriverBtn.style.boxShadow = 'none';
+        roleDriverBtn.style.fontWeight = '500';
 
-        idLabel.textContent = 'SwiftRoute ID';
-        uidInput.placeholder = 'k.okoro';
-        pwLabel.textContent = 'Password';
-        pwInput.placeholder = '••••••••';
+        idLabel.textContent = t.staffIdLabel;
+        uidInput.placeholder = t.staffIdPlaceholder;
+        pwLabel.textContent = t.staffPwLabel;
+        pwInput.placeholder = t.staffPwPlaceholder;
         pwInput.inputMode = 'text';
-        submitBtn.textContent = 'Sign in';
+        submitBtn.textContent = t.signInBtnStaff;
       }
     }
 
@@ -215,20 +385,21 @@
 
     function clearError() {
       errorBox.style.display = 'none';
-      idBox.style.borderColor = '#CBD5E1';
-      pwBox.style.borderColor = '#CBD5E1';
+      idBox.style.borderColor = '#C4C4C4';
+      pwBox.style.borderColor = '#C4C4C4';
     }
 
     function showError(msg) {
+      const t = I18N_LOGIN[currentLang];
       errorMessage.textContent = msg;
       errorBox.style.display = 'flex';
-      idBox.style.borderColor = '#E11D48';
-      pwBox.style.borderColor = '#E11D48';
+      idBox.style.borderColor = '#ED1C24';
+      pwBox.style.borderColor = '#ED1C24';
       Swal.fire({
         icon: 'error',
-        title: 'Sign In Failed',
+        title: t.errFailedTitle,
         text: msg,
-        confirmButtonColor: '#0F4C81'
+        confirmButtonColor: '#ED1C24'
       });
     }
 
@@ -238,7 +409,8 @@
     togglePwBtn.addEventListener('click', () => {
       showPw = !showPw;
       pwInput.type = showPw ? 'text' : 'password';
-      togglePwBtn.textContent = showPw ? 'Hide' : 'Show';
+      const t = I18N_LOGIN[currentLang];
+      togglePwBtn.textContent = showPw ? t.hidePw : t.showPw;
     });
 
     uidInput.addEventListener('input', clearError);
@@ -248,13 +420,14 @@
       e.preventDefault();
       const uidVal = uidInput.value.trim();
       const pwVal = pwInput.value.trim();
+      const t = I18N_LOGIN[currentLang];
 
       if (!uidVal || !pwVal) {
-        showError(currentRole === 'driver' ? 'Enter your driver ID and PIN.' : 'Enter your SwiftRoute ID and password.');
+        showError(currentRole === 'driver' ? t.errEmptyDriver : t.errEmptyStaff);
         return;
       }
 
-      submitBtn.textContent = 'Signing in...';
+      submitBtn.textContent = t.signingIn;
       submitBtn.disabled = true;
 
       try {
@@ -267,23 +440,36 @@
 
         if (data.error) {
           showError(data.error);
-          submitBtn.textContent = currentRole === 'driver' ? 'Sign in and start shift' : 'Sign in';
+          submitBtn.textContent = currentRole === 'driver' ? t.signInBtnDriver : t.signInBtnStaff;
           submitBtn.disabled = false;
           return;
         }
 
-        submitBtn.textContent = 'Signed in';
+        if (data.user) {
+          localStorage.setItem('swiftroute_user', JSON.stringify(data.user));
+          localStorage.setItem('swiftroute_role', data.user.role || currentRole);
+        } else {
+          localStorage.setItem('swiftroute_role', currentRole);
+          localStorage.setItem('swiftroute_user', JSON.stringify({ role: currentRole, id: uidVal, name: currentRole === 'driver' ? 'Driver' : 'Staff' }));
+        }
+
+        submitBtn.textContent = t.signedIn;
         setTimeout(() => {
           window.location.href = data.redirectUrl || (currentRole === 'driver' ? 'admin.html?screen=checkin' : 'admin.html');
         }, 300);
       } catch (err) {
         // Direct client fallback
-        submitBtn.textContent = 'Signed in';
+        localStorage.setItem('swiftroute_role', currentRole);
+        localStorage.setItem('swiftroute_user', JSON.stringify({ role: currentRole, id: uidVal, name: currentRole === 'driver' ? 'Driver' : 'Staff' }));
+        submitBtn.textContent = t.signedIn;
         setTimeout(() => {
           window.location.href = currentRole === 'driver' ? 'admin.html?screen=checkin' : 'admin.html';
         }, 300);
       }
     });
+
+    // Initialize Language
+    setLanguage(currentLang);
   </script>
 </body>
 </html>

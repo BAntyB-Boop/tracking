@@ -1,112 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SwiftRoute - Admin Terminal</title>
+  <title>devdo - ระบบบริหารจัดการสถานีคัดแยกและขนส่ง (devdo Operations)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: #F8FAFC;
-      color: #0b1c30;
-      font-family: 'Geist', sans-serif;
+      background: #F7F7F7;
+      color: #1A1A1A;
+      font-family: 'Kanit', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
     * { box-sizing: border-box; }
-    a { color: #0F4C81; text-decoration: none; }
-    a:hover { color: #00355F; text-decoration: underline; }
-    input::placeholder { color: #727780; }
+    a { color: #0364AD; text-decoration: none; }
+    a:hover { color: #004880; text-decoration: underline; }
+    input::placeholder { color: #8C8C8C; }
     table { border-collapse: collapse; width: 100%; }
     th {
       text-align: left;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      color: #64748B;
-      padding: 8px 12px;
-      border-bottom: 1px solid #E2E8F0;
+      color: #616161;
+      padding: 10px 14px;
+      border-bottom: 1px solid #E5E5E5;
       white-space: nowrap;
     }
     td {
-      padding: 10px 12px;
-      border-bottom: 1px solid #E2E8F0;
+      padding: 12px 14px;
+      border-bottom: 1px solid #E5E5E5;
       font-size: 14px;
       line-height: 20px;
-      color: #0b1c30;
+      color: #1A1A1A;
       vertical-align: middle;
     }
     tr:last-child td { border-bottom: 0; }
-    tbody tr:hover { background: #F8FAFC; }
+    tbody tr:hover { background: #F7F7F7; }
 
-    @keyframes sr-pulse {
-      0% { box-shadow: 0 0 0 0 rgba(15, 76, 129, .45); }
-      70% { box-shadow: 0 0 0 6px rgba(15, 76, 129, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(15, 76, 129, 0); }
+    @keyframes sr-pulse-red {
+      0% { box-shadow: 0 0 0 0 rgba(237, 28, 36, .45); }
+      70% { box-shadow: 0 0 0 6px rgba(237, 28, 36, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(237, 28, 36, 0); }
     }
     @keyframes sr-pulse-green {
-      0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, .45); }
-      70% { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
-    }
+      0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, .45); }
+      70% { box-shadow: 0 0 0 6px rgba(46, 125, 50, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
     }
     .input-focus:focus-within {
-      border-color: #0F4C81 !important;
-      box-shadow: 0 0 0 2px rgba(15, 76, 129, 0.15) !important;
+      border-color: #ED1C24 !important;
+      box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.20) !important;
     }
     .btn-nav {
-      height: 40px;
-      padding: 0 12px;
+      height: 36px;
+      padding: 0 16px;
       background: transparent;
       border: 0;
-      border-bottom: 2px solid transparent;
-      color: #42474f;
-      font-family: 'Geist', sans-serif;
-      font-size: 14px;
+      border-radius: 9999px;
+      color: #616161;
+      font-family: inherit;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
       white-space: nowrap;
+      transition: all 0.15s;
     }
-    .btn-nav:hover { color: #0F4C81; }
+    .btn-nav:hover { color: #ED1C24; background: #FFEBEC; }
     .btn-nav.active {
-      border-bottom-color: #0F4C81;
-      color: #0F4C81;
+      background: #ED1C24 !important;
+      color: #FFFFFF !important;
+      font-weight: 600 !important;
+      box-shadow: 0 2px 8px rgba(237, 28, 36, 0.25) !important;
+    }
+    .lang-btn {
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 9999px;
+      border: 0;
+      background: transparent;
+      color: #616161;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none !important;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-family: inherit;
+    }
+    .lang-btn.active {
+      background: #ED1C24;
+      color: #FFFFFF;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <div id="adminLayout" style="min-height: 100vh; display: flex; flex-direction: column; background: #F8FAFC;">
+  <div id="adminLayout" style="min-height: 100vh; display: flex; flex-direction: column; background: #F7F7F7;">
+    <!-- Signature Red Top Accent Line -->
+    <div style="height: 4px; background: #ED1C24; width: 100%;"></div>
+
     <!-- Desktop/Admin Header -->
-    <header id="adminHeader" style="background: #FFFFFF; border-bottom: 1px solid #E2E8F0;">
+    <header id="adminHeader" style="background: #FFFFFF; border-bottom: 1px solid #E5E5E5; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
       <div style="max-width: 75rem; margin: 0 auto; padding: 0 clamp(12px, 4vw, 24px); display: flex; flex-direction: column;">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 0;">
-          <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
-            <div style="width: 28px; height: 28px; flex: none; border-radius: 4px; background: #0F4C81; display: grid; place-items: center;">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M2 8h9M8 4l4 4-4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0;">
+          <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+            <!-- devdo Emblem -->
+            <div style="width: 34px; height: 34px; flex: none; border-radius: 8px; background: #ED1C24; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
               </svg>
             </div>
-            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: -0.01em; white-space: nowrap;">SwiftRoute</span>
-            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; padding: 2px 6px; border: 1px solid #E2E8F0; border-radius: 2px; white-space: nowrap;">Terminal</span>
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 19px; letter-spacing: -0.01em; color: #ED1C24; line-height: 1.1; white-space: nowrap;">devdo</span>
+              <span style="font-family: 'Kanit', sans-serif; font-weight: 500; font-size: 11px; color: #616161; letter-spacing: 0.04em; text-transform: uppercase;">devdo Express · Operations</span>
+            </div>
+            <span id="badgeTerminal" style="font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #ED1C24; padding: 2px 8px; background: #FFEBEC; border: 1px solid #FFDAD6; border-radius: 9999px; white-space: nowrap;">Corridor Operations</span>
           </div>
           <div style="display: flex; align-items: center; gap: 12px; flex: none;">
-            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #42474f; white-space: nowrap;">
-              <span style="width: 6px; height: 6px; border-radius: 9999px; background: #16A34A; display: inline-block; animation: sr-pulse-green 1.6s ease-out infinite;"></span>
-              Live · 10 Sep, 09:14
+            <!-- Bilingual Switcher -->
+            <div style="display: flex; align-items: center; background: #F7F7F7; border-radius: 9999px; padding: 2px; border: 1px solid #E5E5E5; gap: 2px;">
+              <button type="button" id="langBtnTh" onclick="setLanguage('th')" class="lang-btn active" title="ภาษาไทย">🇹🇭 ไทย</button>
+              <button type="button" id="langBtnEn" onclick="setLanguage('en')" class="lang-btn" title="English">🇬🇧 EN</button>
+            </div>
+            <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #616161; white-space: nowrap;">
+              <span style="width: 6px; height: 6px; border-radius: 9999px; background: #2E7D32; display: inline-block; animation: sr-pulse-green 1.6s ease-out infinite;"></span>
+              <span id="liveStatusText">Live · 10 Sep, 09:14</span>
             </span>
-            <div style="width: 28px; height: 28px; border-radius: 9999px; background: #D3E4FE; color: #0F4C81; display: grid; place-items: center; font-size: 12px; font-weight: 600;">NR</div>
-            <a href="login.html" style="font-size: 12px; color: #64748B; margin-left: 4px;">Sign out</a>
+            <div id="userAvatar" style="width: 30px; height: 30px; border-radius: 9999px; background: #FFEBEC; color: #ED1C24; border: 1px solid #FFDAD6; display: grid; place-items: center; font-size: 12px; font-weight: 700;">ST</div>
+            <div style="display: flex; flex-direction: column; line-height: 1.2;">
+              <span id="userNameHeader" style="font-size: 12px; font-weight: 600; color: #1A1A1A; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Somchai P.</span>
+              <span id="userRoleBadge" style="font-size: 11px; color: #616161;">Staff</span>
+            </div>
+            <a href="login.html" id="linkSignOut" onclick="handleSignOut(event);" style="font-size: 12px; font-weight: 500; color: #0364AD; margin-left: 4px;">ออกจากระบบ</a>
           </div>
         </div>
-        <nav style="display: flex; gap: 4px; overflow-x: auto;">
-          <button class="btn-nav active" data-tab="dashboard">Dashboard</button>
-          <button class="btn-nav" data-tab="parcels">Parcels</button>
-          <button class="btn-nav" data-tab="stations">Stations</button>
-          <button class="btn-nav" data-tab="checkin">Driver Check-in</button>
+        <nav style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px;">
+          <button class="btn-nav active" data-tab="dashboard" id="navDashboard">แดชบอร์ด</button>
+          <button class="btn-nav" data-tab="parcels" id="navParcels">พัสดุทั้งหมด</button>
+          <button class="btn-nav" data-tab="stations" id="navStations">สถานีคัดแยก</button>
+          <button class="btn-nav" data-tab="checkin" id="navCheckin">จุดเช็คอินพนักงานขับรถ</button>
         </nav>
       </div>
     </header>
@@ -117,56 +157,56 @@
       <div id="tabDashboard" style="display: flex; flex-direction: column; gap: 24px;">
         <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.015em;">Dashboard</h1>
-            <span style="font-size: 14px; color: #42474f;">Bangkok → Chiang Mai corridor · Live Neon Telemetry</span>
+            <h1 id="dashTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 700; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.01em; color: #1A1A1A;">Dashboard</h1>
+            <span id="dashSubtitle" style="font-size: 14px; color: #616161;">Bangkok → Chiang Mai corridor · Live Neon Telemetry</span>
           </div>
           <div style="display: flex; gap: 8px;">
-            <button id="btnAddDriver" onclick="openNewDriverModal();" style="height: 36px; padding: 0 14px; background: #FFFFFF; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">+ Add Driver</button>
-            <button id="btnNewManifest" onclick="openNewManifestModal();" style="height: 36px; padding: 0 14px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">+ New manifest</button>
+            <button id="btnAddDriver" onclick="openNewDriverModal();" style="height: 38px; padding: 0 16px; background: #FFFFFF; color: #1A1A1A; border: 1px solid #C4C4C4; border-radius: 9999px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; transition: background 0.15s;">+ Add Driver</button>
+            <button id="btnNewManifest" onclick="openNewManifestModal();" style="height: 38px; padding: 0 18px; background: #ED1C24; color: #FFFFFF; border: 0; border-radius: 9999px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(237,28,36,0.25); transition: background 0.15s;">+ New manifest</button>
           </div>
         </div>
 
         <!-- KPI Cards -->
         <div id="kpiContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 16px;">
-          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px;">
-            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">In transit</span>
-            <span id="kpiInTransit" style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.015em; color: #0b1c30; font-variant-numeric: tabular-nums;">312</span>
-            <span style="font-size: 12px; color: #42474f;">18 trucks on the corridor</span>
+          <div style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px;">
+            <span id="kpiInTransitLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">In transit</span>
+            <span id="kpiInTransit" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 30px; line-height: 36px; letter-spacing: -0.01em; color: #0364AD; font-variant-numeric: tabular-nums;">312</span>
+            <span id="kpiInTransitSub" style="font-size: 12px; color: #616161;">18 trucks on the corridor</span>
           </div>
-          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px;">
-            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Delivered today</span>
-            <span id="kpiDelivered" style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.015em; color: #16A34A; font-variant-numeric: tabular-nums;">47</span>
-            <span style="font-size: 12px; color: #42474f;">Of 96 due · 49%</span>
+          <div style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px;">
+            <span id="kpiDeliveredLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">Delivered today</span>
+            <span id="kpiDelivered" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 30px; line-height: 36px; letter-spacing: -0.01em; color: #2E7D32; font-variant-numeric: tabular-nums;">47</span>
+            <span id="kpiDeliveredSub" style="font-size: 12px; color: #616161;">Of 96 due · 49%</span>
           </div>
-          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px;">
-            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Exceptions</span>
-            <span id="kpiExceptions" style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.015em; color: #E11D48; font-variant-numeric: tabular-nums;">3</span>
-            <span style="font-size: 12px; color: #42474f;">2 weather, 1 address</span>
+          <div style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px;">
+            <span id="kpiExceptionsLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">Exceptions</span>
+            <span id="kpiExceptions" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 30px; line-height: 36px; letter-spacing: -0.01em; color: #E67E00; font-variant-numeric: tabular-nums;">3</span>
+            <span id="kpiExceptionsSub" style="font-size: 12px; color: #616161;">2 weather, 1 address</span>
           </div>
-          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 16px 20px; display: flex; flex-direction: column; gap: 6px;">
-            <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">On-time rate</span>
-            <span id="kpiOnTime" style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 28px; line-height: 36px; letter-spacing: -0.015em; color: #0b1c30; font-variant-numeric: tabular-nums;">96.2%</span>
-            <span style="font-size: 12px; color: #42474f;">Last 7 days</span>
+          <div style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px;">
+            <span id="kpiOnTimeLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">On-time rate</span>
+            <span id="kpiOnTime" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 30px; line-height: 36px; letter-spacing: -0.01em; color: #1A1A1A; font-variant-numeric: tabular-nums;">96.2%</span>
+            <span id="kpiOnTimeSub" style="font-size: 12px; color: #616161;">Last 7 days</span>
           </div>
         </div>
 
         <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
           <!-- Trucks on the road Table -->
-          <section style="flex: 2 1 min(460px, 100%); min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04);">
-            <div style="height: 48px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E2E8F0;">
-              <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 18px; line-height: 24px;">Trucks on the road</h2>
-              <span id="truckCountText" style="font-size: 12px; color: #64748B; white-space: nowrap;">5 trucks active</span>
+          <section style="flex: 2 1 min(460px, 100%); min-width: 0; background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); overflow: hidden;">
+            <div style="height: 52px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E5E5E5;">
+              <h2 id="trucksSecTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 16px; line-height: 24px; color: #1A1A1A;">Trucks on the road</h2>
+              <span id="truckCountText" style="font-size: 12px; color: #616161; white-space: nowrap;">5 trucks active</span>
             </div>
             <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
               <table style="min-width: 640px;">
                 <thead>
                   <tr>
-                    <th>Truck</th>
-                    <th>Leg</th>
-                    <th>Progress</th>
-                    <th>Parcels</th>
-                    <th>Next check-in</th>
-                    <th>Status</th>
+                    <th id="thTruckTruck">Truck</th>
+                    <th id="thTruckLeg">Leg</th>
+                    <th id="thTruckProgress">Progress</th>
+                    <th id="thTruckParcels">Parcels</th>
+                    <th id="thTruckNext">Next check-in</th>
+                    <th id="thTruckStatus">Status</th>
                   </tr>
                 </thead>
                 <tbody id="trucksTableBody">
@@ -177,10 +217,10 @@
           </section>
 
           <!-- Exceptions Feed -->
-          <section style="flex: 1 1 min(300px, 100%); min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04);">
-            <div style="height: 48px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E2E8F0;">
-              <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 18px; line-height: 24px;">Exceptions</h2>
-              <span id="exceptionCountBadge" style="height: 20px; padding: 0 6px; display: inline-flex; align-items: center; border-radius: 4px; background: #FFF1F2; color: #E11D48; border: 1px solid #FECDD3; font-size: 12px; font-weight: 500; white-space: nowrap; flex: none;">3 open</span>
+          <section style="flex: 1 1 min(300px, 100%); min-width: 0; background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); overflow: hidden;">
+            <div style="height: 52px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E5E5E5;">
+              <h2 id="exceptionsSecTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 16px; line-height: 24px; color: #1A1A1A;">Exceptions</h2>
+              <span id="exceptionCountBadge" style="height: 22px; padding: 0 10px; display: inline-flex; align-items: center; border-radius: 9999px; background: #FEF4E6; color: #E67E00; border: 1px solid #E67E00; font-size: 11px; font-weight: 600; white-space: nowrap; flex: none;">3 open</span>
             </div>
             <div id="exceptionsFeedContainer" style="display: flex; flex-direction: column;">
               <!-- Rendered via JS -->
@@ -189,25 +229,25 @@
         </div>
 
         <!-- Shipping Manifests Table -->
-        <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04);">
-          <div style="height: 48px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E2E8F0;">
+        <section style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); overflow: hidden;">
+          <div style="height: 52px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E5E5E5;">
             <div style="display: flex; align-items: center; gap: 10px;">
-              <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 18px; line-height: 24px;">Corridor Manifests</h2>
-              <span id="manifestsCountBadge" style="height: 20px; padding: 0 6px; display: inline-flex; align-items: center; border-radius: 4px; background: #EAF1FF; color: #0F4C81; border: 1px solid #BFDBFE; font-size: 12px; font-weight: 500;">...</span>
+              <h2 id="manifestsSecTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 16px; line-height: 24px; color: #1A1A1A;">Corridor Manifests</h2>
+              <span id="manifestsCountBadge" style="height: 22px; padding: 0 10px; display: inline-flex; align-items: center; border-radius: 9999px; background: #E6F0F8; color: #0364AD; border: 1px solid #0364AD; font-size: 11px; font-weight: 600;">...</span>
             </div>
-            <span style="font-size: 12px; color: #64748B;">Live Neon PostgreSQL manifests</span>
+            <span id="manifestsSub" style="font-size: 12px; color: #616161;">Live Neon PostgreSQL manifests</span>
           </div>
           <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
             <table style="min-width: 720px; width: 100%;">
               <thead>
                 <tr>
-                  <th>Manifest #</th>
-                  <th>Truck</th>
-                  <th>Corridor Leg</th>
-                  <th>Driver</th>
-                  <th>Departure</th>
-                  <th>Cargo</th>
-                  <th>Status</th>
+                  <th id="thMfNumber">Manifest #</th>
+                  <th id="thMfTruck">Truck</th>
+                  <th id="thMfLeg">Corridor Leg</th>
+                  <th id="thMfDriver">Driver</th>
+                  <th id="thMfDeparture">Departure</th>
+                  <th id="thMfCargo">Cargo</th>
+                  <th id="thMfStatus">Status</th>
                 </tr>
               </thead>
               <tbody id="manifestsTableBody">
@@ -222,35 +262,35 @@
       <div id="tabParcels" style="display: none; flex-direction: column; gap: 16px;">
         <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.015em;">Parcels</h1>
-            <span style="font-size: 14px; color: #42474f;">Live manifest items from PostgreSQL</span>
+            <h1 id="parcelsTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 700; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.01em; color: #1A1A1A;">Parcels</h1>
+            <span id="parcelsSubtitle" style="font-size: 14px; color: #616161;">Live manifest items from PostgreSQL</span>
           </div>
-          <div class="input-focus" style="display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 12px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 4px; flex: 1 1 240px; max-width: 360px; transition: border-color 0.15s, box-shadow 0.15s;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round">
+          <div class="input-focus" style="display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px; background: #FFFFFF; border: 1px solid #C4C4C4; border-radius: 9999px; flex: 1 1 260px; max-width: 380px; transition: border-color 0.15s, box-shadow 0.15s;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ED1C24" stroke-width="2" stroke-linecap="round">
               <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
             </svg>
-            <input id="parcelSearch" placeholder="Tracking no, recipient, truck" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: ui-monospace, 'Geist', monospace; font-size: 14px; color: #0b1c30;">
+            <input id="parcelSearch" placeholder="Tracking no, recipient, truck" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: 'Kanit', monospace; font-size: 14px; color: #1A1A1A;">
           </div>
         </div>
 
         <div id="filterButtonGroup" style="display: flex; flex-wrap: wrap; gap: 8px;">
-          <button class="parcel-filter-btn" data-filter="All" style="height: 32px; padding: 0 12px; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #0F4C81; color: #fff; border: 1px solid #0A355C;">All</button>
-          <button class="parcel-filter-btn" data-filter="In transit" style="height: 32px; padding: 0 12px; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #0F4C81; border: 1px solid #CBD5E1;">In transit</button>
-          <button class="parcel-filter-btn" data-filter="Exception" style="height: 32px; padding: 0 12px; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #0F4C81; border: 1px solid #CBD5E1;">Exception</button>
-          <button class="parcel-filter-btn" data-filter="Pending" style="height: 32px; padding: 0 12px; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #0F4C81; border: 1px solid #CBD5E1;">Pending</button>
-          <button class="parcel-filter-btn" data-filter="Delivered" style="height: 32px; padding: 0 12px; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #0F4C81; border: 1px solid #CBD5E1;">Delivered</button>
+          <button class="parcel-filter-btn" data-filter="All" id="filterAll" style="height: 34px; padding: 0 16px; border-radius: 9999px; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; background: #ED1C24; color: #fff; border: 0; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">All</button>
+          <button class="parcel-filter-btn" data-filter="In transit" id="filterInTransit" style="height: 34px; padding: 0 16px; border-radius: 9999px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #1A1A1A; border: 1px solid #C4C4C4;">In transit</button>
+          <button class="parcel-filter-btn" data-filter="Exception" id="filterException" style="height: 34px; padding: 0 16px; border-radius: 9999px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #1A1A1A; border: 1px solid #C4C4C4;">Exception</button>
+          <button class="parcel-filter-btn" data-filter="Pending" id="filterPending" style="height: 34px; padding: 0 16px; border-radius: 9999px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #1A1A1A; border: 1px solid #C4C4C4;">Pending</button>
+          <button class="parcel-filter-btn" data-filter="Delivered" id="filterDelivered" style="height: 34px; padding: 0 16px; border-radius: 9999px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; background: #FFFFFF; color: #1A1A1A; border: 1px solid #C4C4C4;">Delivered</button>
         </div>
 
-        <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <section style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); overflow-x: auto; -webkit-overflow-scrolling: touch;">
           <table style="min-width: 640px;">
             <thead>
               <tr>
-                <th>Tracking no</th>
-                <th>Route</th>
-                <th>Current station</th>
-                <th>Truck</th>
-                <th>Status</th>
-                <th>ETA</th>
+                <th id="thParcelsTn">Tracking no</th>
+                <th id="thParcelsRoute">Route</th>
+                <th id="thParcelsStation">Current station</th>
+                <th id="thParcelsTruck">Truck</th>
+                <th id="thParcelsStatus">Status</th>
+                <th id="thParcelsEta">ETA</th>
               </tr>
             </thead>
             <tbody id="parcelsTableBody">
@@ -258,17 +298,17 @@
             </tbody>
           </table>
         </section>
-        <span id="parcelCountIndicator" style="font-size: 12px; color: #64748B;">Showing parcels...</span>
+        <span id="parcelCountIndicator" style="font-size: 12px; color: #616161;">Showing parcels...</span>
       </div>
 
       <!-- ================= TAB: STATIONS ================= -->
       <div id="tabStations" style="display: none; flex-direction: column; gap: 16px;">
         <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px;">
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.015em;">Stations</h1>
-            <span style="font-size: 14px; color: #42474f;">Corridor Hubs and Distribution Centers</span>
+            <h1 id="stationsTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 700; font-size: clamp(22px, 6vw, 28px); line-height: 1.25; letter-spacing: -0.01em; color: #1A1A1A;">Stations</h1>
+            <span id="stationsSubtitle" style="font-size: 14px; color: #616161;">Corridor Hubs and Distribution Centers</span>
           </div>
-          <button id="btnAddStation" onclick="openNewStationModal();" style="height: 36px; padding: 0 14px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">+ Add Station</button>
+          <button id="btnAddStation" onclick="openNewStationModal();" style="height: 38px; padding: 0 18px; background: #ED1C24; color: #FFFFFF; border: 0; border-radius: 9999px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">+ Add Station</button>
         </div>
         <div id="stationsCardsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 16px;">
           <!-- Rendered dynamically from /api/stations -->
@@ -277,143 +317,197 @@
     </main>
 
     <!-- ================= VIEW: DRIVER CHECK-IN ================= -->
-    <div id="viewCheckin" style="display: none; flex: 1; width: 100%; max-width: 390px; margin: 0 auto; background: #FFFFFF; flex-direction: column; min-height: 100vh; border-left: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; padding-bottom: env(safe-area-inset-bottom); position: relative;">
-      <!-- Mobile Checkin Header -->
-      <header style="padding: 12px 16px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-        <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
-          <div style="width: 28px; height: 28px; flex: none; border-radius: 4px; background: #0F4C81; display: grid; place-items: center;">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M2 8h9M8 4l4 4-4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <div id="viewCheckin" style="display: none; flex: 1; width: 100%; max-width: 840px; margin: 0 auto; background: #FFFFFF; flex-direction: column; min-height: 100vh; border-left: 1px solid #E5E5E5; border-right: 1px solid #E5E5E5; padding-bottom: env(safe-area-inset-bottom); position: relative; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.04);">
+      <!-- Driver Checkin Header (Responsive Mobile & Desktop) -->
+      <header style="padding: 14px 20px; border-bottom: 1px solid #E5E5E5; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #FFFFFF;">
+        <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+          <div style="width: 34px; height: 34px; flex: none; border-radius: 8px; background: #ED1C24; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
             </svg>
           </div>
           <div style="display: flex; flex-direction: column; min-width: 0;">
-            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 16px; line-height: 20px; white-space: nowrap;">TK-19</span>
-            <span style="font-size: 12px; line-height: 16px; color: #42474f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Bangkok → Chiang Mai · Anan Suksomboon</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="driverTruckBadge" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 16px; line-height: 20px; color: #1A1A1A; white-space: nowrap;">TK-19</span>
+              <span id="driverRolePill" style="font-size: 10px; font-weight: 600; padding: 2px 8px; background: #FFEBEC; color: #ED1C24; border-radius: 9999px; border: 1px solid #FFDAD6;">Driver Terminal</span>
+            </div>
+            <span id="driverHeaderSub" style="font-size: 12px; line-height: 16px; color: #616161; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Bangkok → Chiang Mai · Anan Suksomboon</span>
           </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #42474f; white-space: nowrap; flex: none;">
-            <span style="width: 6px; height: 6px; border-radius: 9999px; background: #16A34A; display: inline-block; animation: sr-pulse-green 1.6s ease-out infinite;"></span>
-            09:14
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <!-- Mini Mobile Language Switcher -->
+          <div style="display: flex; align-items: center; background: #F7F7F7; border-radius: 9999px; padding: 2px; border: 1px solid #E5E5E5; gap: 2px;">
+            <button type="button" id="mobLangBtnTh" onclick="setLanguage('th')" class="lang-btn active" style="padding: 2px 6px; font-size: 11px;">🇹🇭</button>
+            <button type="button" id="mobLangBtnEn" onclick="setLanguage('en')" class="lang-btn" style="padding: 2px 6px; font-size: 11px;">🇬🇧</button>
+          </div>
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #616161; white-space: nowrap; flex: none;">
+            <span style="width: 6px; height: 6px; border-radius: 9999px; background: #2E7D32; display: inline-block; animation: sr-pulse-green 1.6s ease-out infinite;"></span>
+            <span id="driverClock">09:14</span>
           </span>
-          <a href="login.html" style="font-size: 11px; color: #64748B;">Exit</a>
+          <a href="login.html" id="driverExitLink" onclick="handleSignOut(event);" style="font-size: 12px; color: #ED1C24; font-weight: 600; text-decoration: none; padding: 4px 10px; border-radius: 9999px; background: #FFEBEC; border: 1px solid #FFDAD6;">Sign out</a>
         </div>
       </header>
 
-      <div style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 16px; padding-bottom: 96px;">
+      <div style="flex: 1; padding: clamp(16px, 3vw, 24px); display: flex; flex-direction: column; gap: 20px; padding-bottom: 96px;">
         <!-- Stepper -->
-        <section style="display: flex; flex-direction: column; gap: 10px;">
-          <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Route</span>
+        <section style="display: flex; flex-direction: column; gap: 10px; background: #F7F7F7; padding: 18px; border-radius: 16px; border: 1px solid #E5E5E5;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span id="stepperRouteLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">Corridor Route Progress</span>
+            <span style="font-size: 12px; color: #0364AD; font-weight: 600;">Leg 3 of 5 · 328 km done</span>
+          </div>
           <div id="driverStepper" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));">
             <!-- Step BKK (done) -->
             <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;">
-              <div class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #16A34A;"></div>
-              <div style="position: relative; width: 16px; height: 16px; border-radius: 2px; border: 2px solid #16A34A; background: #16A34A; display: grid; place-items: center;">
-                <div style="width: 6px; height: 6px; border-radius: 2px; background: #fff;"></div>
+              <div class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #2E7D32;"></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 9999px; border: 2px solid #2E7D32; background: #2E7D32; display: grid; place-items: center;">
+                <div style="width: 6px; height: 6px; border-radius: 9999px; background: #fff;"></div>
               </div>
-              <span style="font-family: ui-monospace, 'Geist', monospace; font-size: 11px; font-weight: 500; color: #16A34A;">BKK</span>
+              <span style="font-family: 'Kanit', monospace; font-size: 11px; font-weight: 600; color: #2E7D32;">BKK</span>
             </div>
             <!-- Step WNI (done) -->
             <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;">
-              <div id="lineWniNsn" class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #E2E8F0;"></div>
-              <div style="position: relative; width: 16px; height: 16px; border-radius: 2px; border: 2px solid #16A34A; background: #16A34A; display: grid; place-items: center;">
-                <div style="width: 6px; height: 6px; border-radius: 2px; background: #fff;"></div>
+              <div id="lineWniNsn" class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #E5E5E5;"></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 9999px; border: 2px solid #2E7D32; background: #2E7D32; display: grid; place-items: center;">
+                <div style="width: 6px; height: 6px; border-radius: 9999px; background: #fff;"></div>
               </div>
-              <span style="font-family: ui-monospace, 'Geist', monospace; font-size: 11px; font-weight: 500; color: #16A34A;">WNI</span>
+              <span style="font-family: 'Kanit', monospace; font-size: 11px; font-weight: 600; color: #2E7D32;">WNI</span>
             </div>
             <!-- Step NSN (current / active) -->
             <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;">
-              <div class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #E2E8F0;"></div>
-              <div id="nodeNsn" style="position: relative; width: 16px; height: 16px; border-radius: 9999px; border: 2px solid #0F4C81; background: #fff; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #0F4C81; display: grid; place-items: center;">
-                <div id="coreNsn" style="width: 6px; height: 6px; border-radius: 9999px; background: #0F4C81;"></div>
+              <div class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #E5E5E5;"></div>
+              <div id="nodeNsn" style="position: relative; width: 16px; height: 16px; border-radius: 9999px; border: 2px solid #ED1C24; background: #fff; box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(237,28,36,0.25); display: grid; place-items: center;">
+                <div id="coreNsn" style="width: 6px; height: 6px; border-radius: 9999px; background: #ED1C24;"></div>
               </div>
-              <span id="labelNsn" style="font-family: ui-monospace, 'Geist', monospace; font-size: 11px; font-weight: 500; color: #0F4C81;">NSN</span>
+              <span id="labelNsn" style="font-family: 'Kanit', monospace; font-size: 11px; font-weight: 600; color: #ED1C24;">NSN</span>
             </div>
             <!-- Step LPG (pending) -->
             <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;">
-              <div class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #E2E8F0;"></div>
-              <div style="position: relative; width: 16px; height: 16px; border-radius: 2px; border: 2px dashed #CBD5E1; background: transparent; display: grid; place-items: center;">
-                <div style="width: 6px; height: 6px; border-radius: 2px; background: transparent;"></div>
+              <div class="step-line" style="position: absolute; top: 7px; left: 50%; right: -50%; height: 2px; background: #E5E5E5;"></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 9999px; border: 2px dashed #C4C4C4; background: transparent; display: grid; place-items: center;">
+                <div style="width: 6px; height: 6px; border-radius: 9999px; background: transparent;"></div>
               </div>
-              <span style="font-family: ui-monospace, 'Geist', monospace; font-size: 11px; font-weight: 500; color: #64748B;">LPG</span>
+              <span style="font-family: 'Kanit', monospace; font-size: 11px; font-weight: 500; color: #8C8C8C;">LPG</span>
             </div>
             <!-- Step CNX (pending) -->
             <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative;">
-              <div style="position: relative; width: 16px; height: 16px; border-radius: 2px; border: 2px dashed #CBD5E1; background: transparent; display: grid; place-items: center;">
-                <div style="width: 6px; height: 6px; border-radius: 2px; background: transparent;"></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 9999px; border: 2px dashed #C4C4C4; background: transparent; display: grid; place-items: center;">
+                <div style="width: 6px; height: 6px; border-radius: 9999px; background: transparent;"></div>
               </div>
-              <span style="font-family: ui-monospace, 'Geist', monospace; font-size: 11px; font-weight: 500; color: #64748B;">CNX</span>
+              <span style="font-family: 'Kanit', monospace; font-size: 11px; font-weight: 500; color: #8C8C8C;">CNX</span>
             </div>
           </div>
         </section>
 
-        <!-- Station Proximity Detected -->
-        <section style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 12px; box-shadow: 0 4px 12px -2px rgba(15,76,129,0.08); padding: 20px; display: flex; flex-direction: column; gap: 12px;">
-          <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Nearest station detected</span>
-          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;">
-            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; letter-spacing: -0.01em;">Nakhon Sawan Hub</span>
-            <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: #F0F7FF; color: #0F4C81; border: 1px solid #BAE6FD;">
-              <span style="width: 6px; height: 6px; border-radius: 9999px; background: #0F4C81;"></span>0.3 km away
-            </span>
-          </div>
-          <span style="font-size: 14px; line-height: 20px; color: #42474f;">Highway 1, Mueang Nakhon Sawan · Bay 4</span>
-          <a href="#" onclick="Swal.fire({ icon: 'info', title: 'Nearby Stations', text: 'Corridor stations: Bangkok (BKK), Wang Noi (WNI), Nakhon Sawan (NSN), Lampang (LPG), Chiang Mai (CNX)', confirmButtonColor: '#0F4C81' }); return false;" style="font-size: 14px; font-weight: 500;">Not here? Choose another station</a>
-        </section>
+        <!-- Responsive 2-Column Cards Grid on Desktop / Stacked on Mobile -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+          <!-- Station Proximity Detected -->
+          <section style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <span id="nearestStationLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">Nearest station detected</span>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;">
+              <span id="nearestStationName" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 22px; line-height: 28px; letter-spacing: -0.01em; color: #1A1A1A;">Nakhon Sawan Hub</span>
+              <span id="nearestStationDist" style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; white-space: nowrap; background: #E6F0F8; color: #0364AD; border: 1px solid #0364AD;">
+                <span style="width: 6px; height: 6px; border-radius: 9999px; background: #0364AD;"></span>0.3 km away
+              </span>
+            </div>
+            <span id="nearestStationAddr" style="font-size: 14px; line-height: 20px; color: #616161;">Highway 1, Mueang Nakhon Sawan · Bay 4</span>
+            <a href="#" id="nearestStationNotHere" onclick="showNearbyStationsAlert(); return false;" style="font-size: 13px; font-weight: 600; color: #0364AD;">Not here? Choose another station</a>
+          </section>
 
-        <!-- Parcels Manifest Card -->
-        <section style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-          <div style="display: flex; flex-direction: column; gap: 2px;">
-            <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; font-variant-numeric: tabular-nums; white-space: nowrap;">42 parcels</span>
-            <span style="font-size: 12px; line-height: 16px; color: #42474f;">on board · manifest MF-2609-19</span>
+          <!-- Parcels Manifest Card -->
+          <section style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); padding: 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 16px;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;">
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <span id="manifestParcelsCount" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 26px; line-height: 30px; font-variant-numeric: tabular-nums; color: #1A1A1A; white-space: nowrap;">42 parcels</span>
+                <span id="manifestParcelsSub" style="font-size: 12px; line-height: 16px; color: #616161;">on board · manifest MF-2609-19</span>
+              </div>
+              <button id="manifestScanBtn" onclick="showScannerAlert();" style="height: 38px; padding: 0 16px; display: inline-flex; align-items: center; gap: 8px; background: #FFFFFF; color: #1A1A1A; border: 1px solid #C4C4C4; border-radius: 9999px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; flex: none; transition: background 0.15s;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ED1C24" stroke-width="2" stroke-linecap="round">
+                  <path d="M3 7V4h3M21 7V4h-3M3 17v3h3M21 17v3h-3M7 8v8M11 8v8M14 8v8M17 8v8"/>
+                </svg>
+                <span id="manifestScanText">Scan barcode</span>
+              </button>
+            </div>
+            <button type="button" id="btnToggleCargo" onclick="toggleDriverCargo();" style="height: 38px; width: 100%; background: #F7F7F7; border: 1px solid #E5E5E5; border-radius: 9999px; color: #1A1A1A; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; transition: background 0.15s;">
+              <span style="display: inline-flex; align-items: center; gap: 8px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0364AD" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <span id="cargoToggleLabel">📋 รายการพัสดุบนรถ 42 ชิ้น</span>
+              </span>
+              <span id="cargoToggleIcon">▼</span>
+            </button>
+          </section>
+        </div>
+
+        <!-- Cargo Manifest Inspection Table (Expandable for Desktop & Mobile) -->
+        <div id="driverCargoContainer" style="display: none; background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+          <div style="padding: 12px 16px; background: #F7F7F7; border-bottom: 1px solid #E5E5E5; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 600; font-size: 13px; color: #1A1A1A;" id="cargoTableTitle">รายการพัสดุประจำเที่ยวรถ (42 รายการ)</span>
+            <span style="font-size: 12px; color: #616161;">TK-19 · Corridor Manifest</span>
           </div>
-          <button onclick="Swal.fire({ icon: 'info', title: 'Barcode Scanner', text: 'Camera scanner simulation ready. Manifest MF-2609-19 loaded.', confirmButtonColor: '#0F4C81' });" style="height: 44px; padding: 0 14px; display: inline-flex; align-items: center; gap: 8px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; flex: none;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M3 7V4h3M21 7V4h-3M3 17v3h3M21 17v3h-3M7 8v8M11 8v8M14 8v8M17 8v8"/>
-            </svg>
-            Scan barcode
-          </button>
-        </section>
+          <div style="max-height: 240px; overflow-y: auto; overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+              <thead style="background: #F7F7F7; border-bottom: 1px solid #E5E5E5; position: sticky; top: 0;">
+                <tr>
+                  <th style="padding: 8px 12px; text-align: left; font-weight: 600; color: #616161;">เลขพัสดุ</th>
+                  <th style="padding: 8px 12px; text-align: left; font-weight: 600; color: #616161;">ผู้รับ</th>
+                  <th style="padding: 8px 12px; text-align: left; font-weight: 600; color: #616161;">ปลายทาง</th>
+                  <th style="padding: 8px 12px; text-align: right; font-weight: 600; color: #616161;">สถานะ</th>
+                </tr>
+              </thead>
+              <tbody id="driverCargoTableBody">
+                <!-- Dynamically filled -->
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         <!-- Swipe to Confirm Section -->
-        <section style="display: flex; flex-direction: column; gap: 8px;">
-          <div id="swipeTrack" style="position: relative; height: 56px; border-radius: 4px; background: #F1F5F9; border: 1px solid #CBD5E1; overflow: hidden; user-select: none; touch-action: pan-y; cursor: grab;">
-            <div id="swipeLabel" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 64px 0 72px; font-size: 14px; font-weight: 500; color: #0F4C81; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none;">Confirm arrival at Nakhon Sawan Hub</div>
-            <div id="swipeThumb" style="position: absolute; top: 3px; left: 3px; width: 48px; height: 48px; border-radius: 2px; background: #0F4C81; border: 1px solid #0A355C; display: grid; place-items: center; transform: translateX(0px); transition: transform 220ms ease; cursor: grab;">
+        <section style="display: flex; flex-direction: column; gap: 10px;">
+          <div id="swipeTrack" style="position: relative; height: 56px; border-radius: 9999px; background: #F7F7F7; border: 1px solid #C4C4C4; overflow: hidden; user-select: none; touch-action: pan-y; cursor: grab;">
+            <div id="swipeLabel" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 64px 0 72px; font-size: 14px; font-weight: 600; color: #ED1C24; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none;">Confirm arrival at Nakhon Sawan Hub</div>
+            <div id="swipeThumb" style="position: absolute; top: 3px; left: 3px; width: 48px; height: 48px; border-radius: 9999px; background: #ED1C24; border: 0; box-shadow: 0 2px 8px rgba(237,28,36,0.3); display: grid; place-items: center; transform: translateX(0px); transition: transform 220ms ease; cursor: grab;">
               <svg id="swipeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 12h14M13 6l6 6-6 6"/>
               </svg>
             </div>
           </div>
-          <span id="swipeHint" style="font-size: 12px; line-height: 16px; color: #64748B; text-align: center;">Swipe right to confirm · updates every parcel on board via Neon SQL</span>
+          <span id="swipeHint" style="font-size: 12px; line-height: 16px; color: #8C8C8C; text-align: center;">Swipe right to confirm · updates every parcel on board via Neon SQL</span>
+
+          <!-- Direct Desktop Click Button (Alternative for PC Users with Mouse) -->
+          <button type="button" id="btnDesktopConfirm" onclick="confirmArrival();" style="display: flex; height: 48px; width: 100%; background: #ED1C24; color: #FFFFFF; border: 0; border-radius: 9999px; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(237,28,36,0.25); transition: background 0.15s, transform 0.1s;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6L9 17l-5-5"/>
+            </svg>
+            <span id="btnDesktopConfirmText">คลิกเพื่อยืนยันการถึงสถานี (สำหรับคอมพิวเตอร์)</span>
+          </button>
         </section>
 
         <!-- Confirmation message after swipe -->
-        <section id="confirmAlert" style="display: none; background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 14px 16px; flex-direction: column; gap: 4px;">
-          <span style="font-size: 14px; font-weight: 500; line-height: 20px;">Arrived at Nakhon Sawan Hub · 10 Sep, 09:14</span>
-          <span style="font-size: 12px; line-height: 16px; color: #42474f;">Next stop: Lampang Hub, 187 km. Depart when the bay releases you.</span>
+        <section id="confirmAlert" style="display: none; background: #EAF5ED; border: 1px solid #2E7D32; border-radius: 16px; padding: 16px; flex-direction: column; gap: 4px;">
+          <span id="confirmAlertTitle" style="font-size: 14px; font-weight: 600; line-height: 20px; color: #2E7D32;">Arrived at Nakhon Sawan Hub · 10 Sep, 09:14</span>
+          <span id="confirmAlertSub" style="font-size: 12px; line-height: 16px; color: #2E7D32;">Next stop: Lampang Hub, 187 km. Depart when the bay releases you.</span>
         </section>
       </div>
 
       <!-- Compatibility DOM elements for tests -->
       <div id="toastNotification" style="display: none;"><span id="toastText"></span></div>
 
-      <!-- Bottom Mobile Tabs -->
-      <nav style="position: sticky; bottom: 0; background: #FFFFFF; border-top: 1px solid #E2E8F0; display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px 0 10px;">
-        <button onclick="switchTab('dashboard');" style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #64748B; font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer;">
+      <!-- Bottom Tabs Navigation (with RBAC enforcement) -->
+      <nav style="position: sticky; bottom: 0; background: #FFFFFF; border-top: 1px solid #E5E5E5; display: grid; grid-template-columns: repeat(4, 1fr); padding: 6px 0 10px; z-index: 10;">
+        <button onclick="handleDriverNav('dashboard');" style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #8C8C8C; font-family: inherit; font-size: 11px; font-weight: 500; cursor: pointer;">
           <span style="width: 20px; height: 20px; border-radius: 2px; border: 2px solid currentColor; background: transparent;"></span>
-          Dashboard
+          <span id="mobNavDash">Dashboard</span>
         </button>
-        <button onclick="switchTab('parcels');" style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #64748B; font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer;">
+        <button onclick="handleDriverNav('parcels');" style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #8C8C8C; font-family: inherit; font-size: 11px; font-weight: 500; cursor: pointer;">
           <span style="width: 20px; height: 20px; border-radius: 2px; border: 2px solid currentColor; background: transparent;"></span>
-          Parcels
+          <span id="mobNavParcels">Parcels</span>
         </button>
-        <button style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #0F4C81; font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer;">
-          <span style="width: 20px; height: 20px; border-radius: 9999px; border: 2px solid currentColor; background: #0F4C81;"></span>
-          Check-in
+        <button style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #ED1C24; font-family: inherit; font-size: 11px; font-weight: 600; cursor: pointer;">
+          <span style="width: 20px; height: 20px; border-radius: 9999px; border: 2px solid currentColor; background: #ED1C24;"></span>
+          <span id="mobNavCheckin">Check-in</span>
         </button>
-        <button onclick="switchTab('stations');" style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #64748B; font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer;">
+        <button onclick="handleDriverNav('stations');" style="height: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; border: 0; color: #8C8C8C; font-family: inherit; font-size: 11px; font-weight: 500; cursor: pointer;">
           <span style="width: 20px; height: 20px; border-radius: 2px; border: 2px solid currentColor; background: transparent;"></span>
-          Stations
+          <span id="mobNavStations">Stations</span>
         </button>
       </nav>
     </div>
@@ -421,26 +515,26 @@
 
   <!-- ================= MODAL: NEW MANIFEST ================= -->
   <div id="modalNewManifest" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center; padding: 16px;">
-    <div style="background: #FFFFFF; width: 100%; max-width: 560px; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1); border: 1px solid #E2E8F0; overflow: hidden;">
+    <div style="background: #FFFFFF; width: 100%; max-width: 560px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); border: 1px solid #E5E5E5; overflow: hidden;">
       <!-- Modal Header -->
-      <div style="padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; background: #F8FAFC;">
+      <div style="padding: 16px 20px; border-bottom: 1px solid #E5E5E5; display: flex; align-items: center; justify-content: space-between; background: #FFFFFF;">
         <div>
-          <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: #0b1c30;">Create Shipping Manifest</h3>
-          <span style="font-size: 12px; color: #64748B;">Assign corridor cargo & dispatch via Neon PostgreSQL</span>
+          <h3 id="modalMfTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-size: 18px; font-weight: 600; color: #1A1A1A;">Create Shipping Manifest</h3>
+          <span id="modalMfSubtitle" style="font-size: 12px; color: #616161;">Assign corridor cargo &amp; dispatch via Neon PostgreSQL</span>
         </div>
-        <button type="button" onclick="closeNewManifestModal();" style="width: 32px; height: 32px; border-radius: 4px; border: 0; background: transparent; color: #64748B; font-size: 22px; line-height: 1; cursor: pointer; display: grid; place-items: center;">&times;</button>
+        <button type="button" onclick="closeNewManifestModal();" style="width: 32px; height: 32px; border-radius: 9999px; border: 0; background: transparent; color: #616161; font-size: 22px; line-height: 1; cursor: pointer; display: grid; place-items: center;">&times;</button>
       </div>
 
       <!-- Modal Form -->
       <form id="formNewManifest" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Manifest Number</label>
-            <input id="mfNumber" type="text" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 13px; color: #0b1c30; background: #F8FAFC;">
+            <label id="lblMfNumber" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Manifest Number</label>
+            <input id="mfNumber" type="text" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: 'Kanit', monospace; font-size: 13px; color: #1A1A1A; background: #F7F7F7;">
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Assigned Truck</label>
-            <select id="mfTruck" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30; background: #fff;">
+            <label id="lblMfTruck" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Assigned Truck</label>
+            <select id="mfTruck" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: inherit; font-size: 13px; color: #1A1A1A; background: #fff;">
               <option value="TK-03">TK-03 (Bangkok Depot)</option>
               <option value="TK-19">TK-19 (Nakhon Sawan)</option>
               <option value="TK-07">TK-07 (Wang Noi)</option>
@@ -452,8 +546,8 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Origin Station</label>
-            <select id="mfOrigin" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30; background: #fff;">
+            <label id="lblMfOrigin" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Origin Station</label>
+            <select id="mfOrigin" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: inherit; font-size: 13px; color: #1A1A1A; background: #fff;">
               <option value="BKK" selected>Bangkok Central Depot (BKK)</option>
               <option value="WNI">Wang Noi Sorting Center (WNI)</option>
               <option value="NSN">Nakhon Sawan Hub (NSN)</option>
@@ -462,8 +556,8 @@
             </select>
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Destination Station</label>
-            <select id="mfDestination" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30; background: #fff;">
+            <label id="lblMfDestination" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Destination Station</label>
+            <select id="mfDestination" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: inherit; font-size: 13px; color: #1A1A1A; background: #fff;">
               <option value="CNX" selected>Chiang Mai Station (CNX)</option>
               <option value="LPG">Lampang Hub (LPG)</option>
               <option value="NSN">Nakhon Sawan Hub (NSN)</option>
@@ -475,36 +569,36 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Driver Name</label>
-            <input id="mfDriver" type="text" required value="Wichai K." style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30;">
+            <label id="lblMfDriver" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Driver Name</label>
+            <input id="mfDriver" type="text" required value="Wichai K." style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: inherit; font-size: 13px; color: #1A1A1A;">
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Departure Time / Window</label>
-            <input id="mfDeparture" type="text" required value="Today, 16:00" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30;">
+            <label id="lblMfDeparture" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Departure Time / Window</label>
+            <input id="mfDeparture" type="text" required value="Today, 16:00" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: inherit; font-size: 13px; color: #1A1A1A;">
           </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Parcels Count</label>
-            <input id="mfParcelsCount" type="number" min="1" max="500" value="48" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30;">
+            <label id="lblMfParcelsCount" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Parcels Count</label>
+            <input id="mfParcelsCount" type="number" min="1" max="500" value="48" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: inherit; font-size: 13px; color: #1A1A1A;">
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Total Weight (kg)</label>
-            <input id="mfWeight" type="number" step="0.1" min="1" max="10000" value="185.0" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30;">
+            <label id="lblMfWeight" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Total Weight (kg)</label>
+            <input id="mfWeight" type="number" step="0.1" min="1" max="10000" value="185.0" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: inherit; font-size: 13px; color: #1A1A1A;">
           </div>
         </div>
 
         <div>
-          <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Dispatch Notes / Remarks</label>
-          <textarea id="mfNotes" rows="2" placeholder="e.g. Corridor express dispatch, road conditions normal" style="width: 100%; padding: 8px 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px; color: #0b1c30; resize: vertical;"></textarea>
+          <label id="lblMfNotes" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Dispatch Notes / Remarks</label>
+          <textarea id="mfNotes" rows="2" placeholder="e.g. Corridor express dispatch, road conditions normal" style="width: 100%; padding: 8px 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: inherit; font-size: 13px; color: #1A1A1A; resize: vertical;"></textarea>
         </div>
 
         <!-- Modal Footer -->
         <div style="margin-top: 6px; display: flex; justify-content: flex-end; gap: 10px;">
-          <button type="button" onclick="closeNewManifestModal();" style="height: 38px; padding: 0 16px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #42474f; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
-          <button type="submit" id="btnSubmitManifest" style="height: 38px; padding: 0 18px; border: 1px solid #0A355C; background: #0F4C81; color: #FFFFFF; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-            <span>Create & Dispatch</span>
+          <button type="button" id="btnCancelManifest" onclick="closeNewManifestModal();" style="height: 40px; padding: 0 18px; border: 1px solid #C4C4C4; background: #FFFFFF; color: #1A1A1A; border-radius: 9999px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+          <button type="submit" id="btnSubmitManifest" style="height: 40px; padding: 0 20px; border: 0; background: #ED1C24; color: #FFFFFF; border-radius: 9999px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">
+            <span id="btnSubmitManifestText">Create &amp; Dispatch</span>
           </button>
         </div>
       </form>
@@ -513,35 +607,35 @@
 
   <!-- ================= MODAL: NEW STATION ================= -->
   <div id="modalNewStation" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center; padding: 16px;">
-    <div style="background: #FFFFFF; width: 100%; max-width: 520px; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); border: 1px solid #E2E8F0; overflow: hidden;">
-      <div style="padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; background: #F8FAFC;">
+    <div style="background: #FFFFFF; width: 100%; max-width: 520px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); border: 1px solid #E5E5E5; overflow: hidden;">
+      <div style="padding: 16px 20px; border-bottom: 1px solid #E5E5E5; display: flex; align-items: center; justify-content: space-between; background: #FFFFFF;">
         <div>
-          <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: #0b1c30;">Add New Station</h3>
-          <span style="font-size: 12px; color: #64748B;">Register new corridor hub in Neon PostgreSQL</span>
+          <h3 id="modalStTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-size: 18px; font-weight: 600; color: #1A1A1A;">Add New Station</h3>
+          <span id="modalStSubtitle" style="font-size: 12px; color: #616161;">Register new corridor hub in Neon PostgreSQL</span>
         </div>
-        <button type="button" onclick="closeNewStationModal();" style="width: 32px; height: 32px; border: 0; background: transparent; color: #64748B; font-size: 22px; cursor: pointer;">&times;</button>
+        <button type="button" onclick="closeNewStationModal();" style="width: 32px; height: 32px; border: 0; background: transparent; color: #616161; font-size: 22px; cursor: pointer;">&times;</button>
       </div>
 
       <form id="formNewStation" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
         <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Station Code (3 letters)</label>
-            <input id="stCode" type="text" placeholder="e.g. LPN" maxlength="4" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 13px; text-transform: uppercase;">
+            <label id="lblStCode" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Station Code (3 letters)</label>
+            <input id="stCode" type="text" placeholder="e.g. LPN" maxlength="4" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: 'Kanit', monospace; font-size: 13px; text-transform: uppercase;">
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Station Name</label>
-            <input id="stName" type="text" placeholder="e.g. Lamphun Hub" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 13px;">
+            <label id="lblStName" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Station Name</label>
+            <input id="stName" type="text" placeholder="e.g. Lamphun Hub" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: inherit; font-size: 13px;">
           </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Supervisor</label>
-            <input id="stSupervisor" type="text" placeholder="e.g. Somchai P." value="Station Lead" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+            <label id="lblStSupervisor" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Supervisor</label>
+            <input id="stSupervisor" type="text" placeholder="e.g. Somchai P." value="Station Lead" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-size: 13px;">
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Status</label>
-            <select id="stStatus" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px; background: #fff;">
+            <label id="lblStStatus" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Status</label>
+            <select id="stStatus" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-size: 13px; background: #fff;">
               <option value="open">Open (Normal)</option>
               <option value="busy">Busy (High volume)</option>
               <option value="closed">Closed (Weather/Maintenance)</option>
@@ -551,24 +645,24 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Bays in Use</label>
-            <input id="stBays" type="text" value="2 / 4" placeholder="e.g. 3 / 6" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+            <label id="lblStBays" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Bays in Use</label>
+            <input id="stBays" type="text" value="2 / 4" placeholder="e.g. 3 / 6" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-size: 13px;">
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Next Departure</label>
-            <input id="stDeparture" type="text" value="Standby" placeholder="e.g. TK-07 · 14:00" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+            <label id="lblStDeparture" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Next Departure</label>
+            <input id="stDeparture" type="text" value="Standby" placeholder="e.g. TK-07 · 14:00" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-size: 13px;">
           </div>
         </div>
 
         <div>
-          <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Operational Note</label>
-          <input id="stNote" type="text" placeholder="e.g. Northern corridor junction station" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+          <label id="lblStNote" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Operational Note</label>
+          <input id="stNote" type="text" placeholder="e.g. Northern corridor junction station" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-size: 13px;">
         </div>
 
         <div style="margin-top: 6px; display: flex; justify-content: flex-end; gap: 10px;">
-          <button type="button" onclick="closeNewStationModal();" style="height: 38px; padding: 0 16px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #42474f; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
-          <button type="submit" id="btnSubmitStation" style="height: 38px; padding: 0 18px; border: 1px solid #0A355C; background: #0F4C81; color: #FFFFFF; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">
-            <span>Save Station</span>
+          <button type="button" id="btnCancelStation" onclick="closeNewStationModal();" style="height: 40px; padding: 0 18px; border: 1px solid #C4C4C4; background: #FFFFFF; color: #1A1A1A; border-radius: 9999px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+          <button type="submit" id="btnSubmitStation" style="height: 40px; padding: 0 20px; border: 0; background: #ED1C24; color: #FFFFFF; border-radius: 9999px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">
+            <span id="btnSubmitStationText">Save Station</span>
           </button>
         </div>
       </form>
@@ -577,42 +671,42 @@
 
   <!-- ================= MODAL: NEW DRIVER ================= -->
   <div id="modalNewDriver" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 1000; align-items: center; justify-content: center; padding: 16px;">
-    <div style="background: #FFFFFF; width: 100%; max-width: 520px; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); border: 1px solid #E2E8F0; overflow: hidden;">
-      <div style="padding: 16px 20px; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between; background: #F8FAFC;">
+    <div style="background: #FFFFFF; width: 100%; max-width: 520px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); border: 1px solid #E5E5E5; overflow: hidden;">
+      <div style="padding: 16px 20px; border-bottom: 1px solid #E5E5E5; display: flex; align-items: center; justify-content: space-between; background: #FFFFFF;">
         <div>
-          <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: #0b1c30;">Register New Driver</h3>
-          <span style="font-size: 12px; color: #64748B;">Creates login credentials in Neon PostgreSQL (users table)</span>
+          <h3 id="modalDrvTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-size: 18px; font-weight: 600; color: #1A1A1A;">Register New Driver</h3>
+          <span id="modalDrvSubtitle" style="font-size: 12px; color: #616161;">Creates login credentials in Neon PostgreSQL (users table)</span>
         </div>
-        <button type="button" onclick="closeNewDriverModal();" style="width: 32px; height: 32px; border: 0; background: transparent; color: #64748B; font-size: 22px; cursor: pointer;">&times;</button>
+        <button type="button" onclick="closeNewDriverModal();" style="width: 32px; height: 32px; border: 0; background: transparent; color: #616161; font-size: 22px; cursor: pointer;">&times;</button>
       </div>
 
       <form id="formNewDriver" style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Driver ID (Login)</label>
-            <input id="drvId" type="text" placeholder="e.g. DR-0925" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 13px; text-transform: uppercase;">
+            <label id="lblDrvId" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Driver ID (Login)</label>
+            <input id="drvId" type="text" placeholder="e.g. DR-0925" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-family: 'Kanit', monospace; font-size: 13px; text-transform: uppercase;">
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">6-digit PIN (Password)</label>
-            <input id="drvPin" type="password" maxlength="8" value="123456" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
-          </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Full Name</label>
-            <input id="drvName" type="text" placeholder="e.g. Somchai Jaidee" required style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
-          </div>
-          <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Phone Number</label>
-            <input id="drvPhone" type="tel" placeholder="08x-xxx-xxxx" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px;">
+            <label id="lblDrvPin" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">6-digit PIN (Password)</label>
+            <input id="drvPin" type="password" maxlength="8" value="123456" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-size: 13px;">
           </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Assign Truck</label>
-            <select id="drvTruck" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px; background: #fff;">
+            <label id="lblDrvName" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Full Name</label>
+            <input id="drvName" type="text" placeholder="e.g. Somchai Jaidee" required style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-size: 13px;">
+          </div>
+          <div>
+            <label id="lblDrvPhone" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Phone Number</label>
+            <input id="drvPhone" type="tel" placeholder="08x-xxx-xxxx" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-size: 13px;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label id="lblDrvTruck" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Assign Truck</label>
+            <select id="drvTruck" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-size: 13px; background: #fff;">
               <option value="">No truck assigned</option>
               <option value="TK-03">TK-03 (Bangkok Depot)</option>
               <option value="TK-19">TK-19 (Nakhon Sawan)</option>
@@ -622,8 +716,8 @@
             </select>
           </div>
           <div>
-            <label style="display: block; font-size: 12px; font-weight: 500; color: #42474f; margin-bottom: 4px;">Home Station</label>
-            <select id="drvStation" style="width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 4px; font-size: 13px; background: #fff;">
+            <label id="lblDrvStation" style="display: block; font-size: 12px; font-weight: 600; color: #616161; margin-bottom: 4px;">Home Station</label>
+            <select id="drvStation" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #C4C4C4; border-radius: 8px; font-size: 13px; background: #fff;">
               <option value="BKK">Bangkok (BKK)</option>
               <option value="WNI">Wang Noi (WNI)</option>
               <option value="NSN">Nakhon Sawan (NSN)</option>
@@ -634,9 +728,9 @@
         </div>
 
         <div style="margin-top: 6px; display: flex; justify-content: flex-end; gap: 10px;">
-          <button type="button" onclick="closeNewDriverModal();" style="height: 38px; padding: 0 16px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #42474f; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
-          <button type="submit" id="btnSubmitDriver" style="height: 38px; padding: 0 18px; border: 1px solid #0A355C; background: #0F4C81; color: #FFFFFF; border-radius: 4px; font-size: 13px; font-weight: 500; cursor: pointer;">
-            <span>Save Driver</span>
+          <button type="button" id="btnCancelDriver" onclick="closeNewDriverModal();" style="height: 40px; padding: 0 18px; border: 1px solid #C4C4C4; background: #FFFFFF; color: #1A1A1A; border-radius: 9999px; font-size: 13px; font-weight: 500; cursor: pointer;">Cancel</button>
+          <button type="submit" id="btnSubmitDriver" style="height: 40px; padding: 0 20px; border: 0; background: #ED1C24; color: #FFFFFF; border-radius: 9999px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">
+            <span id="btnSubmitDriverText">Save Driver</span>
           </button>
         </div>
       </form>
@@ -644,6 +738,683 @@
   </div>
 
   <script>
+    // Current language selection with persistence
+    let currentLang = localStorage.getItem('swiftroute_lang') || 'th';
+
+    const I18N_ADMIN = {
+      th: {
+        terminal: 'ระบบจัดการ',
+        liveTime: 'สด · 10 ก.ย. 09:14',
+        signOut: 'ออกจากระบบ',
+        exit: 'ออก',
+        nav: {
+          dashboard: 'แดชบอร์ด',
+          parcels: 'รายการพัสดุ',
+          stations: 'สถานีคัดแยก',
+          checkin: 'เช็คอินคนขับ'
+        },
+        dash: {
+          title: 'แดชบอร์ดควบคุม',
+          sub: 'เส้นทาง กรุงเทพฯ → เชียงใหม่ · ข้อมูลเรียลไทม์ Neon Telemetry',
+          addDriver: '+ เพิ่มคนขับรถ',
+          newManifest: '+ สร้างใบกำกับสินค้า',
+          kpiInTransit: 'กำลังขนส่ง',
+          kpiInTransitSub: '18 คันบนเส้นทาง',
+          kpiDelivered: 'จัดส่งสำเร็จวันนี้',
+          kpiDeliveredSub: 'จากทั้งหมด 96 ชิ้น · 49%',
+          kpiExceptions: 'พบปัญหา/ล่าช้า',
+          kpiExceptionsSub: 'สภาพอากาศ 2, ที่อยู่ 1',
+          kpiOnTime: 'อัตราตรงเวลา',
+          kpiOnTimeSub: '7 วันล่าสุด',
+          trucksTitle: 'รถบรรทุกที่กำลังวิ่ง',
+          trucksActive: 'คัน กำลังวิ่ง',
+          thTruck: 'รหัสรถ',
+          thLeg: 'ช่วงเส้นทาง',
+          thProgress: 'ความคืบหน้า',
+          thParcels: 'จำนวนพัสดุ',
+          thNext: 'จุดเช็คอินถัดไป',
+          thStatus: 'สถานะ',
+          exceptionsTitle: 'รายงานปัญหา',
+          exceptionsOpen: 'รายการ',
+          manifestsTitle: 'ใบกำกับสินค้าตามเส้นทาง',
+          manifestsSub: 'ข้อมูลใบกำกับสินค้าแบบเรียลไทม์บน Neon PostgreSQL',
+          manifestsActive: 'ใช้งานอยู่',
+          thMfNumber: 'เลขที่ใบกำกับ',
+          thMfTruck: 'รหัสรถ',
+          thMfLeg: 'ช่วงเส้นทาง',
+          thMfDriver: 'พนักงานขับรถ',
+          thMfDeparture: 'เวลาออกเดินทาง',
+          thMfCargo: 'สินค้าบรรทุก',
+          thMfStatus: 'สถานะ'
+        },
+        parcels: {
+          title: 'รายการพัสดุ',
+          sub: 'รายการพัสดุแบบเรียลไทม์จาก PostgreSQL',
+          placeholder: 'ค้นหาเลขพัสดุ, ผู้รับ, รหัสรถ',
+          filterAll: 'ทั้งหมด',
+          filterInTransit: 'กำลังขนส่ง',
+          filterException: 'พบปัญหา',
+          filterPending: 'รอดำเนินการ',
+          filterDelivered: 'จัดส่งสำเร็จ',
+          thTn: 'เลขพัสดุ',
+          thRoute: 'เส้นทาง',
+          thStation: 'สถานีปัจจุบัน',
+          thTruck: 'รหัสรถ',
+          thStatus: 'สถานะ',
+          thEta: 'กำหนดส่งถึง',
+          showing: 'แสดง',
+          of: 'จากทั้งหมด',
+          source: 'แหล่งข้อมูล'
+        },
+        stations: {
+          title: 'สถานีคัดแยกและศูนย์ฮับ',
+          sub: 'ศูนย์กระจายสินค้าหลักและฮับประจำเส้นทาง',
+          addStation: '+ เพิ่มสถานีใหม่',
+          onHand: 'พัสดุในสถานี',
+          bays: 'ช่องจอดใช้งาน',
+          nextDep: 'เที่ยวรถถัดไป',
+          supervisor: 'หัวหน้าสถานี',
+          createMf: 'สร้างใบกำกับสินค้า'
+        },
+        checkin: {
+          route: 'เส้นทางเดินรถ',
+          nearest: 'ตรวจพบสถานีที่ใกล้ที่สุด',
+          away: 'อยู่ห่าง 0.3 กม.',
+          addr: 'ทางหลวงหมายเลข 1, อ.เมือง จ.นครสวรรค์ · ช่องจอด 4',
+          notHere: 'ไม่ได้อยู่ที่นี่? เลือกสถานีอื่น',
+          parcelsOnBoard: 'ชิ้น',
+          onBoardSub: 'บนรถคันนี้ · ใบกำกับ MF-2609-19',
+          scanBtn: 'สแกนบาร์โค้ด',
+          swipeToConfirm: 'เลื่อนเพื่อยืนยันการถึงศูนย์ฮับนครสวรรค์',
+          swipeHint: 'เลื่อนไปทางขวาเพื่อยืนยัน · อัปเดตพัสดุทุกชิ้นบนรถทันทีผ่าน Neon SQL',
+          arrivalConfirmed: 'ยืนยันการถึงสถานีแล้ว',
+          arrivalHint: 'อัปเดตสถานะพัสดุทั้ง 42 ชิ้นบนระบบ Neon PostgreSQL แล้ว',
+          alertTitle: 'ถึงศูนย์ฮับนครสวรรค์แล้ว · 10 ก.ย. 09:14',
+          alertSub: 'จุดหมายถัดไป: ศูนย์ฮับลำปาง, 187 กม. ออกเดินทางเมื่อช่องโหลดปล่อยรถ',
+          cargoToggle: '📋 รายการพัสดุบนรถ 42 ชิ้น',
+          btnDesktopConfirm: 'คลิกเพื่อยืนยันการถึงสถานี (สำหรับคอมพิวเตอร์)',
+          rbacStaffTitle: 'ไม่มีสิทธิ์เข้าถึง',
+          rbacStaffText: 'เจ้าหน้าที่ (Staff) ไม่มีสิทธิ์เข้าใช้งานหน้าเช็คอินของคนขับรถ',
+          rbacDriverTitle: 'สิทธิ์เฉพาะเจ้าหน้าที่ (Staff Only)',
+          rbacDriverText: 'พนักงานขับรถไม่ได้รับอนุญาตให้เข้าดูแดชบอร์ดหรือข้อมูลพัสดุส่วนกลางของบริษัท'
+        },
+        modals: {
+          mfTitle: 'สร้างใบกำกับสินค้า',
+          mfSub: 'กำหนดสินค้าประจำเที่ยวรถและจัดส่งผ่าน Neon PostgreSQL',
+          mfNumber: 'เลขที่ใบกำกับ',
+          mfTruck: 'รถบรรทุกที่มอบหมาย',
+          mfOrigin: 'สถานีต้นทาง',
+          mfDest: 'สถานีปลายทาง',
+          mfDriver: 'ชื่อคนขับรถ',
+          mfDep: 'เวลาออกเดินทาง / ช่วงเวลา',
+          mfCount: 'จำนวนพัสดุ (ชิ้น)',
+          mfWeight: 'น้ำหนักรวม (กก.)',
+          mfNotes: 'หมายเหตุการเดินทาง',
+          mfSubmit: 'สร้างและจัดส่ง',
+          stTitle: 'เพิ่มสถานีใหม่',
+          stSub: 'ลงทะเบียนสถานีคัดแยกใหม่บน Neon PostgreSQL',
+          stCode: 'รหัสสถานี (3 ตัวอักษร)',
+          stName: 'ชื่อสถานี',
+          stSupervisor: 'หัวหน้าสถานี',
+          stStatus: 'สถานะ',
+          stBays: 'ช่องจอดใช้งาน',
+          stDep: 'เที่ยวรถถัดไป',
+          stNote: 'บันทึกการดำเนินงาน',
+          stSubmit: 'บันทึกสถานี',
+          drvTitle: 'ลงทะเบียนคนขับรถใหม่',
+          drvSub: 'สร้างบัญชีเข้าใช้งานในระบบ Neon PostgreSQL (ตาราง users)',
+          drvId: 'รหัสคนขับรถ (ใช้เข้าสู่ระบบ)',
+          drvPin: 'รหัส PIN 6 หลัก (รหัสผ่าน)',
+          drvName: 'ชื่อ-นามสกุล',
+          drvPhone: 'เบอร์โทรศัพท์',
+          drvTruck: 'มอบหมายรถบรรทุก',
+          drvStation: 'สถานีประจำ',
+          drvSubmit: 'บันทึกคนขับรถ',
+          cancel: 'ยกเลิก'
+        },
+        statuses: {
+          'in transit': 'กำลังขนส่ง',
+          'delivered': 'จัดส่งสำเร็จ',
+          'exception': 'พบปัญหา',
+          'delayed': 'ล่าช้า',
+          'pending': 'รอดำเนินการ',
+          'open': 'เปิดทำการ',
+          'busy': 'กำลังขนถ่าย',
+          'closed': 'ปิดชั่วคราว',
+          'scheduled': 'กำหนดเวลา',
+          'loading': 'กำลังขนถ่าย',
+          'completed': 'เสร็จสิ้น',
+          'hold': 'พบปัญหา'
+        },
+        stationNames: {
+          'BKK': 'กรุงเทพฯ (BKK)',
+          'WNI': 'วังน้อย (WNI)',
+          'NSN': 'นครสวรรค์ (NSN)',
+          'LPG': 'ลำปาง (LPG)',
+          'CNX': 'เชียงใหม่ (CNX)',
+          'Bangkok Central Depot': 'ศูนย์กระจายสินค้ากลาง กรุงเทพฯ',
+          'Wang Noi Sorting Center': 'ศูนย์คัดแยกวังน้อย',
+          'Nakhon Sawan Hub': 'ศูนย์ฮับนครสวรรค์',
+          'Lampang Hub': 'ศูนย์ฮับลำปาง',
+          'Chiang Mai Station': 'สถานีปลายทางเชียงใหม่'
+        }
+      },
+      en: {
+        terminal: 'Terminal',
+        liveTime: 'Live · 10 Sep, 09:14',
+        signOut: 'Sign out',
+        exit: 'Exit',
+        nav: {
+          dashboard: 'Dashboard',
+          parcels: 'Parcels',
+          stations: 'Stations',
+          checkin: 'Driver Check-in'
+        },
+        dash: {
+          title: 'Dashboard',
+          sub: 'Bangkok → Chiang Mai corridor · Live Neon Telemetry',
+          addDriver: '+ Add Driver',
+          newManifest: '+ New manifest',
+          kpiInTransit: 'In transit',
+          kpiInTransitSub: '18 trucks on the corridor',
+          kpiDelivered: 'Delivered today',
+          kpiDeliveredSub: 'Of 96 due · 49%',
+          kpiExceptions: 'Exceptions',
+          kpiExceptionsSub: '2 weather, 1 address',
+          kpiOnTime: 'On-time rate',
+          kpiOnTimeSub: 'Last 7 days',
+          trucksTitle: 'Trucks on the road',
+          trucksActive: 'trucks active',
+          thTruck: 'Truck',
+          thLeg: 'Leg',
+          thProgress: 'Progress',
+          thParcels: 'Parcels',
+          thNext: 'Next check-in',
+          thStatus: 'Status',
+          exceptionsTitle: 'Exceptions',
+          exceptionsOpen: 'open',
+          manifestsTitle: 'Corridor Manifests',
+          manifestsSub: 'Live Neon PostgreSQL manifests',
+          manifestsActive: 'active',
+          thMfNumber: 'Manifest #',
+          thMfTruck: 'Truck',
+          thMfLeg: 'Corridor Leg',
+          thMfDriver: 'Driver',
+          thMfDeparture: 'Departure',
+          thMfCargo: 'Cargo',
+          thMfStatus: 'Status'
+        },
+        parcels: {
+          title: 'Parcels',
+          sub: 'Live manifest items from PostgreSQL',
+          placeholder: 'Tracking no, recipient, truck',
+          filterAll: 'All',
+          filterInTransit: 'In transit',
+          filterException: 'Exception',
+          filterPending: 'Pending',
+          filterDelivered: 'Delivered',
+          thTn: 'Tracking no',
+          thRoute: 'Route',
+          thStation: 'Current station',
+          thTruck: 'Truck',
+          thStatus: 'Status',
+          thEta: 'ETA',
+          showing: 'Showing',
+          of: 'of',
+          source: 'source'
+        },
+        stations: {
+          title: 'Stations',
+          sub: 'Corridor Hubs and Distribution Centers',
+          addStation: '+ Add Station',
+          onHand: 'Parcels on hand',
+          bays: 'Bays in use',
+          nextDep: 'Next departure',
+          supervisor: 'Supervisor',
+          createMf: 'Create manifest'
+        },
+        checkin: {
+          route: 'Route',
+          nearest: 'Nearest station detected',
+          away: '0.3 km away',
+          addr: 'Highway 1, Mueang Nakhon Sawan · Bay 4',
+          notHere: 'Not here? Choose another station',
+          parcelsOnBoard: 'parcels',
+          onBoardSub: 'on board · manifest MF-2609-19',
+          scanBtn: 'Scan barcode',
+          swipeToConfirm: 'Confirm arrival at Nakhon Sawan Hub',
+          swipeHint: 'Swipe right to confirm · updates every parcel on board via Neon SQL',
+          arrivalConfirmed: 'Arrival confirmed',
+          arrivalHint: 'All 42 parcels updated in Neon PostgreSQL',
+          alertTitle: 'Arrived at Nakhon Sawan Hub · 10 Sep, 09:14',
+          alertSub: 'Next stop: Lampang Hub, 187 km. Depart when the bay releases you.',
+          cargoToggle: '📋 View Cargo on Board (42 parcels)',
+          btnDesktopConfirm: 'Click to confirm station arrival (Desktop)',
+          rbacStaffTitle: 'Access Restricted',
+          rbacStaffText: 'Staff members cannot access the driver check-in terminal.',
+          rbacDriverTitle: 'Staff Only Access',
+          rbacDriverText: 'Drivers do not have permission to view operations dashboard and global parcel lists.'
+        },
+        modals: {
+          mfTitle: 'Create Shipping Manifest',
+          mfSub: 'Assign corridor cargo & dispatch via Neon PostgreSQL',
+          mfNumber: 'Manifest Number',
+          mfTruck: 'Assigned Truck',
+          mfOrigin: 'Origin Station',
+          mfDest: 'Destination Station',
+          mfDriver: 'Driver Name',
+          mfDep: 'Departure Time / Window',
+          mfCount: 'Parcels Count',
+          mfWeight: 'Total Weight (kg)',
+          mfNotes: 'Dispatch Notes / Remarks',
+          mfSubmit: 'Create & Dispatch',
+          stTitle: 'Add New Station',
+          stSub: 'Register new corridor hub in Neon PostgreSQL',
+          stCode: 'Station Code (3 letters)',
+          stName: 'Station Name',
+          stSupervisor: 'Supervisor',
+          stStatus: 'Status',
+          stBays: 'Bays in Use',
+          stDep: 'Next Departure',
+          stNote: 'Operational Note',
+          stSubmit: 'Save Station',
+          drvTitle: 'Register New Driver',
+          drvSub: 'Creates login credentials in Neon PostgreSQL (users table)',
+          drvId: 'Driver ID (Login)',
+          drvPin: '6-digit PIN (Password)',
+          drvName: 'Full Name',
+          drvPhone: 'Phone Number',
+          drvTruck: 'Assign Truck',
+          drvStation: 'Home Station',
+          drvSubmit: 'Save Driver',
+          cancel: 'Cancel'
+        },
+        statuses: {
+          'in transit': 'In transit',
+          'delivered': 'Delivered',
+          'exception': 'Exception',
+          'delayed': 'Delayed',
+          'pending': 'Pending',
+          'open': 'Open',
+          'busy': 'Loading',
+          'closed': 'Road closed',
+          'scheduled': 'Scheduled',
+          'loading': 'Loading',
+          'completed': 'Completed',
+          'hold': 'Exception'
+        },
+        stationNames: {
+          'BKK': 'Bangkok (BKK)',
+          'WNI': 'Wang Noi (WNI)',
+          'NSN': 'Nakhon Sawan (NSN)',
+          'LPG': 'Lampang (LPG)',
+          'CNX': 'Chiang Mai (CNX)',
+          'Bangkok Central Depot': 'Bangkok Central Depot',
+          'Wang Noi Sorting Center': 'Wang Noi Sorting Center',
+          'Nakhon Sawan Hub': 'Nakhon Sawan Hub',
+          'Lampang Hub': 'Lampang Hub',
+          'Chiang Mai Station': 'Chiang Mai Station'
+        }
+      }
+    };
+
+    function localizeStatus(status) {
+      if (!status) return '';
+      const key = String(status).trim().toLowerCase();
+      const dict = I18N_ADMIN[currentLang]?.statuses || {};
+      return dict[key] || status;
+    }
+
+    function localizeStation(nameOrCode) {
+      if (!nameOrCode) return nameOrCode;
+      const dict = I18N_ADMIN[currentLang]?.stationNames || {};
+      return dict[nameOrCode] || nameOrCode;
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('swiftroute_lang', lang);
+      updateLanguageUI();
+      loadDashboard();
+      if (tabParcels.style.display !== 'none') loadParcels();
+      if (tabStations.style.display !== 'none') loadStations();
+    }
+
+    function updateLanguageUI() {
+      const t = I18N_ADMIN[currentLang];
+      if (!t) return;
+
+      // Update switcher active states
+      const langBtnTh = document.getElementById('langBtnTh');
+      const langBtnEn = document.getElementById('langBtnEn');
+      if (langBtnTh && langBtnEn) {
+        if (currentLang === 'th') {
+          langBtnTh.classList.add('active');
+          langBtnTh.style.background = '#ED1C24';
+          langBtnTh.style.color = '#FFFFFF';
+          langBtnEn.classList.remove('active');
+          langBtnEn.style.background = 'transparent';
+          langBtnEn.style.color = '#42474f';
+        } else {
+          langBtnEn.classList.add('active');
+          langBtnEn.style.background = '#ED1C24';
+          langBtnEn.style.color = '#FFFFFF';
+          langBtnTh.classList.remove('active');
+          langBtnTh.style.background = 'transparent';
+          langBtnTh.style.color = '#42474f';
+        }
+      }
+
+      const mobLangBtnTh = document.getElementById('mobLangBtnTh');
+      const mobLangBtnEn = document.getElementById('mobLangBtnEn');
+      if (mobLangBtnTh && mobLangBtnEn) {
+        if (currentLang === 'th') {
+          mobLangBtnTh.classList.add('active');
+          mobLangBtnTh.style.background = '#ED1C24';
+          mobLangBtnTh.style.color = '#FFFFFF';
+          mobLangBtnEn.classList.remove('active');
+          mobLangBtnEn.style.background = 'transparent';
+          mobLangBtnEn.style.color = '#42474f';
+        } else {
+          mobLangBtnEn.classList.add('active');
+          mobLangBtnEn.style.background = '#ED1C24';
+          mobLangBtnEn.style.color = '#FFFFFF';
+          mobLangBtnTh.classList.remove('active');
+          mobLangBtnTh.style.background = 'transparent';
+          mobLangBtnTh.style.color = '#42474f';
+        }
+      }
+
+      // Header labels
+      const badgeTerminal = document.getElementById('badgeTerminal');
+      if (badgeTerminal) badgeTerminal.textContent = t.terminal;
+      const liveStatusText = document.getElementById('liveStatusText');
+      if (liveStatusText) liveStatusText.textContent = t.liveTime;
+      const linkSignOut = document.getElementById('linkSignOut');
+      if (linkSignOut) linkSignOut.textContent = t.signOut;
+      const driverExitLink = document.getElementById('driverExitLink');
+      if (driverExitLink) driverExitLink.textContent = t.exit;
+
+      // Nav buttons
+      const navDashboard = document.getElementById('navDashboard');
+      if (navDashboard) navDashboard.textContent = t.nav.dashboard;
+      const navParcels = document.getElementById('navParcels');
+      if (navParcels) navParcels.textContent = t.nav.parcels;
+      const navStations = document.getElementById('navStations');
+      if (navStations) navStations.textContent = t.nav.stations;
+      const navCheckin = document.getElementById('navCheckin');
+      if (navCheckin) navCheckin.textContent = t.nav.checkin;
+
+      // Mobile nav buttons
+      const mobNavDash = document.getElementById('mobNavDash');
+      if (mobNavDash) mobNavDash.textContent = t.nav.dashboard;
+      const mobNavParcels = document.getElementById('mobNavParcels');
+      if (mobNavParcels) mobNavParcels.textContent = t.nav.parcels;
+      const mobNavCheckin = document.getElementById('mobNavCheckin');
+      if (mobNavCheckin) mobNavCheckin.textContent = t.nav.checkin;
+      const mobNavStations = document.getElementById('mobNavStations');
+      if (mobNavStations) mobNavStations.textContent = t.nav.stations;
+
+      // Dashboard
+      const dashTitle = document.getElementById('dashTitle');
+      if (dashTitle) dashTitle.textContent = t.dash.title;
+      const dashSubtitle = document.getElementById('dashSubtitle');
+      if (dashSubtitle) dashSubtitle.textContent = t.dash.sub;
+      const btnAddDriver = document.getElementById('btnAddDriver');
+      if (btnAddDriver) btnAddDriver.textContent = t.dash.addDriver;
+      const btnNewManifest = document.getElementById('btnNewManifest');
+      if (btnNewManifest) btnNewManifest.textContent = t.dash.newManifest;
+
+      const kpiInTransitLabel = document.getElementById('kpiInTransitLabel');
+      if (kpiInTransitLabel) kpiInTransitLabel.textContent = t.dash.kpiInTransit;
+      const kpiInTransitSub = document.getElementById('kpiInTransitSub');
+      if (kpiInTransitSub) kpiInTransitSub.textContent = t.dash.kpiInTransitSub;
+      const kpiDeliveredLabel = document.getElementById('kpiDeliveredLabel');
+      if (kpiDeliveredLabel) kpiDeliveredLabel.textContent = t.dash.kpiDelivered;
+      const kpiDeliveredSub = document.getElementById('kpiDeliveredSub');
+      if (kpiDeliveredSub) kpiDeliveredSub.textContent = t.dash.kpiDeliveredSub;
+      const kpiExceptionsLabel = document.getElementById('kpiExceptionsLabel');
+      if (kpiExceptionsLabel) kpiExceptionsLabel.textContent = t.dash.kpiExceptions;
+      const kpiExceptionsSub = document.getElementById('kpiExceptionsSub');
+      if (kpiExceptionsSub) kpiExceptionsSub.textContent = t.dash.kpiExceptionsSub;
+      const kpiOnTimeLabel = document.getElementById('kpiOnTimeLabel');
+      if (kpiOnTimeLabel) kpiOnTimeLabel.textContent = t.dash.kpiOnTime;
+      const kpiOnTimeSub = document.getElementById('kpiOnTimeSub');
+      if (kpiOnTimeSub) kpiOnTimeSub.textContent = t.dash.kpiOnTimeSub;
+
+      const trucksSecTitle = document.getElementById('trucksSecTitle');
+      if (trucksSecTitle) trucksSecTitle.textContent = t.dash.trucksTitle;
+      const thTruckTruck = document.getElementById('thTruckTruck');
+      if (thTruckTruck) thTruckTruck.textContent = t.dash.thTruck;
+      const thTruckLeg = document.getElementById('thTruckLeg');
+      if (thTruckLeg) thTruckLeg.textContent = t.dash.thLeg;
+      const thTruckProgress = document.getElementById('thTruckProgress');
+      if (thTruckProgress) thTruckProgress.textContent = t.dash.thProgress;
+      const thTruckParcels = document.getElementById('thTruckParcels');
+      if (thTruckParcels) thTruckParcels.textContent = t.dash.thParcels;
+      const thTruckNext = document.getElementById('thTruckNext');
+      if (thTruckNext) thTruckNext.textContent = t.dash.thNext;
+      const thTruckStatus = document.getElementById('thTruckStatus');
+      if (thTruckStatus) thTruckStatus.textContent = t.dash.thStatus;
+
+      const exceptionsSecTitle = document.getElementById('exceptionsSecTitle');
+      if (exceptionsSecTitle) exceptionsSecTitle.textContent = t.dash.exceptionsTitle;
+
+      const manifestsSecTitle = document.getElementById('manifestsSecTitle');
+      if (manifestsSecTitle) manifestsSecTitle.textContent = t.dash.manifestsTitle;
+      const manifestsSub = document.getElementById('manifestsSub');
+      if (manifestsSub) manifestsSub.textContent = t.dash.manifestsSub;
+      const thMfNumber = document.getElementById('thMfNumber');
+      if (thMfNumber) thMfNumber.textContent = t.dash.thMfNumber;
+      const thMfTruck = document.getElementById('thMfTruck');
+      if (thMfTruck) thMfTruck.textContent = t.dash.thMfTruck;
+      const thMfLeg = document.getElementById('thMfLeg');
+      if (thMfLeg) thMfLeg.textContent = t.dash.thMfLeg;
+      const thMfDriver = document.getElementById('thMfDriver');
+      if (thMfDriver) thMfDriver.textContent = t.dash.thMfDriver;
+      const thMfDeparture = document.getElementById('thMfDeparture');
+      if (thMfDeparture) thMfDeparture.textContent = t.dash.thMfDeparture;
+      const thMfCargo = document.getElementById('thMfCargo');
+      if (thMfCargo) thMfCargo.textContent = t.dash.thMfCargo;
+      const thMfStatus = document.getElementById('thMfStatus');
+      if (thMfStatus) thMfStatus.textContent = t.dash.thStatus;
+
+      // Parcels
+      const parcelsTitle = document.getElementById('parcelsTitle');
+      if (parcelsTitle) parcelsTitle.textContent = t.parcels.title;
+      const parcelsSubtitle = document.getElementById('parcelsSubtitle');
+      if (parcelsSubtitle) parcelsSubtitle.textContent = t.parcels.sub;
+      const parcelSearch = document.getElementById('parcelSearch');
+      if (parcelSearch) parcelSearch.placeholder = t.parcels.placeholder;
+
+      const filterAll = document.getElementById('filterAll');
+      if (filterAll) filterAll.textContent = t.parcels.filterAll;
+      const filterInTransit = document.getElementById('filterInTransit');
+      if (filterInTransit) filterInTransit.textContent = t.parcels.filterInTransit;
+      const filterException = document.getElementById('filterException');
+      if (filterException) filterException.textContent = t.parcels.filterException;
+      const filterPending = document.getElementById('filterPending');
+      if (filterPending) filterPending.textContent = t.parcels.filterPending;
+      const filterDelivered = document.getElementById('filterDelivered');
+      if (filterDelivered) filterDelivered.textContent = t.parcels.filterDelivered;
+
+      const thParcelsTn = document.getElementById('thParcelsTn');
+      if (thParcelsTn) thParcelsTn.textContent = t.parcels.thTn;
+      const thParcelsRoute = document.getElementById('thParcelsRoute');
+      if (thParcelsRoute) thParcelsRoute.textContent = t.parcels.thRoute;
+      const thParcelsStation = document.getElementById('thParcelsStation');
+      if (thParcelsStation) thParcelsStation.textContent = t.parcels.thStation;
+      const thParcelsTruck = document.getElementById('thParcelsTruck');
+      if (thParcelsTruck) thParcelsTruck.textContent = t.parcels.thTruck;
+      const thParcelsStatus = document.getElementById('thParcelsStatus');
+      if (thParcelsStatus) thParcelsStatus.textContent = t.parcels.thStatus;
+      const thParcelsEta = document.getElementById('thParcelsEta');
+      if (thParcelsEta) thParcelsEta.textContent = t.parcels.thEta;
+
+      // Stations
+      const stationsTitle = document.getElementById('stationsTitle');
+      if (stationsTitle) stationsTitle.textContent = t.stations.title;
+      const stationsSubtitle = document.getElementById('stationsSubtitle');
+      if (stationsSubtitle) stationsSubtitle.textContent = t.stations.sub;
+      const btnAddStation = document.getElementById('btnAddStation');
+      if (btnAddStation) btnAddStation.textContent = t.stations.addStation;
+
+      // Driver Check-in
+      const driverHeaderSub = document.getElementById('driverHeaderSub');
+      if (driverHeaderSub) driverHeaderSub.textContent = currentLang === 'th' ? 'กรุงเทพฯ → เชียงใหม่ · อนันต์ สุขสมบูรณ์' : 'Bangkok → Chiang Mai · Anan Suksomboon';
+      const stepperRouteLabel = document.getElementById('stepperRouteLabel');
+      if (stepperRouteLabel) stepperRouteLabel.textContent = t.checkin.route;
+      const nearestStationLabel = document.getElementById('nearestStationLabel');
+      if (nearestStationLabel) nearestStationLabel.textContent = t.checkin.nearest;
+      const nearestStationName = document.getElementById('nearestStationName');
+      if (nearestStationName) nearestStationName.textContent = currentLang === 'th' ? 'ศูนย์ฮับนครสวรรค์' : 'Nakhon Sawan Hub';
+      const nearestStationDist = document.getElementById('nearestStationDist');
+      if (nearestStationDist) nearestStationDist.innerHTML = `<span style="width: 6px; height: 6px; border-radius: 9999px; background: #0364AD;"></span>${t.checkin.away}`;
+      const nearestStationAddr = document.getElementById('nearestStationAddr');
+      if (nearestStationAddr) nearestStationAddr.textContent = t.checkin.addr;
+      const nearestStationNotHere = document.getElementById('nearestStationNotHere');
+      if (nearestStationNotHere) nearestStationNotHere.textContent = t.checkin.notHere;
+
+      const manifestParcelsCount = document.getElementById('manifestParcelsCount');
+      if (manifestParcelsCount) manifestParcelsCount.textContent = currentLang === 'th' ? '42 ชิ้น' : '42 parcels';
+      const manifestParcelsSub = document.getElementById('manifestParcelsSub');
+      if (manifestParcelsSub) manifestParcelsSub.textContent = t.checkin.onBoardSub;
+      const manifestScanText = document.getElementById('manifestScanText');
+      if (manifestScanText) manifestScanText.textContent = t.checkin.scanBtn;
+
+      if (!isConfirmed) {
+        if (swipeLabel) swipeLabel.textContent = t.checkin.swipeToConfirm;
+        if (swipeHint) swipeHint.textContent = t.checkin.swipeHint;
+      } else {
+        if (swipeLabel) swipeLabel.textContent = t.checkin.arrivalConfirmed;
+        if (swipeHint) swipeHint.textContent = t.checkin.arrivalHint;
+      }
+
+      const confirmAlertTitle = document.getElementById('confirmAlertTitle');
+      if (confirmAlertTitle) confirmAlertTitle.textContent = t.checkin.alertTitle;
+      const confirmAlertSub = document.getElementById('confirmAlertSub');
+      if (confirmAlertSub) confirmAlertSub.textContent = t.checkin.alertSub;
+
+      const btnDesktopConfirmText = document.getElementById('btnDesktopConfirmText');
+      if (btnDesktopConfirmText) btnDesktopConfirmText.textContent = t.checkin.btnDesktopConfirm;
+      const cargoToggleLabel = document.getElementById('cargoToggleLabel');
+      if (cargoToggleLabel) cargoToggleLabel.textContent = t.checkin.cargoToggle;
+      const cargoTableTitle = document.getElementById('cargoTableTitle');
+      if (cargoTableTitle) cargoTableTitle.textContent = currentLang === 'th' ? 'รายการพัสดุประจำเที่ยวรถ (42 รายการ)' : 'Corridor Cargo Manifest (42 items)';
+      const userRoleBadge = document.getElementById('userRoleBadge');
+      if (userRoleBadge) userRoleBadge.textContent = currentLang === 'th' ? 'เจ้าหน้าที่' : 'Staff';
+
+      // Modals
+      const modalMfTitle = document.getElementById('modalMfTitle');
+      if (modalMfTitle) modalMfTitle.textContent = t.modals.mfTitle;
+      const modalMfSubtitle = document.getElementById('modalMfSubtitle');
+      if (modalMfSubtitle) modalMfSubtitle.textContent = t.modals.mfSub;
+      const lblMfNumber = document.getElementById('lblMfNumber');
+      if (lblMfNumber) lblMfNumber.textContent = t.modals.mfNumber;
+      const lblMfTruck = document.getElementById('lblMfTruck');
+      if (lblMfTruck) lblMfTruck.textContent = t.modals.mfTruck;
+      const lblMfOrigin = document.getElementById('lblMfOrigin');
+      if (lblMfOrigin) lblMfOrigin.textContent = t.modals.mfOrigin;
+      const lblMfDestination = document.getElementById('lblMfDestination');
+      if (lblMfDestination) lblMfDestination.textContent = t.modals.mfDest;
+      const lblMfDriver = document.getElementById('lblMfDriver');
+      if (lblMfDriver) lblMfDriver.textContent = t.modals.mfDriver;
+      const lblMfDeparture = document.getElementById('lblMfDeparture');
+      if (lblMfDeparture) lblMfDeparture.textContent = t.modals.mfDep;
+      const lblMfParcelsCount = document.getElementById('lblMfParcelsCount');
+      if (lblMfParcelsCount) lblMfParcelsCount.textContent = t.modals.mfCount;
+      const lblMfWeight = document.getElementById('lblMfWeight');
+      if (lblMfWeight) lblMfWeight.textContent = t.modals.mfWeight;
+      const lblMfNotes = document.getElementById('lblMfNotes');
+      if (lblMfNotes) lblMfNotes.textContent = t.modals.mfNotes;
+      const btnCancelManifest = document.getElementById('btnCancelManifest');
+      if (btnCancelManifest) btnCancelManifest.textContent = t.modals.cancel;
+      const btnSubmitManifestText = document.getElementById('btnSubmitManifestText');
+      if (btnSubmitManifestText) btnSubmitManifestText.textContent = t.modals.mfSubmit;
+
+      const modalStTitle = document.getElementById('modalStTitle');
+      if (modalStTitle) modalStTitle.textContent = t.modals.stTitle;
+      const modalStSubtitle = document.getElementById('modalStSubtitle');
+      if (modalStSubtitle) modalStSubtitle.textContent = t.modals.stSub;
+      const lblStCode = document.getElementById('lblStCode');
+      if (lblStCode) lblStCode.textContent = t.modals.stCode;
+      const lblStName = document.getElementById('lblStName');
+      if (lblStName) lblStName.textContent = t.modals.stName;
+      const lblStSupervisor = document.getElementById('lblStSupervisor');
+      if (lblStSupervisor) lblStSupervisor.textContent = t.modals.stSupervisor;
+      const lblStStatus = document.getElementById('lblStStatus');
+      if (lblStStatus) lblStStatus.textContent = t.modals.stStatus;
+      const lblStBays = document.getElementById('lblStBays');
+      if (lblStBays) lblStBays.textContent = t.modals.stBays;
+      const lblStDeparture = document.getElementById('lblStDeparture');
+      if (lblStDeparture) lblStDeparture.textContent = t.modals.stDep;
+      const lblStNote = document.getElementById('lblStNote');
+      if (lblStNote) lblStNote.textContent = t.modals.stNote;
+      const btnCancelStation = document.getElementById('btnCancelStation');
+      if (btnCancelStation) btnCancelStation.textContent = t.modals.cancel;
+      const btnSubmitStationText = document.getElementById('btnSubmitStationText');
+      if (btnSubmitStationText) btnSubmitStationText.textContent = t.modals.stSubmit;
+
+      const modalDrvTitle = document.getElementById('modalDrvTitle');
+      if (modalDrvTitle) modalDrvTitle.textContent = t.modals.drvTitle;
+      const modalDrvSubtitle = document.getElementById('modalDrvSubtitle');
+      if (modalDrvSubtitle) modalDrvSubtitle.textContent = t.modals.drvSub;
+      const lblDrvId = document.getElementById('lblDrvId');
+      if (lblDrvId) lblDrvId.textContent = t.modals.drvId;
+      const lblDrvPin = document.getElementById('lblDrvPin');
+      if (lblDrvPin) lblDrvPin.textContent = t.modals.drvPin;
+      const lblDrvName = document.getElementById('lblDrvName');
+      if (lblDrvName) lblDrvName.textContent = t.modals.drvName;
+      const lblDrvPhone = document.getElementById('lblDrvPhone');
+      if (lblDrvPhone) lblDrvPhone.textContent = t.modals.drvPhone;
+      const lblDrvTruck = document.getElementById('lblDrvTruck');
+      if (lblDrvTruck) lblDrvTruck.textContent = t.modals.drvTruck;
+      const lblDrvStation = document.getElementById('lblDrvStation');
+      if (lblDrvStation) lblDrvStation.textContent = t.modals.drvStation;
+      const btnCancelDriver = document.getElementById('btnCancelDriver');
+      if (btnCancelDriver) btnCancelDriver.textContent = t.modals.cancel;
+      const btnSubmitDriverText = document.getElementById('btnSubmitDriverText');
+      if (btnSubmitDriverText) btnSubmitDriverText.textContent = t.modals.drvSubmit;
+    }
+
+    function showNearbyStationsAlert() {
+      if (currentLang === 'th') {
+        Swal.fire({
+          icon: 'info',
+          title: 'สถานีบนเส้นทางเดินรถ',
+          html: '<b>ศูนย์ฮับและสถานีทั้งหมด:</b><br><br>กรุงเทพฯ (BKK)<br>วังน้อย (WNI)<br>นครสวรรค์ (NSN)<br>ลำปาง (LPG)<br>เชียงใหม่ (CNX)',
+          confirmButtonColor: '#ED1C24',
+          confirmButtonText: 'ตกลง'
+        });
+      } else {
+        Swal.fire({
+          icon: 'info',
+          title: 'Nearby Stations',
+          text: 'Corridor stations: Bangkok (BKK), Wang Noi (WNI), Nakhon Sawan (NSN), Lampang (LPG), Chiang Mai (CNX)',
+          confirmButtonColor: '#ED1C24'
+        });
+      }
+    }
+
+    function showScannerAlert() {
+      if (currentLang === 'th') {
+        Swal.fire({
+          icon: 'info',
+          title: 'เครื่องสแกนบาร์โค้ด',
+          text: 'ระบบจำลองสแกนเนอร์พร้อมใช้งาน โหลดข้อมูลใบกำกับ MF-2609-19 แล้ว',
+          confirmButtonColor: '#ED1C24',
+          confirmButtonText: 'ตกลง'
+        });
+      } else {
+        Swal.fire({
+          icon: 'info',
+          title: 'Barcode Scanner',
+          text: 'Camera scanner simulation ready. Manifest MF-2609-19 loaded.',
+          confirmButtonColor: '#ED1C24'
+        });
+      }
+    }
+
     // Tab switching logic
     const adminHeader = document.getElementById('adminHeader');
     const adminMain = document.getElementById('adminMain');
@@ -666,7 +1437,176 @@
       }
     });
 
+    // -------------------------------------------------------------
+    // ROLE-BASED ACCESS CONTROL (RBAC) & SESSION
+    // -------------------------------------------------------------
+    const urlParams = new URLSearchParams(window.location.search);
+    const screenParam = urlParams.get('screen');
+
+    let currentUser = null;
+    try {
+      currentUser = JSON.parse(localStorage.getItem('swiftroute_user') || 'null');
+    } catch(e) {
+      currentUser = null;
+    }
+
+    // Role detection: prioritized by stored role, or infer from URL parameter
+    let currentRole = localStorage.getItem('swiftroute_role');
+    if (!currentRole) {
+      currentRole = screenParam === 'checkin' ? 'driver' : 'staff';
+      localStorage.setItem('swiftroute_role', currentRole);
+    }
+
+    window.handleSignOut = function(e) {
+      if (e) e.preventDefault();
+      localStorage.removeItem('swiftroute_user');
+      localStorage.removeItem('swiftroute_role');
+      window.location.href = 'login.html';
+    };
+
+    window.handleDriverNav = function(targetTab) {
+      if (currentRole === 'driver') {
+        const t = I18N_ADMIN[currentLang]?.checkin;
+        if (targetTab === 'parcels') {
+          // Shortcut for driver: toggle their own cargo!
+          toggleDriverCargo(true);
+        } else {
+          Swal.fire({
+            icon: 'warning',
+            title: t?.rbacDriverTitle || (currentLang === 'th' ? 'สิทธิ์เฉพาะเจ้าหน้าที่ (Staff Only)' : 'Staff Only Area'),
+            text: t?.rbacDriverText || (currentLang === 'th' ? 'พนักงานขับรถไม่ได้รับอนุญาตให้เข้าดูแดชบอร์ดหรือข้อมูลพัสดุส่วนกลางของบริษัท' : 'Drivers do not have permission to view operations dashboard and global parcel lists.'),
+            confirmButtonColor: '#ED1C24'
+          });
+        }
+      } else {
+        switchTab(targetTab);
+      }
+    };
+
+    function applyRbacPermissions() {
+      const navCheckin = document.getElementById('navCheckin');
+      const userAvatar = document.getElementById('userAvatar');
+      const userNameHeader = document.getElementById('userNameHeader');
+      const userRoleBadge = document.getElementById('userRoleBadge');
+
+      if (currentRole === 'staff') {
+        // Staff Role:
+        // 1. Hide the driver check-in tab from top nav
+        if (navCheckin) navCheckin.style.display = 'none';
+
+        // 2. Set staff user info
+        if (userNameHeader) {
+          userNameHeader.textContent = (currentUser && currentUser.name) ? currentUser.name : 'Somchai P.';
+        }
+        if (userRoleBadge) {
+          userRoleBadge.textContent = currentLang === 'th' ? 'เจ้าหน้าที่' : 'Staff';
+        }
+        if (userAvatar && currentUser && currentUser.name) {
+          const initials = currentUser.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+          userAvatar.textContent = initials || 'ST';
+        }
+      } else if (currentRole === 'driver') {
+        // Driver Role:
+        // 1. Hide Admin Header and Admin Main
+        adminHeader.style.display = 'none';
+        adminMain.style.display = 'none';
+
+        // 2. Populate Driver Info in Driver Terminal
+        const driverTruckBadge = document.getElementById('driverTruckBadge');
+        const driverHeaderSub = document.getElementById('driverHeaderSub');
+        const driverName = (currentUser && currentUser.name) ? currentUser.name : 'Anan Suksomboon';
+        const truckId = (currentUser && currentUser.truckId) ? currentUser.truckId : 'TK-19';
+
+        if (driverTruckBadge) driverTruckBadge.textContent = truckId;
+        if (driverHeaderSub) {
+          driverHeaderSub.textContent = `Bangkok → Chiang Mai · ${driverName}`;
+        }
+      }
+    }
+
+    // Expandable Driver Cargo list
+    let isCargoLoaded = false;
+    window.toggleDriverCargo = async function(forceOpen) {
+      const container = document.getElementById('driverCargoContainer');
+      const label = document.getElementById('cargoToggleLabel');
+      const icon = document.getElementById('cargoToggleIcon');
+      if (!container) return;
+      const shouldOpen = forceOpen !== undefined ? forceOpen : (container.style.display === 'none');
+
+      if (shouldOpen) {
+        container.style.display = 'block';
+        if (icon) icon.textContent = '▲';
+        if (label) label.textContent = I18N_ADMIN[currentLang]?.checkin?.cargoToggleHide || (currentLang === 'th' ? '▲ ซ่อนรายการพัสดุ' : '▲ Hide Cargo List');
+        if (!isCargoLoaded) {
+          await loadDriverCargo();
+          isCargoLoaded = true;
+        }
+      } else {
+        container.style.display = 'none';
+        if (icon) icon.textContent = '▼';
+        if (label) label.textContent = I18N_ADMIN[currentLang]?.checkin?.cargoToggle || (currentLang === 'th' ? '📋 รายการพัสดุบนรถ 42 ชิ้น' : '📋 View Cargo on Board (42 parcels)');
+      }
+    };
+
+    async function loadDriverCargo() {
+      const tbody = document.getElementById('driverCargoTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 14px; color:#64748B;">กำลังโหลดข้อมูลพัสดุบนรถ...</td></tr>';
+      try {
+        const truck = (currentUser && currentUser.truckId) ? currentUser.truckId : 'TK-19';
+        const res = await fetch(`/api/parcels?q=${encodeURIComponent(truck)}`);
+        const data = await res.json();
+        const parcels = (data && data.parcels && data.parcels.length > 0) ? data.parcels : [
+          { tracking_number: 'SR-2609-118245', recipient_name: 'Somchai P.', current_station_name: 'Chiang Mai', status: 'exception' },
+          { tracking_number: 'SR-2609-118251', recipient_name: 'Kanyarat S.', current_station_name: 'Lampang Hub', status: 'in transit' },
+          { tracking_number: 'SR-2609-118252', recipient_name: 'Anan S.', current_station_name: 'Nakhon Sawan', status: 'in transit' },
+          { tracking_number: 'SR-2609-118253', recipient_name: 'Wichai K.', current_station_name: 'Chiang Mai', status: 'in transit' }
+        ];
+
+        tbody.innerHTML = parcels.map(p => {
+          const statusText = I18N_ADMIN[currentLang]?.statuses?.[p.status?.toLowerCase()] || p.status;
+          const statusColor = p.status === 'exception' ? '#E67E00' : (p.status === 'delivered' ? '#2E7D32' : '#0364AD');
+          const statusBg = p.status === 'exception' ? '#FEF4E6' : (p.status === 'delivered' ? '#EAF5ED' : '#E6F0F8');
+          return `
+            <tr style="border-bottom: 1px solid #F1F5F9;">
+              <td style="padding: 8px 12px; font-family: ui-monospace, monospace; font-weight: 600; color: #0364AD;">${p.tracking_number}</td>
+              <td style="padding: 8px 12px; color: #334155;">${p.recipient_name || 'Customer'}</td>
+              <td style="padding: 8px 12px; color: #475569;">${p.current_station_name || 'Chiang Mai'}</td>
+              <td style="padding: 8px 12px; text-align: right;">
+                <span style="display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 11px; font-weight: 500; background: ${statusBg}; color: ${statusColor};">${statusText}</span>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 14px; color:#64748B;">42 รายการพัสดุบนรถ (เชื่อมต่อ Neon SQL)</td></tr>';
+      }
+    }
+
     function switchTab(tabName) {
+      // RBAC Protection:
+      if (currentRole === 'staff' && tabName === 'checkin') {
+        const t = I18N_ADMIN[currentLang]?.checkin;
+        Swal.fire({
+          icon: 'info',
+          title: t?.rbacStaffTitle || (currentLang === 'th' ? 'ไม่มีสิทธิ์เข้าถึง' : 'Access Restricted'),
+          text: t?.rbacStaffText || (currentLang === 'th' ? 'เจ้าหน้าที่ (Staff) ไม่มีสิทธิ์เข้าใช้งานหน้าเช็คอินของคนขับรถ' : 'Staff members cannot access the driver check-in terminal.'),
+          confirmButtonColor: '#ED1C24'
+        });
+        return;
+      }
+
+      if (currentRole === 'driver' && tabName !== 'checkin') {
+        const t = I18N_ADMIN[currentLang]?.checkin;
+        Swal.fire({
+          icon: 'warning',
+          title: t?.rbacDriverTitle || (currentLang === 'th' ? 'สิทธิ์เฉพาะเจ้าหน้าที่ (Staff Only)' : 'Staff Only Area'),
+          text: t?.rbacDriverText || (currentLang === 'th' ? 'พนักงานขับรถไม่ได้รับอนุญาตให้เข้าถึงระบบแดชบอร์ดส่วนกลาง' : 'Drivers are restricted from viewing the central operations dashboard.'),
+          confirmButtonColor: '#ED1C24'
+        });
+        return;
+      }
+
       navButtons.forEach(btn => {
         if (btn.dataset.tab === tabName) {
           btn.classList.add('active');
@@ -698,17 +1638,20 @@
       btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
 
-    // Check URL parameters for screen
-    const urlParams = new URLSearchParams(window.location.search);
-    const screenParam = urlParams.get('screen');
-    if (screenParam === 'checkin') {
+    // Apply RBAC permissions to UI
+    applyRbacPermissions();
+
+    // Initialize display tab based on role and query parameter
+    if (currentRole === 'driver') {
       switchTab('checkin');
-    } else if (screenParam === 'parcels') {
-      switchTab('parcels');
-    } else if (screenParam === 'stations') {
-      switchTab('stations');
     } else {
-      switchTab('dashboard');
+      if (screenParam === 'parcels') {
+        switchTab('parcels');
+      } else if (screenParam === 'stations') {
+        switchTab('stations');
+      } else {
+        switchTab('dashboard');
+      }
     }
 
     // ================= MANIFESTS LOGIC =================
@@ -770,32 +1713,35 @@
         const manifests = data.manifests || [];
 
         if (manifestsCountBadge) {
-          manifestsCountBadge.textContent = `${manifests.length} active`;
+          const actLabel = I18N_ADMIN[currentLang]?.dash?.manifestsActive || 'active';
+          manifestsCountBadge.textContent = `${manifests.length} ${actLabel}`;
         }
 
         manifestsTableBody.innerHTML = '';
         manifests.forEach(m => {
-          let badgeBg = '#F0F7FF', badgeFg = '#0F4C81', badgeBorder = '#BAE6FD';
+          let badgeBg = '#E6F0F8', badgeFg = '#0364AD', badgeBorder = '#CCE1F0';
           if (m.status === 'scheduled') {
             badgeBg = '#F8FAFC'; badgeFg = '#64748B'; badgeBorder = '#CBD5E1';
           } else if (m.status === 'loading') {
-            badgeBg = '#FEFCE8'; badgeFg = '#CA8A04'; badgeBorder = '#FEF08A';
+            badgeBg = '#FEF4E6'; badgeFg = '#E67E00'; badgeBorder = '#FCDCB5';
           } else if (m.status === 'completed') {
-            badgeBg = '#F0FDF4'; badgeFg = '#16A34A'; badgeBorder = '#BBF7D0';
+            badgeBg = '#EAF5ED'; badgeFg = '#2E7D32'; badgeBorder = '#BCE3C6';
           }
 
+          const cargoUnit = currentLang === 'th' ? 'ชิ้น' : 'pcs';
+          const weightUnit = currentLang === 'th' ? 'กก.' : 'kg';
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td style="font-family: ui-monospace, monospace; font-weight: 500; color: #0F4C81; white-space: nowrap;">${m.manifest_number}</td>
-            <td style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; white-space: nowrap;">${m.truck_id || '-'}</td>
+            <td style="font-family: ui-monospace, monospace; font-weight: 600; color: #0364AD; white-space: nowrap;">${m.manifest_number}</td>
+            <td style="font-family: 'Kanit', sans-serif; font-weight: 500; white-space: nowrap;">${m.truck_id || '-'}</td>
             <td style="white-space: nowrap;">${m.origin_station_code} → ${m.destination_station_code}</td>
             <td style="white-space: nowrap; color: #42474f;">${m.driver_name || '-'}</td>
             <td style="white-space: nowrap; color: #42474f;">${m.departure_time || '-'}</td>
-            <td style="white-space: nowrap; font-variant-numeric: tabular-nums;">${m.parcels_count || 0} pcs · ${m.total_weight_kg || 0} kg</td>
+            <td style="white-space: nowrap; font-variant-numeric: tabular-nums;">${m.parcels_count || 0} ${cargoUnit} · ${m.total_weight_kg || 0} ${weightUnit}</td>
             <td>
-              <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${badgeBorder};">
+              <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${badgeBorder};">
                 <span style="width: 6px; height: 6px; border-radius: 9999px; background: ${badgeFg};"></span>
-                ${m.status}
+                ${localizeStatus(m.status)}
               </span>
             </td>
           `;
@@ -810,7 +1756,7 @@
       formNewManifest.addEventListener('submit', async (e) => {
         e.preventDefault();
         btnSubmitManifest.disabled = true;
-        btnSubmitManifest.innerHTML = '<span>Saving to Neon...</span>';
+        btnSubmitManifest.innerHTML = `<span>${currentLang === 'th' ? 'กำลังบันทึกลง Neon...' : 'Saving to Neon...'}</span>`;
 
         try {
           const payload = {
@@ -836,7 +1782,7 @@
           
           Toast.fire({
             icon: 'success',
-            title: `Manifest ${payload.manifestNumber} created in Neon SQL`
+            title: currentLang === 'th' ? `สร้างใบกำกับ ${payload.manifestNumber} บน Neon SQL สำเร็จ` : `Manifest ${payload.manifestNumber} created in Neon SQL`
           });
 
           // Reload tables
@@ -844,13 +1790,13 @@
         } catch (err) {
           Swal.fire({
             icon: 'error',
-            title: 'Error Creating Manifest',
+            title: currentLang === 'th' ? 'เกิดข้อผิดพลาดในการสร้างใบกำกับ' : 'Error Creating Manifest',
             text: err.message,
-            confirmButtonColor: '#E11D48'
+            confirmButtonColor: '#ED1C24'
           });
         } finally {
           btnSubmitManifest.disabled = false;
-          btnSubmitManifest.innerHTML = '<span>Create & Dispatch</span>';
+          btnSubmitManifest.innerHTML = `<span id="btnSubmitManifestText">${I18N_ADMIN[currentLang].modals.mfSubmit}</span>`;
         }
       });
     }
@@ -880,7 +1826,7 @@
       formNewStation.addEventListener('submit', async (e) => {
         e.preventDefault();
         btnSubmitStation.disabled = true;
-        btnSubmitStation.innerHTML = '<span>Saving...</span>';
+        btnSubmitStation.innerHTML = `<span>${currentLang === 'th' ? 'กำลังบันทึก...' : 'Saving...'}</span>`;
 
         try {
           const payload = {
@@ -905,20 +1851,20 @@
 
           Toast.fire({
             icon: 'success',
-            title: `Station ${payload.code} added to Neon PostgreSQL`
+            title: currentLang === 'th' ? `เพิ่มสถานี ${payload.code} ใน Neon PostgreSQL สำเร็จ` : `Station ${payload.code} added to Neon PostgreSQL`
           });
 
           loadStations();
         } catch (err) {
           Swal.fire({
             icon: 'error',
-            title: 'Error Adding Station',
+            title: currentLang === 'th' ? 'เกิดข้อผิดพลาดในการเพิ่มสถานี' : 'Error Adding Station',
             text: err.message,
-            confirmButtonColor: '#E11D48'
+            confirmButtonColor: '#ED1C24'
           });
         } finally {
           btnSubmitStation.disabled = false;
-          btnSubmitStation.innerHTML = '<span>Save Station</span>';
+          btnSubmitStation.innerHTML = `<span id="btnSubmitStationText">${I18N_ADMIN[currentLang].modals.stSubmit}</span>`;
         }
       });
     }
@@ -950,7 +1896,7 @@
       formNewDriver.addEventListener('submit', async (e) => {
         e.preventDefault();
         btnSubmitDriver.disabled = true;
-        btnSubmitDriver.innerHTML = '<span>Saving...</span>';
+        btnSubmitDriver.innerHTML = `<span>${currentLang === 'th' ? 'กำลังบันทึก...' : 'Saving...'}</span>`;
 
         try {
           const payload = {
@@ -972,24 +1918,34 @@
 
           closeNewDriverModal();
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Driver Account Created!',
-            html: `<b>Driver ID:</b> <code>${payload.driverId}</code><br><b>6-digit PIN:</b> <code>${payload.pin}</code><br><br><span style="font-size: 13px; color: #64748B;">Ready to log in at the Driver Login page.</span>`,
-            confirmButtonColor: '#0F4C81'
-          });
+          if (currentLang === 'th') {
+            Swal.fire({
+              icon: 'success',
+              title: 'สร้างบัญชีคนขับรถสำเร็จ!',
+              html: `<b>รหัสคนขับรถ:</b> <code>${payload.driverId}</code><br><b>รหัส PIN 6 หลัก:</b> <code>${payload.pin}</code><br><br><span style="font-size: 13px; color: #64748B;">สามารถใช้เข้าสู่ระบบได้ที่หน้าเข้าสู่ระบบพนักงานขับรถ</span>`,
+              confirmButtonColor: '#ED1C24',
+              confirmButtonText: 'รับทราบ'
+            });
+          } else {
+            Swal.fire({
+              icon: 'success',
+              title: 'Driver Account Created!',
+              html: `<b>Driver ID:</b> <code>${payload.driverId}</code><br><b>6-digit PIN:</b> <code>${payload.pin}</code><br><br><span style="font-size: 13px; color: #64748B;">Ready to log in at the Driver Login page.</span>`,
+              confirmButtonColor: '#ED1C24'
+            });
+          }
 
           loadDashboard();
         } catch (err) {
           Swal.fire({
             icon: 'error',
-            title: 'Error Adding Driver',
+            title: currentLang === 'th' ? 'เกิดข้อผิดพลาดในการลงทะเบียนคนขับรถ' : 'Error Adding Driver',
             text: err.message,
-            confirmButtonColor: '#E11D48'
+            confirmButtonColor: '#ED1C24'
           });
         } finally {
           btnSubmitDriver.disabled = false;
-          btnSubmitDriver.innerHTML = '<span>Save Driver</span>';
+          btnSubmitDriver.innerHTML = `<span id="btnSubmitDriverText">${I18N_ADMIN[currentLang].modals.drvSubmit}</span>`;
         }
       });
     }
@@ -1018,50 +1974,52 @@
         }
 
         if (data.trucks) {
-          truckCountText.textContent = `${data.trucks.length} trucks active`;
+          const actLabel = I18N_ADMIN[currentLang]?.dash?.trucksActive || 'trucks active';
+          truckCountText.textContent = `${data.trucks.length} ${actLabel}`;
           trucksTableBody.innerHTML = '';
           data.trucks.forEach(tr => {
             const isHold = tr.status === 'hold';
             const isPending = tr.status === 'pending';
-            const barColor = isHold ? '#E11D48' : isPending ? '#CBD5E1' : '#0F4C81';
-            let badgeBg = '#F0F7FF', badgeFg = '#0F4C81', badgeBorder = '#BAE6FD', badgeLabel = 'In transit';
+            const barColor = isHold ? '#E67E00' : isPending ? '#CBD5E1' : '#0364AD';
+            let badgeBg = '#E6F0F8', badgeFg = '#0364AD', badgeBorder = '#CCE1F0', rawBadgeLabel = 'In transit';
 
             if (isHold) {
-              badgeBg = '#FFF1F2'; badgeFg = '#E11D48'; badgeBorder = '#FECDD3'; badgeLabel = 'Exception';
+              badgeBg = '#FEF4E6'; badgeFg = '#E67E00'; badgeBorder = '#FCDCB5'; rawBadgeLabel = 'Exception';
             } else if (isPending) {
-              badgeBg = '#F8FAFC'; badgeFg = '#64748B'; badgeBorder = '#E2E8F0'; badgeLabel = 'Pending';
+              badgeBg = '#F8FAFC'; badgeFg = '#64748B'; badgeBorder = '#E2E8F0'; rawBadgeLabel = 'Pending';
             }
 
             const row = document.createElement('tr');
             row.innerHTML = `
-              <td style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; white-space: nowrap;">${tr.id}</td>
+              <td style="font-family: 'Kanit', sans-serif; font-weight: 500; white-space: nowrap;">${tr.id}</td>
               <td style="white-space: nowrap;">${tr.leg}</td>
               <td style="min-width: 140px;">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                  <div style="flex: 1; height: 6px; border-radius: 2px; background: #E2E8F0; overflow: hidden;">
-                    <div style="height: 100%; width: ${tr.progress_pct || 0}%; background: ${barColor};"></div>
+                  <div style="flex: 1; height: 6px; border-radius: 9999px; background: #E5E5E5; overflow: hidden;">
+                    <div style="height: 100%; width: ${tr.progress_pct || 0}%; background: ${barColor}; border-radius: 9999px;"></div>
                   </div>
                   <span style="font-size: 12px; color: #64748B; font-variant-numeric: tabular-nums; white-space: nowrap;">${tr.progress_pct || 0}%</span>
                 </div>
               </td>
               <td style="font-variant-numeric: tabular-nums;">${tr.parcels_count || 0}</td>
               <td style="white-space: nowrap; color: #42474f;">${tr.next_checkin || ''}</td>
-              <td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${badgeBorder};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: ${badgeFg};"></span>${badgeLabel}</span></td>
+              <td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${badgeBorder};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: ${badgeFg};"></span>${localizeStatus(rawBadgeLabel)}</span></td>
             `;
             trucksTableBody.appendChild(row);
           });
         }
 
         if (data.exceptions) {
-          exceptionCountBadge.textContent = `${data.exceptions.length} open`;
+          const openLabel = I18N_ADMIN[currentLang]?.dash?.exceptionsOpen || 'open';
+          exceptionCountBadge.textContent = `${data.exceptions.length} ${openLabel}`;
           exceptionsFeedContainer.innerHTML = '';
           data.exceptions.forEach((x, idx) => {
             const isLast = idx === data.exceptions.length - 1;
             const item = document.createElement('div');
-            item.style.cssText = `padding: 14px 20px; ${isLast ? '' : 'border-bottom: 1px solid #E2E8F0;'} display: flex; flex-direction: column; gap: 4px;`;
+            item.style.cssText = `padding: 14px 20px; ${isLast ? '' : 'border-bottom: 1px solid #E5E5E5;'} display: flex; flex-direction: column; gap: 4px;`;
             item.innerHTML = `
               <div style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline;">
-                <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 14px; color: #E11D48; white-space: nowrap;">${x.code}</span>
+                <span style="font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 14px; color: #ED1C24; white-space: nowrap;">${x.code}</span>
                 <span style="font-size: 12px; color: #64748B; white-space: nowrap;">${x.time_str || ''}</span>
               </div>
               <span style="font-size: 14px; line-height: 20px;">${x.title}</span>
@@ -1091,28 +2049,28 @@
 
         parcelsTableBody.innerHTML = '';
         parcels.forEach(p => {
-          let badgeBg = '#F0F7FF', badgeFg = '#0F4C81', border = '#BAE6FD', label = 'In transit';
+          let badgeBg = '#E6F0F8', badgeFg = '#0364AD', border = '#CCE1F0', rawLabel = 'In transit';
           const st = (p.status || '').toLowerCase();
           if (st === 'exception' || st === 'delayed') {
-            badgeBg = '#FFF1F2'; badgeFg = '#E11D48'; border = '#FECDD3'; label = 'Exception';
+            badgeBg = '#FEF4E6'; badgeFg = '#E67E00'; border = '#FCDCB5'; rawLabel = 'Exception';
           } else if (st === 'delivered') {
-            badgeBg = '#F0FDF4'; badgeFg = '#16A34A'; border = '#BBF7D0'; label = 'Delivered';
+            badgeBg = '#EAF5ED'; badgeFg = '#2E7D32'; border = '#BCE3C6'; rawLabel = 'Delivered';
           } else if (st === 'pending') {
-            badgeBg = '#F8FAFC'; badgeFg = '#64748B'; border = '#E2E8F0'; label = 'Pending';
+            badgeBg = '#F8FAFC'; badgeFg = '#64748B'; border = '#E2E8F0'; rawLabel = 'Pending';
           }
 
           const tr = document.createElement('tr');
           tr.innerHTML = `
-            <td style="font-family: ui-monospace, 'Geist', monospace; font-size: 13px; white-space: nowrap;">
-              <a href="index.html?tn=${p.tracking_number}" target="_blank" style="color: #0F4C81; font-weight: 500;">${p.tracking_number}</a>
+            <td style="font-family: ui-monospace, monospace; font-size: 13px; white-space: nowrap;">
+              <a href="index.html?tn=${p.tracking_number}" target="_blank" style="color: #0364AD; font-weight: 500;">${p.tracking_number}</a>
             </td>
             <td style="white-space: nowrap;">${p.route}</td>
-            <td style="white-space: nowrap;">${p.current_station_name || p.current_station_code || '—'}</td>
-            <td style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; white-space: nowrap;">${p.truck_id || '—'}</td>
+            <td style="white-space: nowrap;">${localizeStation(p.current_station_name || p.current_station_code || '—')}</td>
+            <td style="font-family: 'Kanit', sans-serif; font-weight: 500; white-space: nowrap;">${p.truck_id || '—'}</td>
             <td>
-              <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${border};">
+              <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${border};">
                 <span style="width: 6px; height: 6px; border-radius: 9999px; background: ${badgeFg};"></span>
-                ${label}
+                ${localizeStatus(rawLabel)}
               </span>
             </td>
             <td style="white-space: nowrap; color: #42474f; font-variant-numeric: tabular-nums;">${p.eta || '—'}</td>
@@ -1120,7 +2078,8 @@
           parcelsTableBody.appendChild(tr);
         });
 
-        parcelCountIndicator.textContent = `Showing ${parcels.length} of ${data.total || 312} · source: ${data.source}`;
+        const pI18n = I18N_ADMIN[currentLang]?.parcels || {};
+        parcelCountIndicator.textContent = `${pI18n.showing || 'Showing'} ${parcels.length} ${pI18n.of || 'of'} ${data.total || 312} · ${pI18n.source || 'source'}: ${data.source}`;
       } catch (err) {
         console.error('Failed to load parcels:', err);
       }
@@ -1131,13 +2090,13 @@
         currentFilter = btn.dataset.filter;
         parcelFilterBtns.forEach(b => {
           if (b === btn) {
-            b.style.background = '#0F4C81';
+            b.style.background = '#ED1C24';
             b.style.color = '#fff';
-            b.style.borderColor = '#0A355C';
+            b.style.borderColor = '#ED1C24';
           } else {
             b.style.background = '#FFFFFF';
-            b.style.color = '#0F4C81';
-            b.style.borderColor = '#CBD5E1';
+            b.style.color = '#42474f';
+            b.style.borderColor = '#E5E5E5';
           }
         });
         loadParcels();
@@ -1160,32 +2119,33 @@
 
         stationsCardsContainer.innerHTML = '';
         stations.forEach(s => {
-          let badgeBg = '#F0FDF4', badgeFg = '#16A34A', border = '#BBF7D0', badgeLabel = 'Open';
+          let badgeBg = '#EAF5ED', badgeFg = '#2E7D32', border = '#BCE3C6', rawBadgeLabel = 'Open';
           if (s.status === 'busy') {
-            badgeBg = '#F0F7FF'; badgeFg = '#0F4C81'; border = '#BAE6FD'; badgeLabel = 'Loading';
+            badgeBg = '#E6F0F8'; badgeFg = '#0364AD'; border = '#CCE1F0'; rawBadgeLabel = 'Loading';
           } else if (s.status === 'closed') {
-            badgeBg = '#FFF1F2'; badgeFg = '#E11D48'; border = '#FECDD3'; badgeLabel = 'Road closed';
+            badgeBg = '#FEF4E6'; badgeFg = '#E67E00'; border = '#FCDCB5'; rawBadgeLabel = 'Road closed';
           }
 
+          const stI18n = I18N_ADMIN[currentLang]?.stations || {};
           const card = document.createElement('section');
-          card.style.cssText = 'background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); display: flex; flex-direction: column;';
+          card.style.cssText = 'background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); display: flex; flex-direction: column; overflow: hidden;';
           card.innerHTML = `
-            <div style="min-height: 48px; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid #E2E8F0;">
+            <div style="min-height: 48px; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid #E5E5E5; background: #FAFAFA;">
               <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
-                <span style="font-family: ui-monospace, 'Geist', monospace; font-size: 12px; color: #64748B; padding: 2px 6px; border: 1px solid #E2E8F0; border-radius: 2px; white-space: nowrap;">${s.code}</span>
-                <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 16px; line-height: 24px;">${s.name}</h2>
+                <span style="font-family: ui-monospace, monospace; font-size: 12px; font-weight: 600; color: #ED1C24; padding: 2px 8px; border: 1px solid #FFCDD2; background: #FFF5F5; border-radius: 9999px; white-space: nowrap;">${s.code}</span>
+                <h2 style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 500; font-size: 16px; line-height: 24px; color: #1A1A1A;">${localizeStation(s.name)}</h2>
               </div>
-              <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${border};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: ${badgeFg};"></span>${badgeLabel}</span>
+              <span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 9999px; font-size: 12px; font-weight: 500; white-space: nowrap; background: ${badgeBg}; color: ${badgeFg}; border: 1px solid ${border};"><span style="width: 6px; height: 6px; border-radius: 9999px; background: ${badgeFg};"></span>${localizeStatus(rawBadgeLabel)}</span>
             </div>
             <div style="padding: 16px 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;">
-              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Parcels on hand</span><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; font-variant-numeric: tabular-nums;">${s.on_hand_parcels || 0}</span></div>
-              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Bays in use</span><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; font-variant-numeric: tabular-nums;">${s.bays_in_use || '2 / 4'}</span></div>
-              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Next departure</span><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 14px; line-height: 20px;">${s.next_departure || '—'}</span></div>
-              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Supervisor</span><span style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 14px; line-height: 20px;">${s.supervisor || '—'}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #757575;">${stI18n.onHand || 'Parcels on hand'}</span><span style="font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; font-variant-numeric: tabular-nums; color: #1A1A1A;">${s.on_hand_parcels || 0}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #757575;">${stI18n.bays || 'Bays in use'}</span><span style="font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; font-variant-numeric: tabular-nums; color: #1A1A1A;">${s.bays_in_use || '2 / 4'}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #757575;">${stI18n.nextDep || 'Next departure'}</span><span style="font-family: 'Kanit', sans-serif; font-weight: 500; font-size: 14px; line-height: 20px; color: #42474F;">${s.next_departure || '—'}</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #757575;">${stI18n.supervisor || 'Supervisor'}</span><span style="font-family: 'Kanit', sans-serif; font-weight: 500; font-size: 14px; line-height: 20px; color: #42474F;">${s.supervisor || '—'}</span></div>
             </div>
-            <div style="padding: 12px 20px; border-top: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-              <span style="font-size: 12px; color: #42474f;">${s.note || ''}</span>
-              <a href="#" onclick="openNewManifestModal('${s.code}'); return false;" style="font-size: 12px; font-weight: 500; white-space: nowrap; color: #0F4C81;">Create manifest</a>
+            <div style="padding: 12px 20px; border-top: 1px solid #E5E5E5; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+              <span style="font-size: 12px; color: #757575;">${s.note || ''}</span>
+              <a href="#" onclick="openNewManifestModal('${s.code}'); return false;" style="font-size: 12px; font-weight: 600; white-space: nowrap; color: #0364AD;">${stI18n.createMf || 'Create manifest'}</a>
             </div>
           `;
           stationsCardsContainer.appendChild(card);
@@ -1236,7 +2196,7 @@
       if (dragX > maxX * 0.5) {
         swipeLabel.style.color = 'transparent';
       } else {
-        swipeLabel.style.color = '#0F4C81';
+        swipeLabel.style.color = '#0364AD';
       }
     }
 
@@ -1251,7 +2211,7 @@
         dragX = 0;
         swipeThumb.style.transition = 'transform 220ms ease';
         swipeThumb.style.transform = 'translateX(0px)';
-        swipeLabel.style.color = '#0F4C81';
+        swipeLabel.style.color = '#0364AD';
       }
     }
 
@@ -1263,27 +2223,27 @@
       swipeThumb.style.transform = `translateX(${maxX}px)`;
 
       // Update appearance
-      swipeTrack.style.background = '#F0FDF4';
-      swipeTrack.style.borderColor = '#BBF7D0';
+      swipeTrack.style.background = '#EAF5ED';
+      swipeTrack.style.borderColor = '#BCE3C6';
       swipeTrack.style.cursor = 'default';
-      swipeThumb.style.background = '#16A34A';
-      swipeThumb.style.borderColor = '#15803D';
+      swipeThumb.style.background = '#2E7D32';
+      swipeThumb.style.borderColor = '#2E7D32';
       swipeThumb.style.cursor = 'default';
 
       swipeIcon.innerHTML = '<path d="M5 12l5 5L20 7"/>';
-      swipeLabel.textContent = 'Arrival confirmed';
-      swipeLabel.style.color = '#16A34A';
-      swipeHint.textContent = 'All 42 parcels updated in Neon PostgreSQL';
+      swipeLabel.textContent = I18N_ADMIN[currentLang]?.checkin?.arrivalConfirmed || 'Arrival confirmed';
+      swipeLabel.style.color = '#2E7D32';
+      swipeHint.textContent = I18N_ADMIN[currentLang]?.checkin?.arrivalHint || 'All 42 parcels updated in Neon PostgreSQL';
 
       // Update stepper visual
-      lineWniNsn.style.background = '#16A34A';
-      nodeNsn.style.border = '2px solid #16A34A';
-      nodeNsn.style.background = '#16A34A';
+      lineWniNsn.style.background = '#2E7D32';
+      nodeNsn.style.border = '2px solid #2E7D32';
+      nodeNsn.style.background = '#2E7D32';
       nodeNsn.style.boxShadow = 'none';
-      nodeNsn.style.borderRadius = '2px';
+      nodeNsn.style.borderRadius = '9999px';
       coreNsn.style.background = '#fff';
-      coreNsn.style.borderRadius = '2px';
-      labelNsn.style.color = '#16A34A';
+      coreNsn.style.borderRadius = '9999px';
+      labelNsn.style.color = '#2E7D32';
 
       confirmAlert.style.display = 'flex';
 
@@ -1297,12 +2257,12 @@
         const result = await res.json();
         Toast.fire({
           icon: 'success',
-          title: `${result.parcelsUpdated || 42} parcels updated in Neon SQL`
+          title: currentLang === 'th' ? `อัปเดตพัสดุ ${result.parcelsUpdated || 42} ชิ้นบน Neon SQL เรียบร้อย` : `${result.parcelsUpdated || 42} parcels updated in Neon SQL`
         });
       } catch (err) {
         Toast.fire({
           icon: 'success',
-          title: '42 parcels updated in Neon SQL'
+          title: currentLang === 'th' ? 'อัปเดตพัสดุ 42 ชิ้นบน Neon SQL เรียบร้อย' : '42 parcels updated in Neon SQL'
         });
       }
     }
@@ -1311,6 +2271,9 @@
     swipeTrack.addEventListener('pointermove', onSwipeMove);
     swipeTrack.addEventListener('pointerup', onSwipeEnd);
     swipeTrack.addEventListener('pointercancel', onSwipeEnd);
+
+    // Initial UI update for preferred language
+    updateLanguageUI();
   </script>
 </body>
 </html>

@@ -301,7 +301,7 @@ async function testApiModules() {
     await stationsMod.default({
       method: 'POST',
       body: {
-        code: 'TEST' + Math.floor(10 + Math.random() * 89),
+        code: 'T' + Date.now().toString().slice(-4) + Math.floor(10 + Math.random() * 89),
         name: 'Test Logistics Station',
         supervisor: 'Test Supervisor',
         status: 'open'
@@ -335,7 +335,7 @@ async function testApiModules() {
     await driversMod.default({
       method: 'POST',
       body: {
-        driverId: 'DR-TEST' + Math.floor(10 + Math.random() * 89),
+        driverId: 'DR-' + Date.now().toString().slice(-6),
         pin: '123456',
         name: 'Test Driver',
         phone: '081-000-1111',

@@ -1,132 +1,187 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SwiftRoute - Track Your Parcel</title>
+  <title>devdo - ระบบติดตามสถานะพัสดุ (devdo Track & Trace)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: #FFFFFF;
-      color: #0b1c30;
-      font-family: 'Geist', sans-serif;
+      background: #F7F7F7;
+      color: #1A1A1A;
+      font-family: 'Kanit', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
     * { box-sizing: border-box; }
-    a { color: #0F4C81; text-decoration: none; }
-    a:hover { color: #00355F; text-decoration: underline; }
-    input::placeholder { color: #727780; }
-    @keyframes sr-pulse {
-      0% { box-shadow: 0 0 0 0 rgba(15, 76, 129, .45); }
-      70% { box-shadow: 0 0 0 6px rgba(15, 76, 129, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(15, 76, 129, 0); }
+    a { color: #0364AD; text-decoration: none; }
+    a:hover { color: #004880; text-decoration: underline; }
+    input::placeholder { color: #8C8C8C; }
+    @keyframes sr-pulse-red {
+      0% { box-shadow: 0 0 0 0 rgba(237, 28, 36, .45); }
+      70% { box-shadow: 0 0 0 8px rgba(237, 28, 36, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(237, 28, 36, 0); }
     }
     .input-focus:focus-within {
-      border-color: #0F4C81 !important;
-      box-shadow: 0 0 0 2px rgba(15, 76, 129, 0.15) !important;
+      border-color: #ED1C24 !important;
+      box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.20) !important;
     }
-    .btn-primary:hover { background: #0A355C !important; }
-    .btn-primary:active { transform: translateY(1px); }
-    .btn-secondary:hover { background: #E2E8F0 !important; }
+    .btn-primary {
+      background: #ED1C24 !important;
+      color: #FFFFFF !important;
+      border: 0 !important;
+      border-radius: 9999px !important;
+      font-weight: 600 !important;
+      transition: background 0.15s, transform 0.1s !important;
+      box-shadow: 0 2px 8px rgba(237, 28, 36, 0.25) !important;
+    }
+    .btn-primary:hover { background: #C0141A !important; }
+    .btn-primary:active { background: #A81016 !important; transform: translateY(1px); }
+    .btn-secondary {
+      background: #FFFFFF !important;
+      color: #1A1A1A !important;
+      border: 1px solid #C4C4C4 !important;
+      border-radius: 9999px !important;
+      transition: background 0.15s, border-color 0.15s !important;
+    }
+    .btn-secondary:hover { background: #F7F7F7 !important; border-color: #1A1A1A !important; }
+    .lang-btn {
+      padding: 4px 12px;
+      border-radius: 9999px;
+      border: 0;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+    }
+    .lang-btn.active {
+      background: #ED1C24;
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+    .lang-btn:not(.active) {
+      background: transparent;
+      color: #616161;
+    }
+    .lang-btn:not(.active):hover {
+      color: #1A1A1A;
+    }
   </style>
 </head>
 <body>
-  <div style="min-height: 100vh; display: flex; flex-direction: column; background: #FFFFFF;">
-    <header style="border-bottom: 1px solid #E2E8F0; background: #FFFFFF;">
-      <div style="max-width: 75rem; margin: 0 auto; padding: 14px clamp(12px, 4vw, 24px); display: flex; align-items: center; justify-content: space-between; gap: 16px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 28px; height: 28px; border-radius: 4px; background: #0F4C81; display: grid; place-items: center;">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M2 8h9M8 4l4 4-4 4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <div style="min-height: 100vh; display: flex; flex-direction: column; background: #F7F7F7;">
+    <!-- Signature Red Top Accent Line -->
+    <div style="height: 4px; background: #ED1C24; width: 100%;"></div>
+    <header style="border-bottom: 1px solid #E5E5E5; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+      <div style="max-width: 75rem; margin: 0 auto; padding: 12px clamp(12px, 4vw, 24px); display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <!-- devdo Red Badge / Brand Emblem -->
+          <div style="width: 36px; height: 36px; border-radius: 8px; background: #ED1C24; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(237,28,36,0.25);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
             </svg>
           </div>
-          <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: -0.01em; color: #0b1c30;">SwiftRoute</span>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.01em; color: #ED1C24; line-height: 1.1;">devdo</span>
+            <span style="font-family: 'Kanit', sans-serif; font-weight: 500; font-size: 11px; color: #616161; letter-spacing: 0.04em; text-transform: uppercase;">devdo Express · Track &amp; Trace</span>
+          </div>
         </div>
-        <a id="trackAnotherLink" href="#" style="display: none; font-size: 14px; font-weight: 500; color: #0F4C81; white-space: nowrap;">Track another parcel</a>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="display: flex; align-items: center; background: #F7F7F7; border: 1px solid #E5E5E5; border-radius: 9999px; padding: 2px;">
+            <button type="button" id="langThBtn" class="lang-btn active" onclick="setLanguage('th')">🇹🇭 ไทย</button>
+            <button type="button" id="langEnBtn" class="lang-btn" onclick="setLanguage('en')">🇬🇧 EN</button>
+          </div>
+          <a id="trackAnotherLink" href="#" style="display: none; font-size: 14px; font-weight: 600; color: #ED1C24; white-space: nowrap;">Track another parcel</a>
+        </div>
       </div>
     </header>
 
     <!-- SEARCH VIEW -->
-    <main id="searchSection" style="flex: 1; display: flex; align-items: center; justify-content: center; padding: clamp(24px, 8vw, 48px) clamp(16px, 4vw, 24px);">
-      <div style="width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 24px;">
+    <main id="searchSection" style="flex: 1; display: flex; align-items: center; justify-content: center; padding: clamp(28px, 8vw, 56px) clamp(16px, 4vw, 24px);">
+      <div style="width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 24px; background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); padding: clamp(20px, 5vw, 36px);">
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(28px, 8vw, 40px); line-height: 1.2; letter-spacing: -0.02em; color: #0b1c30;">Track your parcel</h1>
-          <p style="margin: 0; font-size: 16px; line-height: 24px; color: #42474f;">Enter the tracking number from your confirmation email or receipt.</p>
+          <div style="display: inline-flex; align-items: center; gap: 6px; width: fit-content; padding: 4px 12px; background: #FFEBEC; border: 1px solid #FFDAD6; border-radius: 9999px; font-size: 12px; font-weight: 600; color: #ED1C24;">
+            <span style="width: 6px; height: 6px; border-radius: 9999px; background: #ED1C24;"></span>
+            <span>devdo Express · Domestic Delivery Network</span>
+          </div>
+          <h1 id="searchTitle" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 700; font-size: clamp(24px, 6vw, 32px); line-height: 1.25; letter-spacing: -0.01em; color: #1A1A1A;">ติดตามสถานะพัสดุ</h1>
+          <p id="searchSubtitle" style="margin: 0; font-size: 15px; line-height: 22px; color: #616161;">กรอกหมายเลขพัสดุเพื่อตรวจสอบสถานะการจัดส่งแบบเรียลไทม์</p>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <label for="tn" style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Tracking number</label>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <label for="tn" id="tnLabel" style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">หมายเลขติดตามพัสดุ (Tracking number)</label>
           <div style="display: flex; flex-wrap: wrap; gap: 12px;">
-            <div class="input-focus" style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; height: 48px; padding: 0 14px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 4px; transition: border-color 0.15s, box-shadow 0.15s;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <div class="input-focus" style="flex: 1 1 260px; display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 16px; background: #FFFFFF; border: 1px solid #C4C4C4; border-radius: 9999px; transition: border-color 0.15s, box-shadow 0.15s;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ED1C24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>
               </svg>
-              <input id="tn" placeholder="SR-2609-118245" spellcheck="false" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: ui-monospace, 'Geist', monospace; font-size: 16px; color: #0b1c30; letter-spacing: 0.02em;">
+              <input id="tn" placeholder="SR-2609-118245" spellcheck="false" style="flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: 'Kanit', ui-monospace, monospace; font-size: 16px; font-weight: 600; color: #1A1A1A; letter-spacing: 0.08em;">
             </div>
-            <button id="trackBtn" class="btn-primary" style="height: 48px; padding: 0 24px; background: #0F4C81; color: #fff; border: 1px solid #0A355C; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background 0.15s, transform 0.1s;">Track</button>
+            <button id="trackBtn" class="btn-primary" style="height: 52px; padding: 0 28px; background: #ED1C24; color: #fff; border: 0; border-radius: 9999px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.15s, transform 0.1s; box-shadow: 0 4px 12px rgba(237,28,36,0.25);">ค้นหาพัสดุ</button>
           </div>
-          <p style="margin: 0; font-size: 12px; line-height: 16px; color: #64748B;">Example: SR-2609-118245</p>
+          <p id="searchExample" style="margin: 0; font-size: 12px; line-height: 16px; color: #8C8C8C;">ตัวอย่าง: SR-2609-118245</p>
         </div>
       </div>
     </main>
 
     <!-- TRACKING DETAIL VIEW -->
-    <main id="trackingSection" style="display: none; flex: 1; width: 100%; max-width: 75rem; margin: 0 auto; padding: clamp(12px, 4vw, 24px) clamp(12px, 4vw, 24px) 48px; flex-direction: column; gap: clamp(16px, 3vw, 24px);">
+    <main id="trackingSection" style="display: none; flex: 1; width: 100%; max-width: 75rem; margin: 0 auto; padding: clamp(16px, 4vw, 28px) clamp(12px, 4vw, 24px) 48px; flex-direction: column; gap: clamp(16px, 3vw, 24px);">
       <!-- Summary Card -->
-      <section style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 12px; box-shadow: 0 4px 12px -2px rgba(15,76,129,0.08); padding: clamp(16px, 4vw, 24px); display: flex; flex-direction: column; gap: clamp(16px, 4vw, 24px);">
+      <section style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 4px 16px -2px rgba(0,0,0,0.04); padding: clamp(18px, 4vw, 28px); display: flex; flex-direction: column; gap: clamp(18px, 4vw, 24px);">
         <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px;">
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <span style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Tracking number</span>
+            <span id="detailTrackingLabel" style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">Tracking number</span>
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
-              <span id="displayTrackingNo" style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(22px, 6.5vw, 28px); line-height: 1.3; letter-spacing: -0.015em; color: #0b1c30; overflow-wrap: anywhere;">SR-2609-118245</span>
-              <button id="copyLinkBtn" class="btn-secondary" style="height: 32px; padding: 0 12px; display: inline-flex; align-items: center; gap: 6px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background 0.15s;">
+              <span id="displayTrackingNo" style="font-family: 'Kanit', sans-serif; font-weight: 700; font-size: clamp(22px, 6.5vw, 28px); line-height: 1.3; letter-spacing: 0.08em; color: #1A1A1A; overflow-wrap: anywhere;">SR-2609-118245</span>
+              <button id="copyLinkBtn" class="btn-secondary" style="height: 32px; padding: 0 14px; display: inline-flex; align-items: center; gap: 6px; background: #FFFFFF; color: #1A1A1A; border: 1px solid #C4C4C4; border-radius: 9999px; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background 0.15s;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>
                 </svg>
                 <span id="copyText">Copy link</span>
               </button>
-              <span id="sourceBadge" style="font-size: 11px; padding: 2px 6px; border-radius: 2px; background: #eff4ff; color: #0F4C81; border: 1px solid #d2e4ff;">Neon SQL</span>
+              <span id="sourceBadge" style="font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 9999px; background: #E6F0F8; color: #0364AD; border: 1px solid #0364AD;">Neon SQL</span>
             </div>
           </div>
-          <div id="statusBadge" style="display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 4px; border: 1px solid #BAE6FD; background: #F0F7FF; color: #0F4C81; font-size: 14px; font-weight: 500; white-space: nowrap;">
-            <span id="statusDot" style="width: 6px; height: 6px; border-radius: 9999px; background: #0F4C81; flex: none; animation: sr-pulse 1.6s ease-out infinite;"></span>
+          <div id="statusBadge" style="display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 9999px; border: 1px solid #0364AD; background: #E6F0F8; color: #0364AD; font-size: 13px; font-weight: 600; white-space: nowrap;">
+            <span id="statusDot" style="width: 8px; height: 8px; border-radius: 9999px; background: #0364AD; flex: none;"></span>
             <span id="statusLabel">In transit</span>
           </div>
         </div>
 
         <div style="display: flex; flex-wrap: wrap; gap: 32px 48px;">
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <span id="etaLabel" style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Expected delivery</span>
-            <span id="etaValue" style="font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; letter-spacing: -0.01em; color: #0b1c30;">Thu 11 Sep, by 18:00</span>
-            <span id="etaNote" style="font-size: 14px; line-height: 20px; color: #42474f;">Between 09:00 and 18:00</span>
+            <span id="etaLabel" style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">Expected delivery</span>
+            <span id="etaValue" style="font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; letter-spacing: -0.01em; color: #1A1A1A;">Thu 11 Sep, by 18:00</span>
+            <span id="etaNote" style="font-size: 14px; line-height: 20px; color: #616161;">Between 09:00 and 18:00</span>
           </div>
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B;">Current station</span>
-            <span id="currentStationName" style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 22px; line-height: 28px; letter-spacing: -0.01em; color: #0b1c30;">Nakhon Sawan Hub</span>
-            <span id="currentStationNote" style="font-size: 14px; line-height: 20px; color: #42474f;">Next stop: Lampang Hub</span>
+            <span id="currentStationHeading" style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.04em; text-transform: uppercase; color: #616161;">Current station</span>
+            <span id="currentStationName" style="font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; letter-spacing: -0.01em; color: #1A1A1A;">Nakhon Sawan Hub</span>
+            <span id="currentStationNote" style="font-size: 14px; line-height: 20px; color: #616161;">Next stop: Lampang Hub</span>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px;">
-          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
-            <div id="stageBar1" style="height: 6px; border-radius: 2px; background: #16A34A;"></div>
-            <div id="stageBar2" style="height: 6px; border-radius: 2px; background: #0F4C81;"></div>
-            <div id="stageBar3" style="height: 6px; border-radius: 2px; background: #E2E8F0;"></div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+            <div id="stageBar1" style="height: 6px; border-radius: 9999px; background: #2E7D32;"></div>
+            <div id="stageBar2" style="height: 6px; border-radius: 9999px; background: #0364AD;"></div>
+            <div id="stageBar3" style="height: 6px; border-radius: 9999px; background: #E5E5E5;"></div>
           </div>
-          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
-            <span id="stageLabel1" style="font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.04em; color: #16A34A;">Picked up</span>
-            <span id="stageLabel2" style="font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.04em; color: #0F4C81;">In transit</span>
-            <span id="stageLabel3" style="font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.04em; color: #64748B;">Delivered</span>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+            <span id="stageLabel1" style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.04em; color: #2E7D32;">Picked up</span>
+            <span id="stageLabel2" style="font-size: 12px; font-weight: 600; line-height: 16px; letter-spacing: 0.04em; color: #0364AD;">In transit</span>
+            <span id="stageLabel3" style="font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.04em; color: #8C8C8C;">Delivered</span>
           </div>
         </div>
       </section>
 
       <!-- Alert Banner -->
-      <div id="delayAlert" style="display: none; gap: 12px; align-items: flex-start; padding: 14px 16px; background: #FFF1F2; border: 1px solid #FECDD3; border-radius: 8px;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 1px;">
+      <div id="delayAlert" style="display: none; gap: 12px; align-items: flex-start; padding: 14px 16px; background: #FEF4E6; border: 1px solid #FCDCB5; border-radius: 16px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E67E00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 1px;">
           <path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>
         </svg>
         <div style="display: flex; flex-direction: column; gap: 2px;">
@@ -138,10 +193,10 @@
       <!-- Main Columns -->
       <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
         <!-- Timeline Section -->
-        <section style="flex: 2 1 min(420px, 100%); min-width: 0; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 20px; display: flex; flex-direction: column; gap: 20px;">
+        <section style="flex: 2 1 min(420px, 100%); min-width: 0; background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 4px 16px -2px rgba(0,0,0,0.04); padding: 24px; display: flex; flex-direction: column; gap: 20px;">
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <h2 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 22px; line-height: 28px; letter-spacing: -0.01em; color: #0b1c30;">Where is my parcel?</h2>
-            <p style="margin: 0; font-size: 14px; line-height: 20px; color: #42474f;">Updated each time our truck checks in at a station</p>
+            <h2 id="timelineHeading" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 22px; line-height: 28px; letter-spacing: -0.01em; color: #1A1A1A;">Where is my parcel?</h2>
+            <p id="timelineSubheading" style="margin: 0; font-size: 14px; line-height: 20px; color: #616161;">Updated each time our truck checks in at a station</p>
           </div>
           <div id="timelineContainer" style="display: flex; flex-direction: column;">
             <!-- Rendered by JS -->
@@ -150,72 +205,383 @@
 
         <!-- Aside Details -->
         <aside style="flex: 1 1 min(280px, 100%); min-width: 0; display: flex; flex-direction: column; gap: 24px;">
-          <section style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 20px; display: flex; flex-direction: column; gap: 16px;">
-            <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 18px; line-height: 24px; color: #0b1c30;">Route</h3>
+          <section style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 4px 16px -2px rgba(0,0,0,0.04); padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+            <h3 id="routeHeading" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 18px; line-height: 24px; color: #1A1A1A;">Route</h3>
             <div style="display: flex; flex-direction: column; gap: 12px;">
               <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline;">
-                <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; min-width: 64px;">From</span>
-                <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: #0b1c30;">Bangkok Central Depot</span>
+                <span id="routeFromLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161; min-width: 64px;">From</span>
+                <span id="routeFromVal" style="font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 500; color: #1A1A1A;">Bangkok Central Depot</span>
               </div>
               <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline;">
-                <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; min-width: 64px;">To</span>
-                <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: #0b1c30;">Nimman, Mueang Chiang Mai</span>
+                <span id="routeToLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161; min-width: 64px;">To</span>
+                <span id="routeToVal" style="font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 500; color: #1A1A1A;">Nimman, Mueang Chiang Mai</span>
               </div>
               <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline;">
-                <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; min-width: 64px;">Stations</span>
-                <span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: #0b1c30;">Bangkok · Wang Noi · Nakhon Sawan · Lampang · Chiang Mai</span>
+                <span id="routeStationsLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161; min-width: 64px;">Stations</span>
+                <span id="routeStationsVal" style="font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 500; color: #1A1A1A;">Bangkok · Wang Noi · Nakhon Sawan · Lampang · Chiang Mai</span>
               </div>
               <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline;">
-                <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; min-width: 64px;">Progress</span>
-                <span id="routeProgress" style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: #0b1c30;">3 of 5 stations</span>
+                <span id="routeProgressLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161; min-width: 64px;">Progress</span>
+                <span id="routeProgress" style="font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 500; color: #1A1A1A;">3 of 5 stations</span>
               </div>
             </div>
           </section>
 
-          <section style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(15,23,42,0.04); padding: 20px; display: flex; flex-direction: column; gap: 16px;">
-            <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 18px; line-height: 24px; color: #0b1c30;">Delivery details</h3>
+          <section style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; box-shadow: 0 4px 16px -2px rgba(0,0,0,0.04); padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+            <h3 id="deliveryDetailsHeading" style="margin: 0; font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 18px; line-height: 24px; color: #1A1A1A;">Delivery details</h3>
             <div style="display: flex; flex-direction: column; gap: 12px;">
               <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline;">
-                <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; min-width: 64px;">Recipient</span>
-                <span id="recipientName" style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: #0b1c30;">Somchai P.</span>
+                <span id="recipientFieldLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161; min-width: 64px;">Recipient</span>
+                <span id="recipientName" style="font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 500; color: #1A1A1A;">Somchai P.</span>
               </div>
               <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline;">
-                <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; min-width: 64px;">Service</span>
-                <span id="serviceType" style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: #0b1c30;">Road, 2 days</span>
+                <span id="serviceFieldLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161; min-width: 64px;">Service</span>
+                <span id="serviceType" style="font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 500; color: #1A1A1A;">Road, 2 days</span>
               </div>
               <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline;">
-                <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; min-width: 64px;">Parcel</span>
-                <span id="parcelWeight" style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: #0b1c30;">1 box, 4.2 kg</span>
+                <span id="parcelFieldLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161; min-width: 64px;">Parcel</span>
+                <span id="parcelWeight" style="font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 500; color: #1A1A1A;">1 box, 4.2 kg</span>
               </div>
               <div style="display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline;">
-                <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #64748B; min-width: 64px;">Signature</span>
-                <span id="signatureDetail" style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; color: #0b1c30;">Required on delivery</span>
+                <span id="signatureFieldLabel" style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #616161; min-width: 64px;">Signature</span>
+                <span id="signatureDetail" style="font-family: 'Kanit', sans-serif; font-size: 14px; font-weight: 500; color: #1A1A1A;">Required on delivery</span>
               </div>
             </div>
           </section>
 
-          <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
-            <span style="font-size: 14px; font-weight: 500; line-height: 20px; color: #0b1c30;">Need to change the delivery address?</span>
-            <span style="font-size: 14px; line-height: 20px; color: #42474f;">You can update it any time before the parcel leaves the last station.</span>
+          <section style="background: #FFFFFF; border: 1px solid #E5E5E5; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+            <span id="changeAddressHeading" style="font-size: 14px; font-weight: 600; line-height: 20px; color: #1A1A1A;">Need to change the delivery address?</span>
+            <span id="changeAddressDesc" style="font-size: 14px; line-height: 20px; color: #616161;">You can update it any time before the parcel leaves the last station.</span>
             <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-              <button class="btn-secondary" onclick="Swal.fire({ icon: 'info', title: 'Change Delivery Address', text: 'To change destination address, please contact your dispatch station supervisor before the truck departs.', confirmButtonColor: '#0F4C81' });" style="height: 36px; padding: 0 14px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background 0.15s;">Change address</button>
-              <button class="btn-secondary" onclick="Swal.fire({ icon: 'info', title: 'SwiftRoute Operations Desk', html: '<b>Corridor Dispatch Hotline:</b> 02-555-0199<br><b>Email:</b> support@swiftroute.co.th<br><b>Coverage:</b> Bangkok → Chiang Mai Corridor (24/7)', confirmButtonColor: '#0F4C81' });" style="height: 36px; padding: 0 14px; background: #F1F5F9; color: #0F4C81; border: 1px solid #CBD5E1; border-radius: 4px; font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background 0.15s;">Contact us</button>
+              <button id="changeAddressBtn" class="btn-secondary" onclick="handleChangeAddress();" style="height: 36px; padding: 0 16px; background: #FFFFFF; color: #1A1A1A; border: 1px solid #C4C4C4; border-radius: 9999px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background 0.15s;">Change address</button>
+              <button id="contactUsBtn" class="btn-secondary" onclick="handleContactUs();" style="height: 36px; padding: 0 16px; background: #FFFFFF; color: #0364AD; border: 1px solid #C4C4C4; border-radius: 9999px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: background 0.15s;">Contact us</button>
             </div>
           </section>
         </aside>
       </div>
     </main>
 
-    <footer style="border-top: 1px solid #E2E8F0;">
-      <div style="max-width: 75rem; margin: 0 auto; padding: 16px clamp(12px, 4vw, 24px); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; font-size: 12px; line-height: 16px; color: #64748B;">
-        <span>SwiftRoute</span>
-        <span>Times shown in Indochina Time (ICT)</span>
-        <a href="login.html" style="font-size: 11px; color: #727780; white-space: nowrap;">Staff login</a>
+    <footer style="border-top: 1px solid #E5E5E5; background: #FFFFFF;">
+      <div style="max-width: 75rem; margin: 0 auto; padding: 18px clamp(12px, 4vw, 24px); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; font-size: 12px; line-height: 16px; color: #616161;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 9999px; background: #ED1C24;"></span>
+          <span id="footerBrand" style="font-weight: 600; color: #1A1A1A;">devdo Express</span>
+        </div>
+        <span id="footerTz">Times shown in Indochina Time (ICT, UTC+7)</span>
+        <a id="footerStaffLogin" href="login.html" style="font-size: 12px; font-weight: 500; color: #0364AD; white-space: nowrap; text-decoration: none;">Staff login →</a>
       </div>
     </footer>
   </div>
 
   <script>
+    // ==========================================
+    // 🌐 INTERNATIONALIZATION (THAI & ENGLISH)
+    // ==========================================
+    let currentLang = localStorage.getItem('swiftroute_lang') || 'th';
+    let currentParcelData = null;
+
+    const I18N = {
+      th: {
+        pageTitle: "devdo - ติดตามสถานะพัสดุ (devdo Track & Trace)",
+        trackAnother: "← ติดตามพัสดุชิ้นอื่น",
+        searchTitle: "ติดตามสถานะพัสดุ",
+        searchSubtitle: "กรอกหมายเลขพัสดุเพื่อตรวจสอบสถานะการจัดส่งแบบเรียลไทม์",
+        tnLabel: "หมายเลขติดตามพัสดุ (Tracking number)",
+        tnPlaceholder: "SR-2609-118245",
+        trackBtn: "ค้นหาพัสดุ",
+        searchExample: "ตัวอย่าง: SR-2609-118245",
+        detailTrackingLabel: "หมายเลขติดตามพัสดุ",
+        copyLink: "คัดลอกลิงก์",
+        copied: "คัดลอกแล้ว",
+        statusInTransit: "กำลังจัดส่ง",
+        statusDelivered: "จัดส่งสำเร็จ",
+        statusException: "พัสดุล่าช้ากว่ากำหนด",
+        statusPending: "รอดำเนินการ",
+        etaExpected: "กำหนดส่งพัสดุโดยประมาณ",
+        etaNewExpected: "กำหนดส่งพัสดุใหม่",
+        etaDelivered: "จัดส่งสำเร็จเมื่อ",
+        etaTimeNote: "ระหว่างเวลา 09:00 ถึง 18:00 น.",
+        etaSignedBy: (name) => `ลงชื่อรับพัสดุโดย ${name}`,
+        etaDelayNote: "กำหนดส่งเดิม พฤ. 11 ก.ย. (ไม่ต้องดำเนินการใดๆ)",
+        currentStationHeading: "สถานีปัจจุบัน",
+        nextStopNote: (station) => `สถานีถัดไป: ${station}`,
+        stage1: "รับพัสดุแล้ว",
+        stage2: "กำลังจัดส่ง",
+        stage3: "จัดส่งสำเร็จ",
+        timelineHeading: "พัสดุของฉันอยู่ที่ไหน?",
+        timelineSubheading: "อัปเดตทุกครั้งที่รถขนส่งเช็คอินผ่านสถานีคัดแยก",
+        routeHeading: "เส้นทางการขนส่ง",
+        routeFrom: "ต้นทาง",
+        routeTo: "ปลายทาง",
+        routeStations: "สถานี",
+        routeProgressLabel: "ความคืบหน้า",
+        progressFmt: (done, total) => `${done} จาก ${total} สถานี`,
+        deliveryDetailsHeading: "ข้อมูลการจัดส่ง",
+        recipient: "ผู้รับ",
+        service: "บริการ",
+        serviceVal: "ทางถนน ด่วนพิเศษ (2 วัน)",
+        parcel: "พัสดุ",
+        parcelVal: (w) => `1 กล่อง, ${w} กก.`,
+        signature: "การลงนาม",
+        sigRequired: "ต้องลงลายมือชื่อผู้รับ",
+        changeAddressHeading: "ต้องการเปลี่ยนที่อยู่จัดส่งหรือไม่?",
+        changeAddressDesc: "คุณสามารถแจ้งเปลี่ยนที่อยู่ได้ตลอดเวลาก่อนที่พัสดุจะออกจากสถานีคัดแยกสุดท้าย",
+        changeAddressBtn: "ขอเปลี่ยนที่อยู่",
+        contactUsBtn: "ติดต่อเรา",
+        footerBrand: "devdo Express (บริษัท เดฟดู เอ็กซ์เพรส จำกัด)",
+        footerTz: "เวลาแสดงผลตามเวลามาตรฐานประเทศไทย (ICT, UTC+7)",
+        footerStaffLogin: "เข้าสู่ระบบเจ้าหน้าที่",
+        toastCopied: "คัดลอกลิงก์ติดตามพัสดุเรียบร้อยแล้ว",
+        swalChangeAddressTitle: "ขอเปลี่ยนแปลงที่อยู่ปลายทาง",
+        swalChangeAddressText: "หากต้องการเปลี่ยนที่อยู่จัดส่ง กรุณาติดต่อหัวหน้าสถานีคัดแยกต้นทางก่อนที่รถขนส่งจะเริ่มออกเดินทาง",
+        swalDeskTitle: "ศูนย์บริการลูกค้า devdo Express",
+        swalDeskHtml: "<b>บริษัท เดฟดู เอ็กซ์เพรส จำกัด (devdo Express Co., Ltd.)</b><br><b>สายด่วนบริการลูกค้า:</b> 02-026-6888<br><b>อีเมล:</b> support@devdo.io<br><b>บริการจัดส่ง:</b> ขนส่งพัสดุด่วนทั่วประเทศ ตลอด 24 ชั่วโมง"
+      },
+      en: {
+        pageTitle: "devdo - Track & Trace",
+        trackAnother: "Track another parcel",
+        searchTitle: "Track your parcel",
+        searchSubtitle: "Enter the tracking number from your receipt to check real-time status.",
+        tnLabel: "Tracking number",
+        tnPlaceholder: "SR-2609-118245",
+        trackBtn: "Track",
+        searchExample: "Example: SR-2609-118245",
+        detailTrackingLabel: "Tracking number",
+        copyLink: "Copy link",
+        copied: "Copied",
+        statusInTransit: "In transit",
+        statusDelivered: "Delivered",
+        statusException: "Delayed",
+        statusPending: "Pending",
+        etaExpected: "Expected delivery",
+        etaNewExpected: "New expected delivery",
+        etaDelivered: "Delivered",
+        etaTimeNote: "Between 09:00 and 18:00",
+        etaSignedBy: (name) => `Signed for by ${name}`,
+        etaDelayNote: "Was Thu 11 Sep. No action needed from you.",
+        currentStationHeading: "Current station",
+        nextStopNote: (station) => `Next stop: ${station}`,
+        stage1: "Picked up",
+        stage2: "In transit",
+        stage3: "Delivered",
+        timelineHeading: "Where is my parcel?",
+        timelineSubheading: "Updated each time our truck checks in at a station",
+        routeHeading: "Route",
+        routeFrom: "From",
+        routeTo: "To",
+        routeStations: "Stations",
+        routeProgressLabel: "Progress",
+        progressFmt: (done, total) => `${done} of ${total} stations`,
+        deliveryDetailsHeading: "Delivery details",
+        recipient: "Recipient",
+        service: "Service",
+        serviceVal: "Road, 2 days",
+        parcel: "Parcel",
+        parcelVal: (w) => `1 box, ${w} kg`,
+        signature: "Signature",
+        sigRequired: "Required on delivery",
+        changeAddressHeading: "Need to change the delivery address?",
+        changeAddressDesc: "You can update it any time before the parcel leaves the last station.",
+        changeAddressBtn: "Change address",
+        contactUsBtn: "Contact us",
+        footerBrand: "devdo Express Co., Ltd.",
+        footerTz: "Times shown in Indochina Time (ICT)",
+        footerStaffLogin: "Staff login",
+        toastCopied: "Tracking link copied to clipboard",
+        swalChangeAddressTitle: "Change Delivery Address",
+        swalChangeAddressText: "To change destination address, please contact your dispatch station supervisor before the truck departs.",
+        swalDeskTitle: "devdo Express Customer Care",
+        swalDeskHtml: "<b>devdo Express Co., Ltd. (Private Logistics)</b><br><b>Customer Care Hotline:</b> 02-026-6888<br><b>Email:</b> support@devdo.io<br><b>Coverage:</b> Nationwide Express Logistics (24/7)"
+      }
+    };
+
+    const STATION_NAMES_TH = {
+      'Bangkok Central Depot': 'ศูนย์กระจายสินค้ากลาง กรุงเทพฯ (BKK)',
+      'Wang Noi Sorting Center': 'ศูนย์คัดแยกวังน้อย (WNI)',
+      'Nakhon Sawan Hub': 'ศูนย์ฮับนครสวรรค์ (NSN)',
+      'Lampang Hub': 'ศูนย์ฮับลำปาง (LPG)',
+      'Chiang Mai Delivery Station': 'สถานีกระจายสินค้าเชียงใหม่ (CNX)',
+      'Chiang Mai Station': 'สถานีกระจายสินค้าเชียงใหม่ (CNX)',
+      'Nimman, Mueang Chiang Mai': 'นิมมาน, อ.เมืองเชียงใหม่'
+    };
+
+    const EVENT_TITLES_TH = {
+      'Picked up': 'เข้ารับพัสดุแล้ว',
+      'Left the depot': 'พัสดุออกจากศูนย์กระจายสินค้า',
+      'Arrived at station': 'พัสดุถึงสถานีคัดแยก',
+      'Left the station': 'พัสดุออกจากสถานีคัดแยก',
+      'Held at station': 'ระงับการเดินทางชั่วคราวที่สถานี',
+      'Out for delivery': 'พนักงานกำลังนำจ่ายพัสดุ',
+      'Delivered': 'จัดส่งพัสดุสำเร็จเรียบร้อย',
+      'Upcoming': 'ตามกำหนดการ'
+    };
+
+    function translateStation(st) {
+      if (currentLang === 'th' && STATION_NAMES_TH[st]) return STATION_NAMES_TH[st];
+      return st || '';
+    }
+
+    function translateEventTitle(t) {
+      if (currentLang === 'th' && EVENT_TITLES_TH[t]) return EVENT_TITLES_TH[t];
+      return t || '';
+    }
+
+    function translateDateStr(str) {
+      if (currentLang !== 'th' || !str) return str || '';
+      const enMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const thMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+      let res = str;
+      enMonths.forEach((m, idx) => {
+        res = res.replace(new RegExp(m, 'g'), thMonths[idx]);
+      });
+      return res.replace('Thu', 'พฤ.')
+                .replace('Fri', 'ศ.')
+                .replace('Sat', 'ส.')
+                .replace('Sun', 'อา.')
+                .replace('Mon', 'จ.')
+                .replace('Tue', 'อ.')
+                .replace('Wed', 'พ.')
+                .replace('by ', 'ภายใน ')
+                .replace('Upcoming', 'ตามกำหนดการ')
+                .replace('On hold', 'ระงับชั่วคราว');
+    }
+
+    function translateEventNote(note) {
+      if (currentLang !== 'th' || !note) return note || '';
+      if (note.includes('Your parcel is with SwiftRoute')) return 'พัสดุของท่านอยู่ในการดูแลของ SwiftRoute';
+      if (note.includes('On truck TK-19 heading to Nakhon Sawan')) return 'อยู่บนรถบรรทุก TK-19 มุ่งหน้านครสวรรค์';
+      if (note.includes('Flooding has closed Highway 1 to Lampang')) return 'เกิดน้ำท่วมปิดเส้นทาง ทล.1 สู่ลำปาง ระบบจะนำส่งพัสดุทันทีที่เปิดเส้นทาง';
+      if (note.includes('Signed for by')) return note.replace('Signed for by', 'ลงชื่อรับพัสดุโดย').replace('at the front desk', '(เคาน์เตอร์ด้านหน้า)');
+      return note;
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('swiftroute_lang', lang);
+      document.documentElement.lang = lang;
+
+      const langThBtn = document.getElementById('langThBtn');
+      const langEnBtn = document.getElementById('langEnBtn');
+      if (langThBtn && langEnBtn) {
+        if (lang === 'th') {
+          langThBtn.classList.add('active');
+          langEnBtn.classList.remove('active');
+        } else {
+          langEnBtn.classList.add('active');
+          langThBtn.classList.remove('active');
+        }
+      }
+
+      applyStaticTranslations();
+      if (currentParcelData) {
+        renderParcelDetail(currentParcelData.parcel, currentParcelData.events, currentParcelData.source);
+      }
+    }
+
+    function applyStaticTranslations() {
+      const t = I18N[currentLang];
+      document.title = t.pageTitle;
+
+      const trackAnother = document.getElementById('trackAnotherLink');
+      if (trackAnother) trackAnother.textContent = t.trackAnother;
+
+      const sTitle = document.getElementById('searchTitle');
+      if (sTitle) sTitle.textContent = t.searchTitle;
+
+      const sSub = document.getElementById('searchSubtitle');
+      if (sSub) sSub.textContent = t.searchSubtitle;
+
+      const tnLbl = document.getElementById('tnLabel');
+      if (tnLbl) tnLbl.textContent = t.tnLabel;
+
+      const tnInp = document.getElementById('tn');
+      if (tnInp) tnInp.placeholder = t.tnPlaceholder;
+
+      const tBtn = document.getElementById('trackBtn');
+      if (tBtn) tBtn.textContent = t.trackBtn;
+
+      const sEx = document.getElementById('searchExample');
+      if (sEx) sEx.textContent = t.searchExample;
+
+      const dLbl = document.getElementById('detailTrackingLabel');
+      if (dLbl) dLbl.textContent = t.detailTrackingLabel;
+
+      const cText = document.getElementById('copyText');
+      if (cText && cText.textContent !== 'Copied' && cText.textContent !== 'คัดลอกแล้ว') {
+        cText.textContent = t.copyLink;
+      }
+
+      const csHead = document.getElementById('currentStationHeading');
+      if (csHead) csHead.textContent = t.currentStationHeading;
+
+      const s1 = document.getElementById('stageLabel1');
+      const s2 = document.getElementById('stageLabel2');
+      const s3 = document.getElementById('stageLabel3');
+      if (s1) s1.textContent = t.stage1;
+      if (s2) s2.textContent = t.stage2;
+      if (s3) s3.textContent = t.stage3;
+
+      const tlHead = document.getElementById('timelineHeading');
+      if (tlHead) tlHead.textContent = t.timelineHeading;
+
+      const tlSub = document.getElementById('timelineSubheading');
+      if (tlSub) tlSub.textContent = t.timelineSubheading;
+
+      const rHead = document.getElementById('routeHeading');
+      if (rHead) rHead.textContent = t.routeHeading;
+
+      const rFromLbl = document.getElementById('routeFromLabel');
+      if (rFromLbl) rFromLbl.textContent = t.routeFrom;
+
+      const rToLbl = document.getElementById('routeToLabel');
+      if (rToLbl) rToLbl.textContent = t.routeTo;
+
+      const rStLbl = document.getElementById('routeStationsLabel');
+      if (rStLbl) rStLbl.textContent = t.routeStations;
+
+      const rProgLbl = document.getElementById('routeProgressLabel');
+      if (rProgLbl) rProgLbl.textContent = t.routeProgressLabel;
+
+      const ddHead = document.getElementById('deliveryDetailsHeading');
+      if (ddHead) ddHead.textContent = t.deliveryDetailsHeading;
+
+      const rcField = document.getElementById('recipientFieldLabel');
+      if (rcField) rcField.textContent = t.recipient;
+
+      const svField = document.getElementById('serviceFieldLabel');
+      if (svField) svField.textContent = t.service;
+
+      const prField = document.getElementById('parcelFieldLabel');
+      if (prField) prField.textContent = t.parcel;
+
+      const sgField = document.getElementById('signatureFieldLabel');
+      if (sgField) sgField.textContent = t.signature;
+
+      const caHead = document.getElementById('changeAddressHeading');
+      if (caHead) caHead.textContent = t.changeAddressHeading;
+
+      const caDesc = document.getElementById('changeAddressDesc');
+      if (caDesc) caDesc.textContent = t.changeAddressDesc;
+
+      const caBtn = document.getElementById('changeAddressBtn');
+      if (caBtn) caBtn.textContent = t.changeAddressBtn;
+
+      const cuBtn = document.getElementById('contactUsBtn');
+      if (cuBtn) cuBtn.textContent = t.contactUsBtn;
+
+      const fBrand = document.getElementById('footerBrand');
+      if (fBrand) fBrand.textContent = t.footerBrand;
+
+      const fTz = document.getElementById('footerTz');
+      if (fTz) fTz.textContent = t.footerTz;
+
+      const fLogin = document.getElementById('footerStaffLogin');
+      if (fLogin) fLogin.textContent = t.footerStaffLogin;
+    }
+
+    // ==========================================
+    // 🚚 TRACKING LOGIC
+    // ==========================================
     const searchSection = document.getElementById('searchSection');
     const trackingSection = document.getElementById('trackingSection');
     const trackAnotherLink = document.getElementById('trackAnotherLink');
@@ -244,6 +610,8 @@
     const delayAlertBody = document.getElementById('delayAlertBody');
     const timelineContainer = document.getElementById('timelineContainer');
     const routeProgress = document.getElementById('routeProgress');
+    const routeFromVal = document.getElementById('routeFromVal');
+    const routeToVal = document.getElementById('routeToVal');
     const recipientName = document.getElementById('recipientName');
     const serviceType = document.getElementById('serviceType');
     const parcelWeight = document.getElementById('parcelWeight');
@@ -256,22 +624,27 @@
         const row = document.createElement('div');
         row.style.cssText = 'display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 0 16px;';
 
-        let nodeBorder = '#CBD5E1', nodeBg = 'transparent', nodeCore = 'transparent', line = isLast ? 'transparent' : '#E2E8F0';
-        let radius = '2px', coreRadius = '1px', borderStyle = 'solid', ring = 'none';
-        let titleColor = '#0b1c30', metaColor = '#42474f';
+        let nodeBorder = '#E5E5E5', nodeBg = '#FFFFFF', nodeCore = 'transparent', line = isLast ? 'transparent' : '#E5E5E5';
+        let radius = '9999px', coreRadius = '9999px', borderStyle = 'solid', ring = 'none';
+        let titleColor = '#1A1A1A', metaColor = '#616161';
 
         if (ev.kind === 'done') {
-          nodeBorder = '#16A34A'; nodeBg = '#16A34A'; nodeCore = '#ffffff'; line = isLast ? 'transparent' : '#16A34A';
+          nodeBorder = '#2E7D32'; nodeBg = '#2E7D32'; nodeCore = '#ffffff'; line = isLast ? 'transparent' : '#2E7D32';
         } else if (ev.kind === 'active') {
-          nodeBorder = '#0F4C81'; nodeBg = '#ffffff'; nodeCore = '#0F4C81';
-          radius = '9999px'; coreRadius = '9999px'; ring = '0 0 0 2px #fff, 0 0 0 4px #0F4C81';
+          nodeBorder = '#ED1C24'; nodeBg = '#ffffff'; nodeCore = '#ED1C24';
+          ring = '0 0 0 2px #fff, 0 0 0 4px rgba(237, 28, 36, 0.25)';
         } else if (ev.kind === 'exception') {
-          nodeBorder = '#E11D48'; nodeBg = '#ffffff'; nodeCore = '#E11D48';
-          radius = '9999px'; coreRadius = '9999px'; ring = '0 0 0 2px #fff, 0 0 0 4px #E11D48';
-          titleColor = '#E11D48';
+          nodeBorder = '#E67E00'; nodeBg = '#ffffff'; nodeCore = '#E67E00';
+          ring = '0 0 0 2px #fff, 0 0 0 4px rgba(230, 126, 0, 0.25)';
+          titleColor = '#E67E00';
         } else {
-          borderStyle = 'dashed'; titleColor = '#64748B'; metaColor = '#727780';
+          borderStyle = 'dashed'; titleColor = '#8C8C8C'; metaColor = '#8C8C8C';
         }
+
+        const evTitle = translateEventTitle(ev.title);
+        const evTime = translateDateStr(ev.time_str || ev.time || '');
+        const evStation = translateStation(ev.station_name || ev.station || '');
+        const evNote = translateEventNote(ev.note);
 
         row.innerHTML = `
           <div style="display: flex; flex-direction: column; align-items: center;">
@@ -282,15 +655,99 @@
           </div>
           <div style="padding-bottom: ${isLast ? '0' : '24px'}; display: flex; flex-direction: column; gap: 4px;">
             <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px;">
-              <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 16px; line-height: 24px; color: ${titleColor};">${ev.title}</span>
-              <span style="font-size: 12px; line-height: 16px; color: #64748B; white-space: nowrap; font-variant-numeric: tabular-nums;">${ev.time_str || ev.time || ''}</span>
+              <span style="font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 15px; line-height: 22px; color: ${titleColor};">${evTitle}</span>
+              <span style="font-size: 12px; line-height: 16px; color: #8C8C8C; white-space: nowrap; font-variant-numeric: tabular-nums;">${evTime}</span>
             </div>
-            <span style="font-size: 14px; line-height: 20px; color: ${metaColor};">${ev.station_name || ev.station || ''}</span>
-            ${ev.note ? `<span style="font-size: 14px; line-height: 20px; color: #42474f;">${ev.note}</span>` : ''}
+            <span style="font-size: 14px; line-height: 20px; color: ${metaColor};">${evStation}</span>
+            ${evNote ? `<span style="font-size: 13px; line-height: 18px; color: #616161;">${evNote}</span>` : ''}
           </div>
         `;
         timelineContainer.appendChild(row);
       });
+    }
+
+    function renderParcelDetail(p, events, source) {
+      const t = I18N[currentLang];
+      sourceBadge.textContent = source === 'neon-postgresql' ? 'Neon SQL' : 'Demo Mode';
+      sourceBadge.style.background = source === 'neon-postgresql' ? '#EAF5ED' : '#E6F0F8';
+      sourceBadge.style.color = source === 'neon-postgresql' ? '#2E7D32' : '#0364AD';
+      sourceBadge.style.border = source === 'neon-postgresql' ? '1px solid #2E7D32' : '1px solid #0364AD';
+
+      const status = p.status || 'in-transit';
+
+      if (status === 'delivered') {
+        statusBadge.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 9999px; border: 1px solid #2E7D32; background: #EAF5ED; color: #2E7D32; font-size: 13px; font-weight: 600; white-space: nowrap;';
+        statusDot.style.background = '#2E7D32';
+        statusDot.style.animation = 'none';
+        statusLabel.textContent = t.statusDelivered;
+
+        etaLabel.textContent = t.etaDelivered;
+        etaValue.textContent = translateDateStr(p.eta || '11 Sep, 12:47');
+        etaValue.style.color = '#2E7D32';
+        etaNote.textContent = t.etaSignedBy(p.recipient_name || (currentLang === 'th' ? 'สมชาย ประเสริฐ' : 'Somchai P.'));
+
+        stageBar1.style.background = '#2E7D32'; stageLabel1.style.color = '#2E7D32';
+        stageBar2.style.background = '#2E7D32'; stageLabel2.style.color = '#2E7D32';
+        stageBar3.style.background = '#2E7D32'; stageLabel3.style.color = '#2E7D32';
+        delayAlert.style.display = 'none';
+        routeProgress.textContent = t.progressFmt(5, 5);
+      } else if (status === 'exception') {
+        statusBadge.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 9999px; border: 1px solid #E67E00; background: #FEF4E6; color: #E67E00; font-size: 13px; font-weight: 600; white-space: nowrap;';
+        statusDot.style.background = '#E67E00';
+        statusDot.style.animation = 'none';
+        statusLabel.textContent = t.statusException;
+
+        etaLabel.textContent = t.etaNewExpected;
+        etaValue.textContent = translateDateStr(p.eta || 'Fri 12 Sep, by 18:00');
+        etaValue.style.color = '#E67E00';
+        etaNote.textContent = t.etaDelayNote;
+
+        stageBar1.style.background = '#2E7D32'; stageLabel1.style.color = '#2E7D32';
+        stageBar2.style.background = '#E67E00'; stageLabel2.style.color = '#E67E00';
+        stageBar3.style.background = '#E5E5E5'; stageLabel3.style.color = '#8C8C8C';
+
+        if (p.delay_title || currentLang === 'th') {
+          if (currentLang === 'th') {
+            delayAlertTitle.textContent = 'การจัดส่งล่าช้ากว่ากำหนดประมาณ 1 วัน';
+            delayAlertBody.textContent = 'เกิดน้ำท่วมปิดเส้นทาง ทางหลวงหมายเลข 1 ช่วงนครสวรรค์ - ลำปาง พัสดุของคุณปลอดภัยอยู่ที่ศูนย์ฮับนครสวรรค์ และจะถูกส่งต่อทันทีที่เส้นทางเปิดสัญจร';
+          } else {
+            delayAlertTitle.textContent = p.delay_title || 'Your delivery is delayed by about a day';
+            delayAlertBody.textContent = p.delay_body || '';
+          }
+          delayAlert.style.display = 'flex';
+        } else {
+          delayAlert.style.display = 'none';
+        }
+        routeProgress.textContent = t.progressFmt(3, 5);
+      } else {
+        statusBadge.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 14px; border-radius: 9999px; border: 1px solid #0364AD; background: #E6F0F8; color: #0364AD; font-size: 13px; font-weight: 600; white-space: nowrap;';
+        statusDot.style.background = '#0364AD';
+        statusDot.style.animation = 'sr-pulse-red 1.6s ease-out infinite';
+        statusLabel.textContent = t.statusInTransit;
+
+        etaLabel.textContent = t.etaExpected;
+        etaValue.textContent = translateDateStr(p.eta || 'Thu 11 Sep, by 18:00');
+        etaValue.style.color = '#1A1A1A';
+        etaNote.textContent = t.etaTimeNote;
+
+        stageBar1.style.background = '#2E7D32'; stageLabel1.style.color = '#2E7D32';
+        stageBar2.style.background = '#0364AD'; stageLabel2.style.color = '#0364AD';
+        stageBar3.style.background = '#E5E5E5'; stageLabel3.style.color = '#8C8C8C';
+        delayAlert.style.display = 'none';
+        routeProgress.textContent = t.progressFmt(3, 5);
+      }
+
+      currentStationName.textContent = translateStation(p.current_station_name || 'Nakhon Sawan Hub');
+      currentStationNote.textContent = currentLang === 'th' ? 'สถานีถัดไป: ศูนย์ฮับลำปาง (LPG)' : (p.current_station_note || 'Next stop: Lampang Hub');
+      recipientName.textContent = p.recipient_name || (currentLang === 'th' ? 'สมชาย ประเสริฐ' : 'Somchai P.');
+      serviceType.textContent = currentLang === 'th' ? 'ทางถนน ด่วนพิเศษ (2 วัน)' : (p.service_type || 'Road, 2 days');
+      parcelWeight.textContent = t.parcelVal(p.weight_kg || '4.2');
+      signatureDetail.textContent = t.sigRequired;
+
+      if (routeFromVal) routeFromVal.textContent = translateStation('Bangkok Central Depot');
+      if (routeToVal) routeToVal.textContent = translateStation('Nimman, Mueang Chiang Mai');
+
+      renderTimeline(events);
     }
 
     async function showTracking(trackingNo) {
@@ -300,80 +757,10 @@
       try {
         const response = await fetch(`/api/track?tn=${encodeURIComponent(code)}`);
         const data = await response.json();
+        currentParcelData = data;
         const p = data.parcel || {};
         const events = data.events || [];
-
-        sourceBadge.textContent = data.source === 'neon-postgresql' ? 'Neon SQL' : 'Demo Mode';
-        sourceBadge.style.background = data.source === 'neon-postgresql' ? '#e6f4ea' : '#eff4ff';
-        sourceBadge.style.color = data.source === 'neon-postgresql' ? '#137333' : '#0F4C81';
-
-        const status = p.status || 'in-transit';
-
-        if (status === 'delivered') {
-          statusBadge.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 4px; border: 1px solid #BBF7D0; background: #F0FDF4; color: #16A34A; font-size: 14px; font-weight: 500; white-space: nowrap;';
-          statusDot.style.background = '#16A34A';
-          statusDot.style.animation = 'none';
-          statusLabel.textContent = 'Delivered';
-
-          etaLabel.textContent = 'Delivered';
-          etaValue.textContent = p.eta || '11 Sep, 12:47';
-          etaValue.style.color = '#16A34A';
-          etaNote.textContent = 'Signed for by ' + (p.recipient_name || 'Somchai P.');
-
-          stageBar1.style.background = '#16A34A'; stageLabel1.style.color = '#16A34A';
-          stageBar2.style.background = '#16A34A'; stageLabel2.style.color = '#16A34A';
-          stageBar3.style.background = '#16A34A'; stageLabel3.style.color = '#16A34A';
-          delayAlert.style.display = 'none';
-          routeProgress.textContent = '5 of 5 stations';
-        } else if (status === 'exception') {
-          statusBadge.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 4px; border: 1px solid #FECDD3; background: #FFF1F2; color: #E11D48; font-size: 14px; font-weight: 500; white-space: nowrap;';
-          statusDot.style.background = '#E11D48';
-          statusDot.style.animation = 'none';
-          statusLabel.textContent = 'Delayed';
-
-          etaLabel.textContent = 'New expected delivery';
-          etaValue.textContent = p.eta || 'Fri 12 Sep, by 18:00';
-          etaValue.style.color = '#E11D48';
-          etaNote.textContent = 'Was Thu 11 Sep. No action needed from you.';
-
-          stageBar1.style.background = '#16A34A'; stageLabel1.style.color = '#16A34A';
-          stageBar2.style.background = '#E11D48'; stageLabel2.style.color = '#E11D48';
-          stageBar3.style.background = '#E2E8F0'; stageLabel3.style.color = '#64748B';
-
-          if (p.delay_title) {
-            delayAlertTitle.textContent = p.delay_title;
-            delayAlertBody.textContent = p.delay_body || '';
-            delayAlert.style.display = 'flex';
-          } else {
-            delayAlert.style.display = 'none';
-          }
-          routeProgress.textContent = '3 of 5 stations';
-        } else {
-          statusBadge.style.cssText = 'display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 4px; border: 1px solid #BAE6FD; background: #F0F7FF; color: #0F4C81; font-size: 14px; font-weight: 500; white-space: nowrap;';
-          statusDot.style.background = '#0F4C81';
-          statusDot.style.animation = 'sr-pulse 1.6s ease-out infinite';
-          statusLabel.textContent = 'In transit';
-
-          etaLabel.textContent = 'Expected delivery';
-          etaValue.textContent = p.eta || 'Thu 11 Sep, by 18:00';
-          etaValue.style.color = '#0b1c30';
-          etaNote.textContent = 'Between 09:00 and 18:00';
-
-          stageBar1.style.background = '#16A34A'; stageLabel1.style.color = '#16A34A';
-          stageBar2.style.background = '#0F4C81'; stageLabel2.style.color = '#0F4C81';
-          stageBar3.style.background = '#E2E8F0'; stageLabel3.style.color = '#64748B';
-          delayAlert.style.display = 'none';
-          routeProgress.textContent = '3 of 5 stations';
-        }
-
-        currentStationName.textContent = p.current_station_name || 'Nakhon Sawan Hub';
-        currentStationNote.textContent = p.current_station_note || 'Next stop: Lampang Hub';
-        recipientName.textContent = p.recipient_name || 'Somchai P.';
-        serviceType.textContent = p.service_type || 'Road, 2 days';
-        parcelWeight.textContent = p.weight_kg ? `1 box, ${p.weight_kg} kg` : '1 box, 4.2 kg';
-        signatureDetail.textContent = p.signature_info || 'Required on delivery';
-
-        renderTimeline(events);
+        renderParcelDetail(p, events, data.source);
       } catch (err) {
         console.error('Failed to fetch tracking data:', err);
       }
@@ -403,7 +790,8 @@
       try {
         navigator.clipboard.writeText(window.location.href);
       } catch (err) {}
-      copyText.textContent = 'Copied';
+      const t = I18N[currentLang];
+      copyText.textContent = t.copied;
       Swal.mixin({
         toast: true,
         position: 'top-end',
@@ -412,14 +800,38 @@
         timerProgressBar: true
       }).fire({
         icon: 'success',
-        title: 'Tracking link copied to clipboard'
+        title: t.toastCopied
       });
-      setTimeout(() => { copyText.textContent = 'Copy link'; }, 1800);
+      setTimeout(() => { copyText.textContent = t.copyLink; }, 1800);
     });
+
+    function handleChangeAddress() {
+      const t = I18N[currentLang];
+      Swal.fire({
+        icon: 'info',
+        title: t.swalChangeAddressTitle,
+        text: t.swalChangeAddressText,
+        confirmButtonColor: '#ED1C24'
+      });
+    }
+
+    function handleContactUs() {
+      const t = I18N[currentLang];
+      Swal.fire({
+        icon: 'info',
+        title: t.swalDeskTitle,
+        html: t.swalDeskHtml,
+        confirmButtonColor: '#ED1C24'
+      });
+    }
 
     // Handle URL parameters
     const params = new URLSearchParams(window.location.search);
     const tnParam = params.get('tn') || params.get('tracking');
+    
+    // Initialize Language
+    setLanguage(currentLang);
+
     if (tnParam || params.get('view') === 'tracking') {
       showTracking(tnParam || 'SR-2609-118245');
     }
